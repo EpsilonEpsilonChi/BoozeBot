@@ -1,21 +1,14 @@
-(dp0
-S'vodka'
-p1
-(i__main__
+Ä(c__main__
 Bottle
-p2
-(dp3
-S'price'
-p4
-F13.99
-sS'location'
-p5
-I3
-sS'name'
-p6
-S'Smirnoff'
-p7
-sS'amountRemaining'
-p8
-F25.360542377466313
-sbs.
+qoq}q(UpriceqG@'˙·GÆ{UlocationqKUnameqUNew AmsterdamqUkeyqUginq	UamountRemainingq
+G@9\LÅX
+7ub.Ä(c__main__
+Bottle
+qoq}q(UpriceqG@+˙·GÆ{UlocationqKUnameqUSmirnoffqUkeyqUvodkaq	UamountRemainingq
+G@9\LÅX
+7ub.Ä(c__main__
+Bottle
+qoq}q(UpriceqG@ı¬è\(ˆUlocationqKUnameqU	DekuypersqUkeyqU
+triple secq	UamountRemainingq
+G@9\LÅX
+7ub.
