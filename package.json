@@ -1,0 +1,9 @@
+{
+    "name": "boozebot",
+    "description": "BoozeBot that dispenses mixed drinks for alcoholics in eex",
+    "version": "0.0.1",
+    "dependencies": {
+        "firebase": "*",
+        "firebase-queue": "*"
+    }
+}
