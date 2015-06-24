@@ -1,9 +1,10 @@
 {
     "name": "boozebot",
-    "description": "BoozeBot that dispenses mixed drinks for alcoholics in eex",
+    "description": "BoozeBot is a mixed drink dispenser alcoholics in EEX",
     "version": "0.0.1",
     "dependencies": {
         "firebase": "*",
-        "firebase-queue": "*"
+        "firebase-queue": "*",
+        "johnny-five": "*"
     }
 }
