@@ -35,7 +35,6 @@
   </head>
 
   <body role="document">
-
     <!-- Fixed navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -53,17 +52,6 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
             </li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -89,16 +77,16 @@
             </div>
             <div class="panel-body">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Liquor Type" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Liquor Name" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Liquor Proof" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Liquor Price" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Bottle Size (in mL)" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Bottle Location in BoozeBot" aria-describedby="sizing-addon2">
+                <input type="text" id="liquorType" class="form-control" placeholder="Liquor Type" aria-describedby="sizing-addon2">
+                <input type="text" id="liquorName" class="form-control" placeholder="Liquor Name" aria-describedby="sizing-addon2">
+                <input type="text" id="liquorProof" class="form-control" placeholder="Liquor Proof" aria-describedby="sizing-addon2">
+                <input type="text" id="liquorPrice" class="form-control" placeholder="Liquor Price" aria-describedby="sizing-addon2">
+                <input type="text" id="bottleSize" class="form-control" placeholder="Bottle Size (in mL)" aria-describedby="sizing-addon2">
+                <input type="text" id="bottleLoc" class="form-control" placeholder="Bottle Location in BoozeBot" aria-describedby="sizing-addon2">
               </div>
             </div>
             <div class="panel-body">
-              <button type="button" class="btn btn-lg btn-primary">Add Bottle</button>
+              <button type="button" onclick="addBottle()" class="btn btn-lg btn-primary">Add Bottle</button>
             </div>
           </div>
         </div>
@@ -109,12 +97,12 @@
             </div>
             <div class="panel-body">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="First Name" aria-describedby="sizing-addon2">
-                <input type="text" class="form-control" placeholder="Last Name" aria-describedby="sizing-addon2">
+                <input type="text" id="firstname" class="form-control" placeholder="First Name" aria-describedby="sizing-addon2">
+                <input type="text" id="lastname" class="form-control" placeholder="Last Name" aria-describedby="sizing-addon2">
               </div>
             </div>
             <div class="panel-body">
-              <button type="button" class="btn btn-lg btn-primary">Add User</button>
+              <button type="button" onclick="addUser()" class="btn btn-lg btn-primary">Add User</button>
             </div>
           </div>
         </div>
@@ -138,6 +126,50 @@
 
     </div> <!-- /container -->
 
+    <!-- Firebase JavaScript -->
+    <script type='text/javascript'>
+      var ref         = new Firebase('https://shining-torch-4136.firebaseio.com');
+      var usersRef    = ref.child("Users");
+      var recipesRef  = ref.child("Recipes");
+      var bottlesRef  = ref.child("Bottles");
+
+      function addUser() {
+        var firstnameField = $('#firstname');
+        var lastnameField  = $('#lastname');
+
+        usersRef.push({
+          name: firstnameField.val() + " " + lastnameField.val()
+        });
+
+        firstnameField.val('');
+        lastnameField.val('');
+      }
+
+      function addBottle() {
+        var typeField = $('#liquorType');
+        var nameField = $('#liquorName');
+        var proofField = $('#liquorProof');
+        var priceField = $('#liquorPrice');
+        var sizeField = $('#bottleSize');
+        var locField = $('#bottleLoc');
+
+        bottlesRef.push({
+          type: typeField.val(),
+          name: nameField.val(),
+          proof: proofField.val(),
+          price: priceField.val(),
+          amountRemaining: sizeField.val(),
+          bottleLoc: locField.val()
+        });
+
+        typeField.val('');
+        nameField.val('');
+        proofField.val('');
+        priceField.val('');
+        sizeField.val('');
+        locField.val('');
+      }
+    </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

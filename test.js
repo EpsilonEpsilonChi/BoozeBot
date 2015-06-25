@@ -5,9 +5,9 @@ var usersRef 	= ref.child("Users")
 var recipesRef	= ref.child("Recipes")
 var bottlesRef  = ref.child("Bottles")
 
-// usersRef.push({
-// 	name: "Connor Mason",
-// });
+usersRef.push({
+	name: "Jake Glass",
+});
 
 // bottlesRef.push({
 // 	bottleLoc: 1,
@@ -18,19 +18,19 @@ var bottlesRef  = ref.child("Bottles")
 // 	price: 12.99
 // })
 
-bottlesRef.push({
-	bottleLoc: 2,
-	type: "lemon lime",
-	name: "Sprite",
-	proof: 0,
-	amountRemaining: 2000,
-	price: 1.19
-})
+// bottlesRef.push({
+// 	bottleLoc: 2,
+// 	type: "lemon lime",
+// 	name: "Sprite",
+// 	proof: 0,
+// 	amountRemaining: 2000,
+// 	price: 1.19
+// })
 
-recipesRef.push({
-	name: "Vodka & Sprite",
-	ingredients: {
-		vodka: 3,
-		sprite: 9
-	}
-})
+// recipesRef.push({
+// 	name: "Vodka & Sprite",
+// 	ingredients: {
+// 		vodka: 3,
+// 		sprite: 9
+// 	}
+// })
