@@ -113,11 +113,11 @@
             </div>
             <div class="panel-body">
               <div class="input-group">
-                <p>Work in progress</p>
+                <input type="text" id="recipeName" class="form-control" placeholder="Drink Name" aria-describedby="sizing-addon2">
               </div>
             </div>
             <div class="panel-body">
-              <button type="button" class="btn btn-lg btn-primary">Add Recipe</button>
+              <button type="button" onclick="addRecipe()" class="btn btn-lg btn-primary">Add Recipe</button>
             </div>
           </div>
         </div>
@@ -127,49 +127,7 @@
     </div> <!-- /container -->
 
     <!-- Firebase JavaScript -->
-    <script type='text/javascript'>
-      var ref         = new Firebase('https://boozebot.firebaseio.com');
-      var usersRef    = ref.child("Users");
-      var recipesRef  = ref.child("Recipes");
-      var bottlesRef  = ref.child("Bottles");
-
-      function addUser() {
-        var firstnameField = $('#firstname');
-        var lastnameField  = $('#lastname');
-
-        usersRef.push({
-          name: firstnameField.val() + " " + lastnameField.val()
-        });
-
-        firstnameField.val('');
-        lastnameField.val('');
-      }
-
-      function addBottle() {
-        var typeField = $('#liquorType');
-        var nameField = $('#liquorName');
-        var proofField = $('#liquorProof');
-        var priceField = $('#liquorPrice');
-        var sizeField = $('#bottleSize');
-        var locField = $('#bottleLoc');
-
-        bottlesRef.push({
-          type: typeField.val(),
-          name: nameField.val(),
-          proof: proofField.val(),
-          price: priceField.val(),
-          amountRemaining: sizeField.val(),
-          bottleLoc: locField.val()
-        });
-
-        typeField.val('');
-        nameField.val('');
-        proofField.val('');
-        priceField.val('');
-        sizeField.val('');
-        locField.val('');
-      }
-    </script>
+    <script type='text/javascript' src="firebaseFunctions.js"></script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
