@@ -33,14 +33,17 @@ function addBottle() {
   var sizeField = $('#bottleSize');
   var locField = $('#bottleLoc');
 
-  bottlesRef.push({
-    type: typeField.val(),
+  bottleToAdd = {};
+  bottleData = {
     name: nameField.val(),
     proof: proofField.val(),
     price: priceField.val(),
     amountRemaining: sizeField.val(),
     bottleLoc: locField.val()
-  });
+  };
+  bottleToAdd[typeField.val()] = bottleData;
+
+  bottlesRef.update(bottleToAdd);
 
   typeField.val('');
   nameField.val('');
