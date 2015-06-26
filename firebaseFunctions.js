@@ -18,36 +18,28 @@ function addUser() {
 
 function addRecipe() {
   var recipeNameField  = $('#recipeName');
-  var ingredient1Field = $('#ingredient1');
-  var ingredient2Field = $('#ingredient2');
-  var ingredient3Field = $('#ingredient3');
-  var ingredient4Field = $('#ingredient4');
-  var ingredient5Field = $('#ingredient5');
-  var ingredient6Field = $('#ingredient6');
-  var ingredient7Field = $('#ingredient7');
+  var ingredients = [$('#ingredient1'), $('#ingredient2'), $('#ingredient3'), $('#ingredient4'), $('#ingredient5'), $('#ingredient6'), $('#ingredient7')];
+  var amounts = [$('#amount1'), $('#amount2'), $('#amount3'), $('#amount4'), $('#amount5'), $('#amount6'), $('#amount7')];
 
   recipeToAdd = {};
   recipeData = {
-    ingredient1: ingredient1Field.val(),
-    ingredient2: ingredient2Field.val(),
-    ingredient3: ingredient3Field.val(),
-    ingredient4: ingredient4Field.val(),
-    ingredient5: ingredient5Field.val(),
-    ingredient6: ingredient6Field.val(),
-    ingredient7: ingredient7Field.val()
+    ingredient1: {"type": ingredients[0].val(), "amount": amounts[0].val()},
+    ingredient2: {"type": ingredients[1].val(), "amount": amounts[1].val()},
+    ingredient3: {"type": ingredients[2].val(), "amount": amounts[2].val()},
+    ingredient4: {"type": ingredients[3].val(), "amount": amounts[3].val()},
+    ingredient5: {"type": ingredients[4].val(), "amount": amounts[4].val()},
+    ingredient6: {"type": ingredients[5].val(), "amount": amounts[5].val()},
+    ingredient7: {"type": ingredients[6].val(), "amount": amounts[6].val()},
   };
   recipeToAdd[recipeNameField.val()] = recipeData;
 
   recipesRef.update(recipeToAdd);
 
   recipeNameField.val('');
-  ingredient1Field.val('');
-  ingredient2Field.val('');
-  ingredient3Field.val('');
-  ingredient4Field.val('');
-  ingredient5Field.val('');
-  ingredient6Field.val('');
-  ingredient7Field.val('');
+  for (var i = 0; i < ingredients.length; i++) {
+    ingredients[i].val('');
+    amounts[i].val('');
+  }
 }
 
 function addBottle() {
@@ -78,10 +70,36 @@ function addBottle() {
   locField.val('');
 }
 
-// function pourDrink() {
-//   var userPouringDrinkField = $('#userPouringDrink');
-//   var drinkToPourField      = $('#drinkToPourField');
+function pourDrink() {
+  var userPouringDrinkField = $('#userPouringDrink');
+  var drinkToPourField      = $('#drinkToPour');
 
-  
-// }
+  var ingredients = []
+  drinkToPourRef = recipesRef.child(drinkToPourField.val());
+  drinkToPourRef.once("value", function(snapshot) {
+    ingredients = [
+      snapshot.val().ingredient1,
+      snapshot.val().ingredient2,
+      snapshot.val().ingredient3,
+      snapshot.val().ingredient4,
+      snapshot.val().ingredient5,
+      snapshot.val().ingredient6,
+      snapshot.val().ingredient7
+    ];
+  });
+
+  var ingredientRefs = [
+    bottlesRef.child(ingredients[0]),
+    bottlesRef.child(ingredients[1]),
+    bottlesRef.child(ingredients[2]),
+    bottlesRef.child(ingredients[3]),
+    bottlesRef.child(ingredients[4]),
+    bottlesRef.child(ingredients[5]),
+    bottlesRef.child(ingredients[6]),
+  ];
+
+
+
+  drinkToPourField.val('')
+}
 
