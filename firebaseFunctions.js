@@ -8,10 +8,12 @@ function addUser() {
   var firstnameField = $('#firstname');
   var lastnameField  = $('#lastname');
 
+  // Add user to Firebase
   usersRef.push({
     name: firstnameField.val() + " " + lastnameField.val()
   });
 
+  // Clear HTML input boxes
   firstnameField.val('');
   lastnameField.val('');
 }
@@ -56,6 +58,7 @@ function addBottle() {
   var sizeField = $('#bottleSize');
   var locField = $('#bottleLoc');
 
+  // Add bottle to Firebase
   bottleToAdd = {};
   bottleData = {
     name: nameField.val(),
@@ -65,9 +68,9 @@ function addBottle() {
     bottleLoc: locField.val()
   };
   bottleToAdd[typeField.val()] = bottleData;
-
   bottlesRef.update(bottleToAdd);
 
+  // Clear HTML input boxes
   typeField.val('');
   nameField.val('');
   proofField.val('');
@@ -105,7 +108,7 @@ function pourDrink() {
   ];
 
 
-
+  // Clear HTML input boxes
   drinkToPourField.val('')
 }
 
