@@ -21,20 +21,26 @@ function addRecipe() {
   var ingredients = [$('#ingredient1'), $('#ingredient2'), $('#ingredient3'), $('#ingredient4'), $('#ingredient5'), $('#ingredient6'), $('#ingredient7')];
   var amounts = [$('#amount1'), $('#amount2'), $('#amount3'), $('#amount4'), $('#amount5'), $('#amount6'), $('#amount7')];
 
+  // Add entered ingredients to recipe and push recipe to Firebase
   recipeToAdd = {};
-  recipeData = {
-    ingredient1: {"type": ingredients[0].val(), "amount": amounts[0].val()},
-    ingredient2: {"type": ingredients[1].val(), "amount": amounts[1].val()},
-    ingredient3: {"type": ingredients[2].val(), "amount": amounts[2].val()},
-    ingredient4: {"type": ingredients[3].val(), "amount": amounts[3].val()},
-    ingredient5: {"type": ingredients[4].val(), "amount": amounts[4].val()},
-    ingredient6: {"type": ingredients[5].val(), "amount": amounts[5].val()},
-    ingredient7: {"type": ingredients[6].val(), "amount": amounts[6].val()},
-  };
+  recipeData = {};
+  for (var i = 1; i < ingredients.length + 1; i++) {
+    if ((ingredients[i - 1].val() != '') && (amounts[i - 1].val() != '')) {
+      var floatAmount = parseFloat(amounts[i - 1].val(), 10);
+      if (!isNaN(floatAmount)) {                              // Make sure amount is a float (or int)
+        recipeData["ingredient" + i] = {
+          "type": ingredients[i - 1].val(),
+          "amount": amounts[i - 1].val()
+        }
+      } else {
+        recipeNameField.val("All amounts must be of type int/float");
+      }
+    }
+  }
   recipeToAdd[recipeNameField.val()] = recipeData;
-
   recipesRef.update(recipeToAdd);
 
+  // Clear HTML input boxes
   recipeNameField.val('');
   for (var i = 0; i < ingredients.length; i++) {
     ingredients[i].val('');
