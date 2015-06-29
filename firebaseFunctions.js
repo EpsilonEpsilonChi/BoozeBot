@@ -27,15 +27,16 @@ function addRecipe() {
   recipeToAdd = {};
   recipeData = {};
   for (var i = 1; i < ingredients.length + 1; i++) {
-    if ((ingredients[i - 1].val() != '') && (amounts[i - 1].val() != '')) {
+    if ((ingredients[i - 1].val() != '') && (amounts[i - 1].val() != '')) {   // Only add number of ingredients entered
       var floatAmount = parseFloat(amounts[i - 1].val(), 10);
-      if (!isNaN(floatAmount)) {                              // Make sure amount is a float (or int)
+      if (!isNaN(floatAmount)) {                                              // Make sure amount is a float (or int)
         recipeData["ingredient" + i] = {
           "type": ingredients[i - 1].val(),
           "amount": amounts[i - 1].val()
         }
       } else {
         recipeNameField.val("All amounts must be of type int/float");
+        return;
       }
     }
   }
@@ -83,32 +84,31 @@ function pourDrink() {
   var userPouringDrinkField = $('#userPouringDrink');
   var drinkToPourField      = $('#drinkToPour');
 
-  var ingredients = []
+  // Get drink ingredients
+  var ingredients = [];
   drinkToPourRef = recipesRef.child(drinkToPourField.val());
   drinkToPourRef.once("value", function(snapshot) {
-    ingredients = [
-      snapshot.val().ingredient1,
-      snapshot.val().ingredient2,
-      snapshot.val().ingredient3,
-      snapshot.val().ingredient4,
-      snapshot.val().ingredient5,
-      snapshot.val().ingredient6,
-      snapshot.val().ingredient7
-    ];
+    snapshot.forEach(function(childSnapshot) {
+      curIngredient = {
+        type: childSnapshot.val().type,
+        amount: childSnapshot.val().amount
+      }
+      // UGH
+      // Get prices for ingredients based on current bottle prices and amount
+      bottlesRef.child(childSnapshot.val().type).once("value", function(bottleSnapshot) {
+        var exists = (bottleSnapshot.val() !== null);     // Check that liquor exists in Bottles
+        if (!exists) {
+          drinkToPourField.val("No bottles of type " + childSnapshot.val().type);
+          return;
+        }
+      });
+    });
   });
 
-  var ingredientRefs = [
-    bottlesRef.child(ingredients[0]),
-    bottlesRef.child(ingredients[1]),
-    bottlesRef.child(ingredients[2]),
-    bottlesRef.child(ingredients[3]),
-    bottlesRef.child(ingredients[4]),
-    bottlesRef.child(ingredients[5]),
-    bottlesRef.child(ingredients[6]),
-  ];
-
+  // Create transaction
 
   // Clear HTML input boxes
-  drinkToPourField.val('')
+//   userPouringDrinkField.val('');
+//   drinkToPourField.val('');
 }
 
