@@ -4,6 +4,8 @@ var recipesRef      = ref.child("Recipes");
 var bottlesRef      = ref.child("Bottles");
 var transactionsRef = ref.child("Transactions")
 
+var conversionRatio = 29.5735;
+
 function addUser() {
   var firstnameField = $('#firstname');
   var lastnameField  = $('#lastname');
@@ -84,31 +86,49 @@ function pourDrink() {
   var userPouringDrinkField = $('#userPouringDrink');
   var drinkToPourField      = $('#drinkToPour');
 
-  // Get drink ingredients
-  var ingredients = [];
+  // Get drink recipe
   drinkToPourRef = recipesRef.child(drinkToPourField.val());
   drinkToPourRef.once("value", function(snapshot) {
+    // Create transaction and store recipe used in transaction
+    var curTransaction = {
+      "recipeUsed": snapshot.key()
+    };
+
+    // Get list of ingredients from recipe
+    var totalCost = 0;
+    var drinkCounter = 0;
+    var ingredients = [];
+    var ingredientCounter = 0;
     snapshot.forEach(function(childSnapshot) {
-      curIngredient = {
-        type: childSnapshot.val().type,
-        amount: childSnapshot.val().amount
-      }
-      // UGH
+      ingredients.push(childSnapshot.val()); 
+
       // Get prices for ingredients based on current bottle prices and amount
       bottlesRef.child(childSnapshot.val().type).once("value", function(bottleSnapshot) {
         var exists = (bottleSnapshot.val() !== null);     // Check that liquor exists in Bottles
         if (!exists) {
           drinkToPourField.val("No bottles of type " + childSnapshot.val().type);
           return;
+        } else {
+          // Check there is enough of the liquor left in the bottle
+
+          // Calculate cost of line item and add to transaction
+          var costOfItem = (bottleSnapshot.val().amountRemaining / conversionRatio) * childSnapshot.val().amount;   // Fix, calculate cost of amount
+          curTransaction["ingredient" + ingredientCounter] = {
+            "amountUsed": childSnapshot.val().amount,
+            "lineItemPrice": costOfItem,
+            "liquorName": bottleSnapshot.val().name
+          };
+
+          drinkCounter = drinkCounter + (bottleSnapshot.val().proof// Increment standard drink count
+
+
+
+          ingredientCounter = ingredientCounter + 1;      // Increment ingredient count
         }
       });
     });
   });
 
-  // Create transaction
-
-  // Clear HTML input boxes
-//   userPouringDrinkField.val('');
-//   drinkToPourField.val('');
+  // ****** Instruct Arduino to pour drink? ******
 }
 
