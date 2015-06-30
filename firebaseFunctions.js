@@ -61,6 +61,8 @@ function addBottle() {
   var sizeField = $('#bottleSize');
   var locField = $('#bottleLoc');
 
+  // Error checking on types?
+
   // Add bottle to Firebase
   bottleToAdd = {};
   bottleData = {
@@ -68,7 +70,8 @@ function addBottle() {
     proof: proofField.val(),
     price: priceField.val(),
     amountRemaining: sizeField.val(),
-    bottleLoc: locField.val()
+    bottleLoc: locField.val(),
+    costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
   };
   bottleToAdd[typeField.val()] = bottleData;
   bottlesRef.update(bottleToAdd);
@@ -88,10 +91,10 @@ function pourDrink() {
 
   // Get drink recipe
   drinkToPourRef = recipesRef.child(drinkToPourField.val());
-  drinkToPourRef.once("value", function(snapshot) {
+  drinkToPourRef.once("value", function(recipeSnapshot) {
     // Create transaction and store recipe used in transaction
     var curTransaction = {
-      "recipeUsed": snapshot.key()
+      "recipeUsed": recipeSnapshot.key()
     };
 
     // Get list of ingredients from recipe
@@ -99,34 +102,42 @@ function pourDrink() {
     var drinkCounter = 0;
     var ingredients = [];
     var ingredientCounter = 0;
-    snapshot.forEach(function(childSnapshot) {
-      ingredients.push(childSnapshot.val()); 
+    recipeSnapshot.forEach(function(ingredientSnapshot) {
+      ingredients.push(ingredientSnapshot.val()); 
 
       // Get prices for ingredients based on current bottle prices and amount
-      bottlesRef.child(childSnapshot.val().type).once("value", function(bottleSnapshot) {
-        var exists = (bottleSnapshot.val() !== null);     // Check that liquor exists in Bottles
+      bottlesRef.child(ingredientSnapshot.val().type).once("value", function(bottleSnapshot) {
+        // Check that liquor exists in Bottles
+        var exists = (bottleSnapshot.val() !== null);     
         if (!exists) {
-          drinkToPourField.val("No bottles of type " + childSnapshot.val().type);
+          drinkToPourField.val("No bottles of type " + ingredientSnapshot.val().type);
           return;
-        } else {
-          // Check there is enough of the liquor left in the bottle
+        } 
 
-          // Calculate cost of line item and add to transaction
-          var costOfItem = (bottleSnapshot.val().amountRemaining / conversionRatio) * childSnapshot.val().amount;   // Fix, calculate cost of amount
-          curTransaction["ingredient" + ingredientCounter] = {
-            "amountUsed": childSnapshot.val().amount,
-            "lineItemPrice": costOfItem,
-            "liquorName": bottleSnapshot.val().name
-          };
-
-          drinkCounter = drinkCounter + (bottleSnapshot.val().proof// Increment standard drink count
-
-
-
-          ingredientCounter = ingredientCounter + 1;      // Increment ingredient count
+        // Check there is enough of the liquor left in the bottle
+        if (bottleSnapshot.val().amountRemaining < ingredientSnapshot.val().amount) {
+          drinkToPourField.val("Not enough " + ingredientSnapshot.val().type + " left to make drink");
+          return;
         }
+
+        // Add line item to transaction
+        curTransaction["ingredient" + ingredientCounter] = {
+          "amountUsed": ingredientSnapshot.val().amount,
+          "lineItemPrice": bottleSnapshot.val().costPerFlOz * ingredientSnapshot.val().amount,
+          "liquorName": bottleSnapshot.val().name
+        };
+
+        // Increment standard drink count, ingredient count, and total cost
+        drinkCounter = drinkCounter + ((ingredientSnapshot.val().amount * (bottleSnapshot.val().proof / 200)) * 2);
+        ingredientCounter = ingredientCounter + 1;
+        totalCost = totalCost + (bottleSnapshot.val().costPerFlOz * ingredientSnapshot.val().amount);
       });
     });
+
+    curTransaction["totalCost"] = totalCost;
+    curTransaction["numStandardDrinks"] = drinkCounter;
+
+    usersRef.orderByChild("name").equalTo(userPouringDrinkField.val()).child("Transactions").push(curTransaction);
   });
 
   // ****** Instruct Arduino to pour drink? ******
