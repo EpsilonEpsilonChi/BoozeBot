@@ -7,17 +7,27 @@ var transactionsRef = ref.child("Transactions")
 var conversionRatio = 29.5735;
 
 function addUser() {
-  var firstnameField = $('#firstname');
-  var lastnameField  = $('#lastname');
+  var usernameField = $('#username');
+  var fullnameField  = $('#fullname');
 
-  // Add user to Firebase
-  usersRef.push({
-    name: firstnameField.val() + " " + lastnameField.val()
+  // Check to make sure user name doesn't exist already
+  usersRef.child(usernameField.val()).once("value", function(userSnapshot) {
+    var exists = (userSnapshot.val() !== null);     
+    if (exists) {
+      usernameField.val("Username already exists");
+      return;
+    } 
   });
 
+  // Add user to Firebase
+  userToAdd = {};
+  userData = { "name": fullnameField.val() };
+  userToAdd[usernameField.val()] = userData;
+  usersRef.update(userToAdd);
+
   // Clear HTML input boxes
-  firstnameField.val('');
-  lastnameField.val('');
+  usernameField.val('');
+  fullnameField.val('');
 }
 
 function addRecipe() {
@@ -89,6 +99,11 @@ function pourDrink() {
   var userPouringDrinkField = $('#userPouringDrink');
   var drinkToPourField      = $('#drinkToPour');
 
+  var totalCost = 0;
+  var drinkCounter = 0;
+  var ingredients = [];
+  var ingredientCounter = 0;
+
   // Get drink recipe
   drinkToPourRef = recipesRef.child(drinkToPourField.val());
   drinkToPourRef.once("value", function(recipeSnapshot) {
@@ -98,10 +113,6 @@ function pourDrink() {
     };
 
     // Get list of ingredients from recipe
-    var totalCost = 0;
-    var drinkCounter = 0;
-    var ingredients = [];
-    var ingredientCounter = 0;
     recipeSnapshot.forEach(function(ingredientSnapshot) {
       ingredients.push(ingredientSnapshot.val()); 
 
@@ -115,31 +126,48 @@ function pourDrink() {
         } 
 
         // Check there is enough of the liquor left in the bottle
-        if (bottleSnapshot.val().amountRemaining < ingredientSnapshot.val().amount) {
+        if (parseFloat(bottleSnapshot.val().amountRemaining) < (parseFloat(ingredientSnapshot.val().amount) * conversionRatio)) {
           drinkToPourField.val("Not enough " + ingredientSnapshot.val().type + " left to make drink");
           return;
         }
 
         // Add line item to transaction
-        curTransaction["ingredient" + ingredientCounter] = {
-          "amountUsed": ingredientSnapshot.val().amount,
-          "lineItemPrice": bottleSnapshot.val().costPerFlOz * ingredientSnapshot.val().amount,
+        var ingredientNum = ingredientCounter + 1;
+        curTransaction["ingredient" + ingredientNum] = {
+          "amountUsed": parseFloat(ingredientSnapshot.val().amount),
+          "lineItemPrice": parseFloat(bottleSnapshot.val().costPerFlOz) * parseFloat(ingredientSnapshot.val().amount),
           "liquorName": bottleSnapshot.val().name
         };
 
         // Increment standard drink count, ingredient count, and total cost
-        drinkCounter = drinkCounter + ((ingredientSnapshot.val().amount * (bottleSnapshot.val().proof / 200)) * 2);
+        drinkCounter = drinkCounter + ((parseFloat(ingredientSnapshot.val().amount) * (parseFloat(bottleSnapshot.val().proof) / 200)) * 2);
         ingredientCounter = ingredientCounter + 1;
-        totalCost = totalCost + (bottleSnapshot.val().costPerFlOz * ingredientSnapshot.val().amount);
+        totalCost = totalCost + (parseFloat(bottleSnapshot.val().costPerFlOz) * parseFloat(ingredientSnapshot.val().amount));
       });
     });
 
     curTransaction["totalCost"] = totalCost;
     curTransaction["numStandardDrinks"] = drinkCounter;
 
-    usersRef.orderByChild("name").equalTo(userPouringDrinkField.val()).child("Transactions").push(curTransaction);
+    usersRef.child("conmason").once("value", function(userSnapshot) {
+      // Check if username exists
+      var exists = (userSnapshot.val() !== null);     
+      if (!exists) {
+        userPouringDrinkField.val("Username does not exist");
+        return;
+      } 
+
+      // Add transaction to user
+      transactionToAdd = {};
+      transactionToAdd["Transactions"] = curTransaction;
+      usersRef.child("conmason").child("Transactions").push(curTransaction);
+    });
   });
 
   // ****** Instruct Arduino to pour drink? ******
+
+  // Clear HTML input boxes
+  userPouringDrinkField.val('');
+  drinkToPourField.val('');
 }
 
