@@ -99,7 +99,6 @@ function pourDrink() {
   var userPouringDrinkField = $('#userPouringDrink');
   var drinkToPourField      = $('#drinkToPour');
 
-  var totalCost = 0;
   var drinkCounter = 0;
   var ingredients = [];
   var ingredientCounter = 0;
@@ -109,7 +108,9 @@ function pourDrink() {
   drinkToPourRef.once("value", function(recipeSnapshot) {
     // Create transaction and store recipe used in transaction
     var curTransaction = {
-      "recipeUsed": recipeSnapshot.key()
+        recipeUsed: recipeSnapshot.key(),
+        totalCost: 0,
+        numStandardDrinks: 0
     };
 
     // Get list of ingredients from recipe
@@ -140,14 +141,11 @@ function pourDrink() {
         };
 
         // Increment standard drink count, ingredient count, and total cost
-        drinkCounter = drinkCounter + ((parseFloat(ingredientSnapshot.val().amount) * (parseFloat(bottleSnapshot.val().proof) / 200)) * 2);
+        curTransaction.totalCost += ((parseFloat(ingredientSnapshot.val().amount) * (parseFloat(bottleSnapshot.val().proof) / 200)) * 2);
         ingredientCounter = ingredientCounter + 1;
-        totalCost = totalCost + (parseFloat(bottleSnapshot.val().costPerFlOz) * parseFloat(ingredientSnapshot.val().amount));
+        curTransaction.numStandardDrinks += (parseFloat(bottleSnapshot.val().costPerFlOz) * parseFloat(ingredientSnapshot.val().amount));
       });
     });
-
-    curTransaction["totalCost"] = totalCost;
-    curTransaction["numStandardDrinks"] = drinkCounter;
 
     usersRef.child(userPouringDrinkField.val()).once("value", function(userSnapshot) {
       // Check if username exists
