@@ -149,7 +149,7 @@ function pourDrink() {
     curTransaction["totalCost"] = totalCost;
     curTransaction["numStandardDrinks"] = drinkCounter;
 
-    usersRef.child("conmason").once("value", function(userSnapshot) {
+    usersRef.child(userPouringDrinkField.val()).once("value", function(userSnapshot) {
       // Check if username exists
       var exists = (userSnapshot.val() !== null);     
       if (!exists) {
@@ -160,14 +160,15 @@ function pourDrink() {
       // Add transaction to user
       transactionToAdd = {};
       transactionToAdd["Transactions"] = curTransaction;
-      usersRef.child("conmason").child("Transactions").push(curTransaction);
+      usersRef.child(userPouringDrinkField.val()).child("Transactions").push(curTransaction);
+
+      // Clear HTML input boxes
+      userPouringDrinkField.val('');
+      drinkToPourField.val('');
     });
   });
 
   // ****** Instruct Arduino to pour drink? ******
 
-  // Clear HTML input boxes
-  userPouringDrinkField.val('');
-  drinkToPourField.val('');
 }
 
