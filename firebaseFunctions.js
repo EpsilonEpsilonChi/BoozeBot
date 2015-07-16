@@ -71,28 +71,38 @@ function addBottle() {
   var sizeField = $('#bottleSize');
   var locField = $('#bottleLoc');
 
-  // Error checking on types?
+  // Grab bottle snapshot
+  bottlesRef.child(typeField.val()).once("value", function(bottleSnapshot) {
+    // Check to make sure there isn't a bottle of the same type name already
+    var exists = (bottleSnapshot.val() !== null);     
+    if (exists) {
+      typeField.val("Bottle of type " + typeField.val() + " already exists");
+      return;
+    } 
+    
+    // Add bottle to Firebase
+    bottleToAdd = {};
+    bottleData = {
+      name: nameField.val(),
+      proof: proofField.val(),
+      price: priceField.val(),
+      amountRemaining: sizeField.val(),
+      bottleLoc: locField.val(),
+      costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
+    };
+    bottleToAdd[typeField.val()] = bottleData;
+    bottlesRef.update(bottleToAdd);
 
-  // Add bottle to Firebase
-  bottleToAdd = {};
-  bottleData = {
-    name: nameField.val(),
-    proof: proofField.val(),
-    price: priceField.val(),
-    amountRemaining: sizeField.val(),
-    bottleLoc: locField.val(),
-    costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
-  };
-  bottleToAdd[typeField.val()] = bottleData;
-  bottlesRef.update(bottleToAdd);
+    // Clear HTML input boxes
+    typeField.val('');
+    nameField.val('');
+    proofField.val('');
+    priceField.val('');
+    sizeField.val('');
+    locField.val('');
+  });
 
-  // Clear HTML input boxes
-  typeField.val('');
-  nameField.val('');
-  proofField.val('');
-  priceField.val('');
-  sizeField.val('');
-  locField.val('');
+  
 }
 
 function pourDrink() {
