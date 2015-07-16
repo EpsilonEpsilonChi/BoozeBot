@@ -79,7 +79,7 @@ function addBottle() {
       typeField.val("Bottle of type " + typeField.val() + " already exists");
       return;
     } 
-    
+
     // Add bottle to Firebase
     bottleToAdd = {};
     bottleData = {
