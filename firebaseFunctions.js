@@ -6,6 +6,8 @@ var transactionsRef = ref.child("Transactions")
 
 var conversionRatio = 29.5735;
 
+var bottlesRange = [0, 13];
+
 function addUser() {
   var usernameField = $('#username');
   var fullnameField  = $('#fullname');
@@ -71,28 +73,109 @@ function addBottle() {
   var sizeField = $('#bottleSize');
   var locField = $('#bottleLoc');
 
-  // Error checking on types?
+  // Check for bottleLoc number out of BoozeBot bounds
+  if ((parseInt(locField.val(), 10) < bottlesRange[0]) || (parseInt(locField.val(), 10) > bottlesRange[1])) {
+    locField.val("Invalid bottle location number");
+    return;
+  }
 
-  // Add bottle to Firebase
-  bottleToAdd = {};
-  bottleData = {
-    name: nameField.val(),
-    proof: proofField.val(),
-    price: priceField.val(),
-    amountRemaining: sizeField.val(),
-    bottleLoc: locField.val(),
-    costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
-  };
-  bottleToAdd[typeField.val()] = bottleData;
-  bottlesRef.update(bottleToAdd);
+  bottlesRef.once("value", function(bottlesSnapshot) {
+    var found = false;
+    bottlesSnapshot.forEach(function(bottle) {
+      // Find if there is a bottle in the inputted bottleLoc
+      if (parseInt(bottle.val().bottleLoc, 10) === parseInt(locField.val(), 10)) {
+        // If found, check if it is the same type of liquor that is already there
+        if (bottle.key() === typeField.val()) {
+          // If yes, update bottle info
+          bottleToAdd = {};
+          bottleData = {
+            name: nameField.val(),
+            proof: proofField.val(),
+            price: priceField.val(),
+            amountRemaining: sizeField.val(),
+            bottleLoc: locField.val(),
+            costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
+          };
+          bottleToAdd[typeField.val()] = bottleData;
+          bottlesRef.update(bottleToAdd);
 
-  // Clear HTML input boxes
-  typeField.val('');
-  nameField.val('');
-  proofField.val('');
-  priceField.val('');
-  sizeField.val('');
-  locField.val('');
+          // Clear HTML input boxes
+          typeField.val('');
+          nameField.val('');
+          proofField.val('');
+          priceField.val('');
+          sizeField.val('');
+          locField.val('');
+        } else {
+          // Otherwise, check if there is another bottle of the same type
+          bottlesRef.child(typeField.val()).once("value", function(typeSnapshot) {
+            var exists = (typeSnapshot.val() !== null);     
+            if (exists) {
+              typeField.val("Bottle of type " + typeSnapshot.key() + " already exists");
+              return;
+            }
+
+            // If not, remove old bottle and add new bottle to BoozeBot
+            bottle.ref().remove();    // ** NOT WORKING
+
+            bottleToAdd = {};
+            bottleData = {
+              name: nameField.val(),
+              proof: proofField.val(),
+              price: priceField.val(),
+              amountRemaining: sizeField.val(),
+              bottleLoc: locField.val(),
+              costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
+            };
+            bottleToAdd[typeField.val()] = bottleData;
+            bottlesRef.update(bottleToAdd);
+
+            // Clear HTML input boxes
+            typeField.val('');
+            nameField.val('');
+            proofField.val('');
+            priceField.val('');
+            sizeField.val('');
+            locField.val('');
+          });
+        }
+        found = true;
+      }
+    });
+
+    // If bottleLoc is empty spot in BoozeBot...
+    if (!found) {
+      bottlesRef.child(typeField.val()).once("value", function(typeSnapshot) {
+        // Check if there is another bottle of the same type
+        var exists = (typeSnapshot.val() !== null);     
+        if (exists) {
+          typeField.val("Bottle of type " + typeSnapshot.key() + " already exists");
+          return;
+        } 
+
+        // If not, create new bottle and add to BoozeBot
+        bottleToAdd = {};
+        bottleData = {
+          name: nameField.val(),
+          proof: proofField.val(),
+          price: priceField.val(),
+          amountRemaining: sizeField.val(),
+          bottleLoc: locField.val(),
+          costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
+        };
+        bottleToAdd[typeField.val()] = bottleData;
+        bottlesRef.update(bottleToAdd);
+
+        // Clear HTML input boxes
+        typeField.val('');
+        nameField.val('');
+        proofField.val('');
+        priceField.val('');
+        sizeField.val('');
+        locField.val('');
+      });
+    }
+  });
 }
 
 function pourDrink() {
