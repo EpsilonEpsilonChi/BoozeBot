@@ -115,8 +115,7 @@ function addBottle() {
               return;
             }
 
-            // If not, remove old bottle and add new bottle to BoozeBot
-            bottle.ref().remove();    // ** NOT WORKING
+            bottlesRef.child(bottle.key()).remove();
 
             bottleToAdd = {};
             bottleData = {
