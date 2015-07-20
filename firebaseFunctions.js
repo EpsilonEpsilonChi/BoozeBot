@@ -2,7 +2,6 @@ var ref             = new Firebase('https://boozebot.firebaseio.com');
 var usersRef        = ref.child("Users");
 var recipesRef      = ref.child("Recipes");
 var bottlesRef      = ref.child("Bottles");
-var transactionsRef = ref.child("Transactions")
 
 var conversionRatio = 29.5735;
 
@@ -115,6 +114,7 @@ function addBottle() {
               return;
             }
 
+            // Remove bottle that was in bottleLoc, replace with newly added bottle
             bottlesRef.child(bottle.key()).remove();
 
             bottleToAdd = {};
