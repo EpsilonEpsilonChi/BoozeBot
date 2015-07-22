@@ -5,6 +5,7 @@
     "dependencies": {
         "firebase": "*",
         "firebase-queue": "*",
-        "johnny-five": "*"
+        "johnny-five": "*",
+        "colors": "*"
     }
 }

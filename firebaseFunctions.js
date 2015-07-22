@@ -223,6 +223,8 @@ function pourDrink() {
           "liquorBottleNum": bottleSnapshot.val().bottleLoc
         };
 
+        // ********* DECREMENT AMOUNT LEFT IN BOTTLE *********
+
         // Increment standard drink count, ingredient count, and total cost
         curTransaction.totalCost += ((parseFloat(ingredientSnapshot.val().amount) * (parseFloat(bottleSnapshot.val().proof) / 200)) * 2);
         ingredientCounter = ingredientCounter + 1;
