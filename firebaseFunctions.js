@@ -2,7 +2,7 @@ var ref             = new Firebase('https://boozebot.firebaseio.com');
 var usersRef        = ref.child("Users");
 var recipesRef      = ref.child("Recipes");
 var bottlesRef      = ref.child("Bottles");
-var queueRef        = new Firebase('https://boozebot.firebaseio.com/queue/tasks');
+var queueRef        = new Firebase('https://boozebot.firebaseio.com/drinkQueue/tasks');
 
 var conversionRatio = 29.5735;
 var bottlesRange = [0, 13];
@@ -219,7 +219,8 @@ function pourDrink() {
         curTransaction["ingredient" + ingredientNum] = {
           "amountUsed": parseFloat(ingredientSnapshot.val().amount),
           "lineItemPrice": parseFloat(bottleSnapshot.val().costPerFlOz) * parseFloat(ingredientSnapshot.val().amount),
-          "liquorName": bottleSnapshot.val().name
+          "liquorName": bottleSnapshot.val().name,
+          "liquorBottleNum": bottleSnapshot.val().bottleLoc
         };
 
         // Increment standard drink count, ingredient count, and total cost
