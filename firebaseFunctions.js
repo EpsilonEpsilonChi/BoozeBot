@@ -2,9 +2,9 @@ var ref             = new Firebase('https://boozebot.firebaseio.com');
 var usersRef        = ref.child("Users");
 var recipesRef      = ref.child("Recipes");
 var bottlesRef      = ref.child("Bottles");
+var queueRef        = new Firebase('https://boozebot.firebaseio.com/queue/tasks');
 
 var conversionRatio = 29.5735;
-
 var bottlesRange = [0, 13];
 
 function addUser() {
@@ -242,13 +242,13 @@ function pourDrink() {
       transactionToAdd["Transactions"] = curTransaction;
       usersRef.child(userPouringDrinkField.val()).child("Transactions").push(curTransaction);
 
+      // Add drink transaction to queue
+      queueRef.push(curTransaction);
+
       // Clear HTML input boxes
       userPouringDrinkField.val('');
       drinkToPourField.val('');
     });
   });
-
-  // ****** Instruct Arduino to pour drink? ******
-
 }
 
