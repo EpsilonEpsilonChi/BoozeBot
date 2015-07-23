@@ -9,6 +9,11 @@ Code for our house bartending robot, BoozeBot (work in progress)
 |[1000uF Capacitor](http://www.digikey.com/scripts/DkSearch/dksus.dll?Detail&itemSeq=174381113&uq=635701630035665475)|$0.46|20|$18.20|
 |[MCP23017 I/O Expander](http://www.digikey.com/product-detail/en/MCP23017-E%2FSP/MCP23017-E%2FSP-ND/894272)|$1.44|2|$2.88|
 
+# Flow of Drink Info
+1. Website or app sends drink request to Firebase (transaction under user, as well as queue)
+2. Raspberry Pi running server that pulls drink requests from queue
+3. Raspberry Pi sends commands to Arduino to pour drink
+
 # To-Do
 1. Obtain one diaphragm pump and test it to make sure it is what we are looking for
 2. Get code working for Arduino to receive HTTP requests
