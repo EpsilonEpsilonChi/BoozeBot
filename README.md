@@ -20,3 +20,6 @@ Code for our house bartending robot, BoozeBot (work in progress)
 3. Write iOS app to send those HTTP requests
 4. Start constructing BoozeBot shell
 5. Wire circuits
+
+### Notes
+- Use one of the relays to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
