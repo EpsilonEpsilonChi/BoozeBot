@@ -7,6 +7,8 @@ var queueRef        = new Firebase('https://boozebot.firebaseio.com/drinkQueue/t
 var conversionRatio = 29.5735;
 var bottlesRange = [0, 13];
 
+// ******* MAKE ALL INPUTS CASE INSENSITIVE
+
 function addUser() {
   var usernameField = $('#username');
   var fullnameField  = $('#fullname');
