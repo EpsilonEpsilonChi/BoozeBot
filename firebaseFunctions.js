@@ -47,7 +47,7 @@ function addRecipe() {
       if (!isNaN(floatAmount)) {                                              // Make sure amount is a float (or int)
         recipeData["ingredient" + i] = {
           "type": ingredients[i - 1].val(),
-          "amount": amounts[i - 1].val()
+          "amount": floatAmount
         }
       } else {
         recipeNameField.val("All amounts must be of type int/float");
