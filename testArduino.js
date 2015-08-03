@@ -8,8 +8,6 @@ var Queue      = require('firebase-queue');
 var verbose 		  = true;
 var timeToPourOneFlOz = 2200;
 
-var ledstate = false;
-
 // Will instruct Arduino to pour the liquor
 function pourLiquor(bottleNum, amount) {
     if (verbose) { console.log("  Pouring " + colors.yellow(amount) + "oz of liquor in bottle #" + colors.yellow(bottleNum)); }

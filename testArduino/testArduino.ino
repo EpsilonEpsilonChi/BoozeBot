@@ -1,3 +1,5 @@
+#include <aJSON.h>
+
 int incomingByte = 0;
 
 void setup() {
