@@ -22,7 +22,8 @@
 #define PUMPON 1
 #define PUMPOFF 2
 
-int maxIngredients       = 10;       // The max number of ingredients passed from Raspberry Pi in JSON object
+// Config variables
+int maxIngredients       = 10;      // The max number of ingredients passed from Raspberry Pi in JSON object
 double timeToPourOneFlOz = 1000;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 aJsonStream serial_stream(&Serial);
@@ -61,7 +62,7 @@ void setup() {
   pinMode(POWERRELAY, OUTPUT);
   pinMode(ACTIVITYLED, OUTPUT);
 
-  blinkActivity(75, 4);
+  blinkActivity(50, 4);
 
   serial_stream.flush();
 }
@@ -114,10 +115,10 @@ void dispenseLiquor(double amount, int bottleNum) {
 }
 
 // Processes recipe transaction JSON data passed in
-void processRecipe(aJsonObject *recipe) {
+int processRecipe(aJsonObject *recipe) {
   // Check to make sure recipe exists
   if (!recipe) {
-    return;
+    return 1;
   }
 
   // Read ingredients from JSON object
@@ -142,7 +143,7 @@ void processRecipe(aJsonObject *recipe) {
         } else if (amountIn->type == 4) {
           amount = atof(amountIn->valuestring);
         } else {
-          // ************* THROW ERROR ****************
+          return 2;
         }
 
         // Get bottleNum type and set value accordingly
@@ -152,33 +153,70 @@ void processRecipe(aJsonObject *recipe) {
         } else if (bottleNumIn->type == 3) {
           bottleNum = bottleNumIn->valuefloat;
         } else if (bottleNumIn->type == 4) {
-          bottleNum = atof(bottleNumIn->valuestring);
+          bottleNum = atoi(bottleNumIn->valuestring);
         } else {
-          // ************* THROW ERROR ****************
+          return 3;
         }
 
         dispenseLiquor(amount, bottleNum);
-        delay(1000);
+        delay(1000);                          // ***** REMOVE AFTER TESTING *****
       }
     }
   }
+
+  return 0;
+}
+
+// Creates response message to send back to Raspberry Pi
+// Format: { "response": <1 for success, 0 for failure>, "error": <error message, if any> } 
+aJsonObject *createResponseMessage(int responseNum) {
+  int response = 0;
+  char *message;
+  switch(responseNum) {
+    case 0:     // Success
+      response = 1;
+      break;
+    case 1: 
+      message = "No recipe data\n";
+      break;
+    case 2:
+      message = "Invalid amount type\n";
+      break;
+    case 3:
+      message = "Invalid bottleNum type\n";
+      break;
+  }
+
+  // Create JSON object for response packet
+  aJsonObject *packet = aJson.createObject();
+  aJsonObject *responseItem = aJson.createItem(response);
+  aJson.addItemToObject(packet, "response", responseItem);
+
+  if (response == 1) {
+    aJsonObject *nullItem = aJson.createNull();
+    aJson.addItemToObject(packet, "error", nullItem);
+  } else {
+    aJsonObject *errorItem = aJson.createItem(message);
+    aJson.addItemToObject(packet, "error", errorItem);
+  }
+
+  return packet;
 }
 
 void loop() {
-  // Skip any accidental whitespace like newlines
-  if (serial_stream.available()) {
+  while (serial_stream.available()) {
     serial_stream.skip();
-  }
 
-  // Read recipe transaction from Serial
-  if (serial_stream.available()) {
+    // Parse input
     aJsonObject *recipe = aJson.parse(&serial_stream);
-    processRecipe(recipe);
+    int returnVal = processRecipe(recipe);
     aJson.deleteItem(recipe);
     serial_stream.flush();
+
+    // Send response
+    aJsonObject *response = createResponseMessage(returnVal);
+    aJson.print(response, &serial_stream);
+    Serial.println();
+    aJson.deleteItem(response);
   }
-
-  // ********* SEND RESPONSES IF SUCCESSFUL *********
-
-  delay(100);
 }

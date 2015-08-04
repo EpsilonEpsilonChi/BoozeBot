@@ -1,5 +1,4 @@
-var SerialPort = require("serialport").SerialPort;
-var serialPort = new SerialPort("/dev/tty.usbmodem1421");
+var SerialPort = require("serialport");
 var colors     = require('colors/safe');
 var Queue      = require('firebase-queue');
     Firebase   = require('firebase');
@@ -7,13 +6,13 @@ var Queue      = require('firebase-queue');
 // Configuration variables
 var verbose = true;
 
+var serialPort = new SerialPort.SerialPort("/dev/tty.usbmodem1421", {
+    baudrate: 9600,
+    parser: SerialPort.parsers.readline("\n")
+});
+
 serialPort.on("open", function() {
     console.log("Serial port open");
-
-    // Listen for data from Arduino
-    serialPort.on('data', function(data) {
-        console.log('data received: ' + data);
-    });
 
     // Waiting for new drinks sitting in queue and pours them
     var queueRef = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
@@ -30,14 +29,23 @@ serialPort.on("open", function() {
             }
         }
 
+        // Listen for data from Arduino
+        serialPort.on('data', function(data) {
+            console.log('  Response packet: ' + data);
+        });
+
         // Send compressed recipe to Arduino
         if (verbose) { console.log(colors.yellow("  Sending recipe data to Arduino...")); }
         var dataToWrite = JSON.stringify(packet);
-        console.log("dataToWrite: " + dataToWrite);
+        if (verbose) { console.log(colors.white("  Recipe data packet: " + dataToWrite)); }
         serialPort.write(dataToWrite, function(err, results) {
             if (verbose) { console.log(colors.cyan("  Errors: " + err)); }
             if (verbose) { console.log(colors.cyan("  Results: " + results)); }
         });
+
+        
+
+        // **** wait until arduino has completed to pull off queue again
 
         resolve();
     });
