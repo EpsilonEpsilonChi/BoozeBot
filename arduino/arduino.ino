@@ -23,11 +23,21 @@
 #define PUMPOFF 2
 
 int maxIngredients       = 10;       // The max number of ingredients passed from Raspberry Pi in JSON object
-double timeToPourOneFlOz = 2000;    // Time it takes to pour 1 fl oz (in milliseconds)
+double timeToPourOneFlOz = 1000;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 aJsonStream serial_stream(&Serial);
 
 // ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
+
+// Blinks activity LED for short amount of time, x times
+void blinkActivity(int waitAfter, int x) {
+  for (int i = 0; i < x; i++) {
+    digitalWrite(ACTIVITYLED, HIGH);
+    delay(100);
+    digitalWrite(ACTIVITYLED, LOW);
+    delay(waitAfter);
+  }
+}
 
 void setup() {
   Serial.begin(9600);
@@ -51,21 +61,9 @@ void setup() {
   pinMode(POWERRELAY, OUTPUT);
   pinMode(ACTIVITYLED, OUTPUT);
 
-  blinkActivity(75);
-  blinkActivity(75);
-  blinkActivity(75);
-  blinkActivity(75);
-  blinkActivity(0);
+  blinkActivity(75, 4);
 
   serial_stream.flush();
-}
-
-// Blinks activity LED for short amount of time
-void blinkActivity(int waitAfter) {
-  digitalWrite(ACTIVITYLED, HIGH);
-  delay(100);
-  digitalWrite(ACTIVITYLED, LOW);
-  delay(waitAfter);
 }
 
 // Selects proper pin constant based on bottle number
@@ -105,12 +103,12 @@ int selectPin(int bottleNum) {
 }
 
 // Dispenses a certain amount of liquor
-void dispenseLiquor(int amount, int bottleNum) {
+void dispenseLiquor(double amount, int bottleNum) {
   int liquorPin = selectPin(bottleNum);
 
   digitalWrite(ACTIVITYLED, HIGH);
   digitalWrite(liquorPin, PUMPON);
-  delay(timeToPourOneFlOz);
+  delay(timeToPourOneFlOz * amount);
   digitalWrite(liquorPin, PUMPOFF);
   digitalWrite(ACTIVITYLED, LOW);
 }
@@ -129,33 +127,39 @@ void processRecipe(aJsonObject *recipe) {
     strNum.toCharArray(charNum, 10);
     aJsonObject *ingredient = aJson.getObjectItem(recipe, charNum);
 
-    if (ingredient) {
-//      blinkActivity(200);
-      
-      aJsonObject *amount = aJson.getObjectItem(ingredient, "a");
-      aJsonObject *bottleNum = aJson.getObjectItem(ingredient, "b"); 
+    if (ingredient) {      
+      aJsonObject *amountIn = aJson.getObjectItem(ingredient, "a");
+      aJsonObject *bottleNumIn = aJson.getObjectItem(ingredient, "b"); 
 
-      // Convert char array values to float/int values
-      double amountFloat = atof(amount->valuestring);
-      int bottleNumInt = atoi(bottleNum->valuestring);
+      // Check for existance
+      if (amountIn && bottleNumIn) {
+        // Get amount type and set value accordingly
+        double amount = 0;
+        if (amountIn->type == 2) {
+          amount = amountIn->valueint;
+        } else if (amountIn->type == 3) {
+          amount = amountIn->valuefloat;
+        } else if (amountIn->type == 4) {
+          amount = atof(amountIn->valuestring);
+        } else {
+          // ************* THROW ERROR ****************
+        }
 
-      // Getting into the if statements below for some reason, debug ********
+        // Get bottleNum type and set value accordingly
+        int bottleNum = 0;
+        if (bottleNumIn->type == 2) {
+          bottleNum = bottleNumIn->valueint;
+        } else if (bottleNumIn->type == 3) {
+          bottleNum = bottleNumIn->valuefloat;
+        } else if (bottleNumIn->type == 4) {
+          bottleNum = atof(bottleNumIn->valuestring);
+        } else {
+          // ************* THROW ERROR ****************
+        }
 
-
-      // Check type validity on amount
-      if (amountFloat == 0) { 
-        blinkActivity(200);
-        // ************* THROW ERROR ****************
-        return;
+        dispenseLiquor(amount, bottleNum);
+        delay(1000);
       }
-
-      // Check type validity on bottleNum
-      if (bottleNumInt == 0) {
-        // ************* THROW ERROR ****************
-        return;
-      }
-
-//      dispenseLiquor(amountFloat, bottleNumInt);
     }
   }
 }
