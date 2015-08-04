@@ -15,13 +15,20 @@ function pourLiquor(bottleNum, amount) {
 serialPort.on("open", function() {
     console.log("Serial port open");
 
+    // Listen for data from Arduino
+    serialPort.on('data', function(data) {
+        console.log('data received: ' + data);
+    });
+
     // Waiting for new drinks sitting in queue and pours them
     var queueRef = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
     var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
         console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
 
         if (verbose) { console.log(colors.yellow("  Sending recipe data to Arduino...")); }
-        serialPort.write(JSON.stringify(data), function(err, results) {
+        var dataToWrite = JSON.stringify(data);
+        console.log("dataToWrite: " + dataToWrite);
+        serialPort.write(dataToWrite, function(err, results) {
             if (verbose) { console.log(colors.cyan("  Errors: " + err)); }
             if (verbose) { console.log(colors.cyan("  Results: " + results)); }
         });

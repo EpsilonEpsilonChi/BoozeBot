@@ -24,6 +24,7 @@
 
 int maxIngredients       = 7; 			// The max number of ingredients passed from Raspberry Pi in JSON object
 double timeToPourOneFlOz = 2200;    // Time it takes to pour 1 fl oz (in milliseconds)
+bool verbose = false;
 
 aJsonStream serial_stream(&Serial);
 
@@ -50,6 +51,20 @@ void setup() {
 
   pinMode(POWERRELAY, OUTPUT);
   pinMode(ACTIVITYLED, OUTPUT);
+
+  blinkActivity(200);
+  blinkActivity(200);
+  blinkActivity(200);
+  blinkActivity(0);
+  if (verbose) { Serial.println("Started"); }
+}
+
+// Blinks activity LED for short amount of time
+void blinkActivity(int waitAfter) {
+  digitalWrite(ACTIVITYLED, HIGH);
+  delay(100);
+  digitalWrite(ACTIVITYLED, LOW);
+  delay(waitAfter);
 }
 
 // Selects proper pin constant based on bottle number
@@ -91,53 +106,81 @@ int selectPin(int bottleNum) {
 // Dispenses a certain amount of liquor
 void dispenseLiquor(int amount, int bottleNum) {
   int liquorPin = selectPin(bottleNum);
+  Serial.println("Dispensing " + String(amount) + " fl oz of bottleNum " + String(bottleNum));
 
+//  blinkActivity(0);
   digitalWrite(liquorPin, PUMPON);
   delay(timeToPourOneFlOz);
   digitalWrite(liquorPin, PUMPOFF);
+//  blinkActivity(0);
 }
 
 // Processes recipe transaction JSON data passed in
 void processRecipe(aJsonObject *recipe) {
 	// Check to make sure recipe exists
 	if (!recipe) {
-		Serial.println("processRecipe() called with no recipe data");
+//		if (verbose) { Serial.println("processRecipe() called with no recipe data"); }
 		return;
 	}
 
 	// Read ingredients from JSON transaction object
   aJsonObject *recipeName = aJson.getObjectItem(recipe, "recipeUsed");
-  Serial.println("Pouring drink: " + recipeName->valuestring)
-	for (int i = 1; i <= maxIngredients; ++i) {
-		String ingredientString = "ingredient" + i;
-		aJsonObject *ingredient = aJson.getObjectItem(recipe, ingredientString);
+  if (verbose) { Serial.println("Pouring drink: " + String(recipeName->valuestring)); }
 
-		if (!ingredient) {
-			// No ingredient of that index 
-			continue;
-		} else {
-      aJsonObject *amount = aJson.getObjectItem(ingredient, "amountUsed");
-      aJsonObject *bottleNum = aJson.getObjectItem(ingredient, "liquorBottleNum"); 
+  aJsonObject *ingredient1 = aJson.getObjectItem(recipe, "ingredient1");
+  if (ingredient1) {
+    blinkActivity(2000);
+  }
 
-      // Convert string values
-      double amountFloat = (amount->valuestring).tofloat();
-      int bottleNumInt = (bottleNum->valuestring).toInt();
+  aJsonObject *ingredient2 = aJson.getObjectItem(recipe, "ingredient2");
+  if (ingredient2) {
+    blinkActivity(200);
+    blinkActivity(2000);
+  }
 
-      // Check type validity on amount
-      if (amountFloat == 0) { 
-        Serial.println("amountUsed of " + ingredient->valuestring + " not valid float or zero");
-        return;
-      }
+  aJsonObject *ingredient3 = aJson.getObjectItem(recipe, "ingredient3");
+  if (ingredient3) {
+    blinkActivity(200);
+    blinkActivity(200);
+    blinkActivity(2000);
+  }
 
-      // Check type validity on bottleNum
-      if (bottleNumInt == 0) {
-        Serial.println("liquorBottleNum of " + ingredient->valuestring + " not valid float or zero");
-        return;
-      }
-
-      dispenseLiquor(amountFloat, bottleNumInt);
-		}
-	}
+  
+//	for (int i = 1; i <= maxIngredients; ++i) {
+//		String ingredientString = "ingredient" + i;
+//    char ingredientCharArray[20];
+//    ingredientString.toCharArray(ingredientCharArray, 20);
+//		aJsonObject *ingredient = aJson.getObjectItem(recipe, ingredientCharArray);
+//
+//		if (!ingredient) {
+//			// No ingredient of that index 
+//			continue;
+//		} else {
+//      blinkActivity(200);
+//      
+//      aJsonObject *amount = aJson.getObjectItem(ingredient, "amountUsed");
+//      aJsonObject *bottleNum = aJson.getObjectItem(ingredient, "liquorBottleNum"); 
+//
+//      // Convert char array values to float/int values
+//      double amountFloat = String(amount->valuestring).toFloat();
+//      int bottleNumInt = String(bottleNum->valuestring).toInt();
+//
+//      // Check type validity on amount
+//      if (amountFloat == 0) { 
+//        if (verbose) { Serial.println("amountUsed of " + String(ingredient->valuestring) + " not valid float or zero"); }
+//        return;
+//      }
+//
+//      // Check type validity on bottleNum
+//      if (bottleNumInt == 0) {
+//        if (verbose) { Serial.println("liquorBottleNum of " + String(ingredient->valuestring) + " not valid float or zero"); }
+//        return;
+//      }
+//
+//      dispenseLiquor(amountFloat, bottleNumInt);
+//      delay(500);
+//		}
+//	}
 }
 
 void loop() {
@@ -151,6 +194,7 @@ void loop() {
     aJsonObject *recipe = aJson.parse(&serial_stream);
     processRecipe(recipe);
     aJson.deleteItem(recipe);
+    serial_stream.flush();
   }
 
   // ********* SEND RESPONSES IF SUCCESSFUL *********
