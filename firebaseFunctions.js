@@ -94,7 +94,7 @@ function addBottle() {
             proof: proofField.val(),
             price: priceField.val(),
             amountRemaining: sizeField.val(),
-            bottleLoc: locField.val(),
+            bottleLoc: parseInt(locField.val(), 10),
             costPerFlOz: (conversionRatio / sizeField.val()) * priceField.val()
           };
           bottleToAdd[typeField.val()] = bottleData;
@@ -241,6 +241,9 @@ function pourDrink() {
         userPouringDrinkField.val("Username does not exist");
         return;
       } 
+
+      // Add ingredient count to transaction
+      curTransaction.ingredientCount = ingredientCounter;
 
       // Add transaction to user
       transactionToAdd = {};
