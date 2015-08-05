@@ -14,7 +14,7 @@ var serialPort = new SerialPort.SerialPort("/dev/tty.usbmodem1421", {
 });
 
 serialPort.on("open", function() {
-    console.log("Serial port open");
+    console.log(colors.blue.bgWhite("Serial port open"));
 
     // Waiting for new drinks sitting in queue and pours them
     var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
@@ -37,10 +37,11 @@ serialPort.on("open", function() {
         serialPort.write(dataToWrite, function(err, results) {
             if (err != null) { console.log(colors.red("  Write errors: " + err)); }
 
-            // Listen for data from Arduino
+            // Listen for response from Arduino
             serialPort.on('data', function(responseData) {
                 if (verbose) { console.log('  Response packet: ' + responseData); }
 
+                // Close and reopen serial port around parsing
                 serialPort.close(function(closeErr) {
                     if (closeErr != null) { console.log(colors.red("  Port close error: " + closeErr)); }
 
@@ -49,6 +50,7 @@ serialPort.on("open", function() {
                         if (openErr != null) { console.log(colors.red("  Port reopen error: " + openErr)); }
                     });
 
+                    // Check for success or failure
                     if (responseObj["response"] == 1) {
                         console.log(colors.yellow("  Drink made successfully."));
                         resolve();
