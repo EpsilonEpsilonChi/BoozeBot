@@ -1,6 +1,20 @@
 # BoozeBot
 Code for our house bartending robot, BoozeBot (work in progress)
 
+## Required Packages
+ - [node-serialport](https://github.com/voodootikigod/node-serialport) (install with npm)
+ - [colors.js](https://github.com/marak/colors.js/) (install with npm)
+ - [Firebase](https://github.com/firebase) (install with npm)
+ - [Firebase Queue](https://github.com/firebase/firebase-queue) (install with npm)
+ - [aJson](https://github.com/interactive-matter/aJson) (import zip file in repo to Arduino IDE before programming)
+
+## The Files
+ - **aJson.zip**: zip file of aJson library (for importing into Arduino IDE)
+ - **arduino/arduino.ino**: code to be programmed to the BoozeBot Arduino (Uno) for controlling pumps
+ - **firebaseFunctions.js**: file with Javascript functions used in test.html (to manipulate Firebase)
+ - **raspPi.js**: code to run on Raspberry Pi to communicate between Firebase and Arduino
+ - **test.html**: site used for testing functionality
+
 ## Parts List
 | Part | Cost | Quantity | Total |
 |------|------|------|------|
