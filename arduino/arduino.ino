@@ -27,6 +27,7 @@ int maxIngredients       = 10;      // The max number of ingredients passed from
 double timeToPourOneFlOz = 1000;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 int uniqueID = 0;
+int lastPrint = 0;
 aJsonStream serial_stream(&Serial);
 
 // ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
@@ -213,9 +214,11 @@ aJsonObject *createResponseMessage(int responseNum) {
 }
 
 void loop() {
-  while (serial_stream.available()) {
+  if (serial_stream.available()) {
     serial_stream.skip();
+  }
 
+  if (serial_stream.available()) {
     // Parse input
     aJsonObject *recipe = aJson.parse(&serial_stream);
     int returnVal = processRecipe(recipe);
@@ -226,7 +229,6 @@ void loop() {
     aJsonObject *response = createResponseMessage(returnVal);
     aJson.print(response, &serial_stream);
     Serial.println();
-//    serial_stream.flush();
     aJson.deleteItem(response);
   }
 }

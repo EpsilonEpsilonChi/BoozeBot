@@ -20,20 +20,6 @@ serialPort.on("open", function() {
     var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
         console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
 
-        // Listen for data from Arduino
-        serialPort.on('data', function(responseData) {
-            if (verbose) { console.log('  Response packet: ' + responseData); }
-
-            var responseObj = JSON.parse(responseData);
-            if (responseObj["response"] == 1) {
-                console.log(colors.yellow("  Drink made successfully."));
-                resolve();
-            } else {
-                console.log(colors.red("  Error making drink: " + responseObj["error"]));
-                reject(responseObj["error"]);
-            }
-        });
-
         // Compress recipe into smaller JSON object
         var packet = {};
         for (var i = 1; i <= parseInt(data["ingredientCount"], 10); i++) {
@@ -49,9 +35,29 @@ serialPort.on("open", function() {
         var dataToWrite = JSON.stringify(packet);
         if (verbose) { console.log(colors.white("  Recipe data packet: " + dataToWrite)); }
         serialPort.write(dataToWrite, function(err, results) {
-            if (verbose && (err != null)) { 
-                console.log(colors.cyan("  Write errors: " + err));
-            }
+            if (err != null) { console.log(colors.red("  Write errors: " + err)); }
+
+            // Listen for data from Arduino
+            serialPort.on('data', function(responseData) {
+                if (verbose) { console.log('  Response packet: ' + responseData); }
+
+                serialPort.close(function(closeErr) {
+                    if (closeErr != null) { console.log(colors.red("  Port close error: " + closeErr)); }
+
+                    var responseObj = JSON.parse(responseData);
+                    serialPort.open(function(openErr) {
+                        if (openErr != null) { console.log(colors.red("  Port reopen error: " + openErr)); }
+                    });
+
+                    if (responseObj["response"] == 1) {
+                        console.log(colors.yellow("  Drink made successfully."));
+                        resolve();
+                    } else {
+                        console.log(colors.red("  Error making drink: " + responseObj["error"]));
+                        reject(responseObj["error"]);
+                    }
+                });
+            });
         });
     });
 });
