@@ -26,6 +26,7 @@
 int maxIngredients       = 10;      // The max number of ingredients passed from Raspberry Pi in JSON object
 double timeToPourOneFlOz = 1000;    // Time it takes to pour 1 fl oz (in milliseconds)
 
+int uniqueID = 0;
 aJsonStream serial_stream(&Serial);
 
 // ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
@@ -190,7 +191,9 @@ aJsonObject *createResponseMessage(int responseNum) {
   // Create JSON object for response packet
   aJsonObject *packet = aJson.createObject();
   aJsonObject *responseItem = aJson.createItem(response);
+  aJsonObject *uniqueIDItem = aJson.createItem(uniqueID);
   aJson.addItemToObject(packet, "response", responseItem);
+  aJson.addItemToObject(packet, "uniqueID", uniqueIDItem);
 
   if (response == 1) {
     aJsonObject *nullItem = aJson.createNull();
@@ -198,6 +201,12 @@ aJsonObject *createResponseMessage(int responseNum) {
   } else {
     aJsonObject *errorItem = aJson.createItem(message);
     aJson.addItemToObject(packet, "error", errorItem);
+  }
+
+  if (uniqueID == 99) {
+    uniqueID = 0;
+  } else {
+    uniqueID++;
   }
 
   return packet;
@@ -217,6 +226,7 @@ void loop() {
     aJsonObject *response = createResponseMessage(returnVal);
     aJson.print(response, &serial_stream);
     Serial.println();
+//    serial_stream.flush();
     aJson.deleteItem(response);
   }
 }

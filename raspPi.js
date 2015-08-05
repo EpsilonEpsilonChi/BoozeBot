@@ -6,6 +6,8 @@ var Queue      = require('firebase-queue');
 // Configuration variables
 var verbose = true;
 
+var queueRef = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
+
 var serialPort = new SerialPort.SerialPort("/dev/tty.usbmodem1421", {
     baudrate: 9600,
     parser: SerialPort.parsers.readline("\n")
@@ -15,9 +17,22 @@ serialPort.on("open", function() {
     console.log("Serial port open");
 
     // Waiting for new drinks sitting in queue and pours them
-    var queueRef = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
     var queue = new Queue(queueRef, function(data, progress, resolve, reject) {
         console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
+
+        // Listen for data from Arduino
+        serialPort.on('data', function(responseData) {
+            if (verbose) { console.log('  Response packet: ' + responseData); }
+
+            var responseObj = JSON.parse(responseData);
+            if (responseObj["response"] == 1) {
+                console.log(colors.yellow("  Drink made successfully."));
+                resolve();
+            } else {
+                console.log(colors.red("  Error making drink: " + responseObj["error"]));
+                reject(responseObj["error"]);
+            }
+        });
 
         // Compress recipe into smaller JSON object
         var packet = {};
@@ -29,24 +44,14 @@ serialPort.on("open", function() {
             }
         }
 
-        // Listen for data from Arduino
-        serialPort.on('data', function(data) {
-            console.log('  Response packet: ' + data);
-        });
-
         // Send compressed recipe to Arduino
-        if (verbose) { console.log(colors.yellow("  Sending recipe data to Arduino...")); }
+        console.log(colors.yellow("  Sending recipe data to Arduino..."));
         var dataToWrite = JSON.stringify(packet);
         if (verbose) { console.log(colors.white("  Recipe data packet: " + dataToWrite)); }
         serialPort.write(dataToWrite, function(err, results) {
-            if (verbose) { console.log(colors.cyan("  Errors: " + err)); }
-            if (verbose) { console.log(colors.cyan("  Results: " + results)); }
+            if (verbose && (err != null)) { 
+                console.log(colors.cyan("  Write errors: " + err));
+            }
         });
-
-        
-
-        // **** wait until arduino has completed to pull off queue again
-
-        resolve();
     });
 });
