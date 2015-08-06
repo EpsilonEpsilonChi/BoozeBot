@@ -9,6 +9,24 @@ var bottlesRange = [0, 13];
 
 // ******* MAKE ALL INPUTS CASE INSENSITIVE
 
+function generateTimestamp() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
+  var hh = today.getHours();
+  var minmin = today.getMinutes();
+  var ss = today.getSeconds();
+
+  if (dd < 10) { dd = '0' + dd; }
+  if (mm < 10) { mm = '0' + mm; }
+  if (hh < 10) { hh = '0' + hh; }
+  if (minmin < 10) { minmin = '0' + minmin; }
+  if (ss < 10) { ss = '0' + ss; }
+   
+  return dd + "-" + mm + "-" + yyyy + " " + hh + ":" + minmin + ":" + ss;
+}
+
 function addUser() {
   var usernameField = $('#username');
   var fullnameField  = $('#fullname');
@@ -188,8 +206,14 @@ function pourDrink() {
   var ingredientCounter = 0;
 
   // Get drink recipe
-  drinkToPourRef = recipesRef.child(drinkToPourField.val());
-  drinkToPourRef.once("value", function(recipeSnapshot) {
+  recipesRef.child(drinkToPourField.val()).once("value", function(recipeSnapshot) {
+    // Check that recipe exists in Bottles
+    var recipeExists = (recipeSnapshot.val() !== null);     
+    if (!recipeExists) {
+      drinkToPourField.val("Recipe does not exist");
+      return;
+    } 
+
     // Create transaction and store recipe used in transaction
     var curTransaction = {
         recipeUsed: recipeSnapshot.key(),
@@ -204,8 +228,8 @@ function pourDrink() {
       // Get prices for ingredients based on current bottle prices and amount
       bottlesRef.child(ingredientSnapshot.val().type).once("value", function(bottleSnapshot) {
         // Check that liquor exists in Bottles
-        var exists = (bottleSnapshot.val() !== null);     
-        if (!exists) {
+        var bottleExists = (bottleSnapshot.val() !== null);     
+        if (!bottleExists) {
           drinkToPourField.val("No bottles of type " + ingredientSnapshot.val().type);
           return;
         } 
@@ -236,14 +260,17 @@ function pourDrink() {
 
     usersRef.child(userPouringDrinkField.val()).once("value", function(userSnapshot) {
       // Check if username exists
-      var exists = (userSnapshot.val() !== null);     
-      if (!exists) {
+      var userExists = (userSnapshot.val() !== null);     
+      if (!userExists) {
         userPouringDrinkField.val("Username does not exist");
         return;
       } 
 
       // Add ingredient count to transaction
       curTransaction.ingredientCount = ingredientCounter;
+
+      // Add timestamp to transaction
+      curTransaction.timestamp = generateTimestamp();
 
       // Add transaction to user
       transactionToAdd = {};
