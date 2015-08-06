@@ -26,8 +26,10 @@ Code for our house bartending robot, BoozeBot (work in progress)
 
 ## Flow of Drink Info
 1. Website or app sends drink request to Firebase (transaction under user, as well as queue)
-2. Raspberry Pi running server that pulls drink requests from queue
-3. Raspberry Pi sends commands to Arduino to pour drink
+2. Raspberry Pi running server that pulls drink request from queue
+3. Raspberry Pi sends drink recipe to Arduino to pour
+4. Arduino pours drink and then sends completion response back to Raspberry Pi
+5. Raspberry Pi waits until response is received, then pulls another drink from the queue
 
 ## To-Do
 1. Obtain one diaphragm pump and test it to make sure it is what we are looking for
