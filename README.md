@@ -42,3 +42,4 @@ Code for our house bartending robot, BoozeBot (work in progress)
 - Use one of the relays to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
 - Useful for sending recipes to Arduino from RaspPi: https://github.com/interactive-matter/aJson
 - Possibly helpful: https://github.com/ytham/barmixvah
+- **IDEA:**: make raspberry pi automatically archive a transaction history every day
