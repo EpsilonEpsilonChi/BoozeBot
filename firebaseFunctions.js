@@ -9,6 +9,7 @@ var bottlesRange = [0, 13];
 
 // ******* MAKE ALL INPUTS CASE INSENSITIVE
 
+// Generates a timestamp for transactions
 function generateTimestamp() {
   var today = new Date();
   var dd = today.getDate();

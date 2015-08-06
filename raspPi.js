@@ -1,7 +1,7 @@
 var SerialPort = require("serialport");
-var colors     = require('colors/safe');
-var Queue      = require('firebase-queue');
-    Firebase   = require('firebase');
+var colors     = require("colors/safe");
+var Queue      = require("firebase-queue");
+    Firebase   = require("firebase");
 
 // Configuration variables
 var verbose = true;
