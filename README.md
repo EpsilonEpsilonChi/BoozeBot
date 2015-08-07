@@ -2,10 +2,12 @@
 Code for our house bartending robot, BoozeBot (work in progress)
 
 ## Required Packages
- - [node-serialport](https://github.com/voodootikigod/node-serialport) (install with npm)
- - [colors.js](https://github.com/marak/colors.js/) (install with npm)
- - [Firebase](https://github.com/firebase) (install with npm)
- - [Firebase Queue](https://github.com/firebase/firebase-queue) (install with npm)
+ - [serialport](https://github.com/voodootikigod/node-serialport) (install with npm)
+ - [colors](https://github.com/marak/colors.js/) (install with npm)
+ - [firebase](https://github.com/firebase) (install with npm)
+ - [firebase-queue](https://github.com/firebase/firebase-queue) (install with npm)
+ - [mkdirp](https://github.com/substack/node-mkdirp) (install with npm)
+ - [jsonfile](https://github.com/jprichardson/node-jsonfile) (install with npm)
  - [aJson](https://github.com/interactive-matter/aJson) (import zip file in repo to Arduino IDE before programming)
 
 ## The Files
