@@ -74,6 +74,7 @@ for user in os.listdir(mostRecentPath):
 			userData = json.load(userJSONFile)
 
 		# Loop through each transaction and add to worksheet
+		if verbose: print "  Writing data for " + user[0:(len(user) - 5)] + "..."
 		counter = 2
 		for key, value in userData.iteritems():
 			timestamp = datetime.datetime.strptime(value["timestamp"], "%m-%d-%Y %H:%M:%S")

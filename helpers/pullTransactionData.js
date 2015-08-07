@@ -31,7 +31,7 @@ mkdirp(folderName, function(dirErr) {
 	// Check for folder creation errors
 	if (dirErr) {
 		console.log(colors.red("Error creating folder " + folderName + ": " + dirErr));
-		return;
+		process.exit();
 	}
 	console.log(colors.green("Created new transaction dump: " + folderName));
 
@@ -40,10 +40,12 @@ mkdirp(folderName, function(dirErr) {
 		// Ensure users reference exists   
 	    if (snapshot.val() === null) { 
 	    	console.log(colors.red("Users reference not valid")); 
-	    	return;
+	    	process.exit();
 	    } 
 
     	// Loop through all users
+    	var counter = 1;
+    	var numUsers = snapshot.numChildren();
     	snapshot.forEach(function(userSnapshot) {
 			var filename = userSnapshot.key() + ".json";
 			var filepath = "./" + folderName + '/' + filename;
@@ -58,7 +60,10 @@ mkdirp(folderName, function(dirErr) {
 		    				// Send notification of error somewhere?
 		    			} else {
 		    				console.log(colors.green(filename + " data written successfully"));
-		    				return;
+		    				if (counter === numUsers) {
+		    					process.exit();
+		    				}
+		    				counter = counter + 1;
 		    			}
 		    		});
 			    }
@@ -66,5 +71,3 @@ mkdirp(folderName, function(dirErr) {
 		});
 	});
 });
-
-// Not sure why this script doesn't return once it finishes...
