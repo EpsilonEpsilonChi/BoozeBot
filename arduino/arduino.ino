@@ -24,7 +24,7 @@
 
 // Config variables
 int maxIngredients       = 10;      // The max number of ingredients passed from Raspberry Pi in JSON object
-double timeToPourOneFlOz = 1000;    // Time it takes to pour 1 fl oz (in milliseconds)
+double timeToPourOneFlOz = 450;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 int uniqueID = 0;
 int lastPrint = 0;
