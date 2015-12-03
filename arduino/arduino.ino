@@ -16,11 +16,12 @@
 #define BOTTLERELAY13 15
 #define BOTTLERELAY14 16
 #define BOTTLERELAY15 17
-#define POWERRELAY 18
+#define BOTTLERELAY16 18
+#define POWERSUPPLY 19
 #define ACTIVITYLED 13
 
-#define PUMPON 1
-#define PUMPOFF 2
+#define PUMPON 0
+#define PUMPOFF 1
 
 // Config variables
 int maxIngredients       = 10;      // The max number of ingredients passed from Raspberry Pi in JSON object
@@ -60,10 +61,12 @@ void setup() {
   pinMode(BOTTLERELAY13, OUTPUT);
   pinMode(BOTTLERELAY14, OUTPUT);
   pinMode(BOTTLERELAY15, OUTPUT);
+  pinMode(BOTTLERELAY16, OUTPUT);
 
-  pinMode(POWERRELAY, OUTPUT);
+  pinMode(POWERSUPPLY, OUTPUT);   // ADD LOGIC TO TOGGLE POWERSUPPLY
+  digitalWrite(POWER, HIGH);
+
   pinMode(ACTIVITYLED, OUTPUT);
-
   blinkActivity(50, 4);
 
   serial_stream.flush();
@@ -102,6 +105,8 @@ int selectPin(int bottleNum) {
       return BOTTLERELAY14;
     case 15:
       return BOTTLERELAY15;
+    case 16:
+      return BOTTLERELAY16;
   }
 }
 
