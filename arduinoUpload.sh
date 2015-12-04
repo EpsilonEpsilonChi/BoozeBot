@@ -18,7 +18,8 @@ then
 	echo_bright_green "Compiling and uploading arduino/arduino.ino"
 	$APP_PATH --upload $SKETCH_PATH
 	echo_bright_green "Uploaded"
-elif [ "$arch" == "armv6l"]
+elif [ "$arch" == "armv6l" ]
+then
     echo "Running on Raspberry Pi"
 
     APP_PATH="/usr/bin/arduino"
