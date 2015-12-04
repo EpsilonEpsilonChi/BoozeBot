@@ -24,7 +24,7 @@
 #define PUMPOFF 1
 
 // Config variables
-int maxIngredients       = 10;      // The max number of ingredients passed from Raspberry Pi in JSON object
+int maxIngredients       = 10;     // Max num of ingredients passed from RPi in JSON object
 double timeToPourOneFlOz = 100;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 int uniqueID = 0;
@@ -41,35 +41,6 @@ void blinkActivity(int waitAfter, int x) {
     digitalWrite(ACTIVITYLED, LOW);
     delay(waitAfter);
   }
-}
-
-void setup() {
-  Serial.begin(9600);
-
-  pinMode(BOTTLERELAY1, OUTPUT);
-  pinMode(BOTTLERELAY2, OUTPUT);
-  pinMode(BOTTLERELAY3, OUTPUT);
-  pinMode(BOTTLERELAY4, OUTPUT);
-  pinMode(BOTTLERELAY5, OUTPUT);
-  pinMode(BOTTLERELAY6, OUTPUT);
-  pinMode(BOTTLERELAY7, OUTPUT);
-  pinMode(BOTTLERELAY8, OUTPUT);
-  pinMode(BOTTLERELAY9, OUTPUT);
-  pinMode(BOTTLERELAY10, OUTPUT);
-  pinMode(BOTTLERELAY11, OUTPUT);
-  pinMode(BOTTLERELAY12, OUTPUT);
-  pinMode(BOTTLERELAY13, OUTPUT);
-  pinMode(BOTTLERELAY14, OUTPUT);
-  pinMode(BOTTLERELAY15, OUTPUT);
-  pinMode(BOTTLERELAY16, OUTPUT);
-
-  pinMode(POWERSUPPLY, OUTPUT);   // ADD LOGIC TO TOGGLE POWERSUPPLY
-  digitalWrite(POWER, HIGH);
-
-  pinMode(ACTIVITYLED, OUTPUT);
-  blinkActivity(50, 4);
-
-  serial_stream.flush();
 }
 
 // Selects proper pin constant based on bottle number
@@ -128,6 +99,10 @@ int processRecipe(aJsonObject *recipe) {
     return 1;
   }
 
+  // Start up power supply
+  digitalWrite(POWERSUPPLY, HIGH);
+  delay(500);
+
   // Read ingredients from JSON object
   for (int i = 1; i <= maxIngredients; i++) {
     char charNum[10];
@@ -170,6 +145,9 @@ int processRecipe(aJsonObject *recipe) {
       }
     }
   }
+
+  // Turn off power supply
+  digitalWrite(POWERSUPPLY, LOW);
 
   return 0;
 }
@@ -216,6 +194,54 @@ aJsonObject *createResponseMessage(int responseNum) {
   }
 
   return packet;
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  // Set bottle relay mode and state
+  pinMode(BOTTLERELAY1, OUTPUT);
+  pinMode(BOTTLERELAY2, OUTPUT);
+  pinMode(BOTTLERELAY3, OUTPUT);
+  pinMode(BOTTLERELAY4, OUTPUT);
+  pinMode(BOTTLERELAY5, OUTPUT);
+  pinMode(BOTTLERELAY6, OUTPUT);
+  pinMode(BOTTLERELAY7, OUTPUT);
+  pinMode(BOTTLERELAY8, OUTPUT);
+  pinMode(BOTTLERELAY9, OUTPUT);
+  pinMode(BOTTLERELAY10, OUTPUT);
+  pinMode(BOTTLERELAY11, OUTPUT);
+  pinMode(BOTTLERELAY12, OUTPUT);
+  pinMode(BOTTLERELAY13, OUTPUT);
+  pinMode(BOTTLERELAY14, OUTPUT);
+  pinMode(BOTTLERELAY15, OUTPUT);
+  pinMode(BOTTLERELAY16, OUTPUT);
+  digitalWrite(BOTTLERELAY1, PUMPOFF);
+  digitalWrite(BOTTLERELAY2, PUMPOFF);
+  digitalWrite(BOTTLERELAY3, PUMPOFF);
+  digitalWrite(BOTTLERELAY4, PUMPOFF);
+  digitalWrite(BOTTLERELAY5, PUMPOFF);
+  digitalWrite(BOTTLERELAY6, PUMPOFF);
+  digitalWrite(BOTTLERELAY7, PUMPOFF);
+  digitalWrite(BOTTLERELAY8, PUMPOFF);
+  digitalWrite(BOTTLERELAY9, PUMPOFF);
+  digitalWrite(BOTTLERELAY10, PUMPOFF);
+  digitalWrite(BOTTLERELAY11, PUMPOFF);
+  digitalWrite(BOTTLERELAY12, PUMPOFF);
+  digitalWrite(BOTTLERELAY13, PUMPOFF);
+  digitalWrite(BOTTLERELAY14, PUMPOFF);
+  digitalWrite(BOTTLERELAY15, PUMPOFF);
+  digitalWrite(BOTTLERELAY16, PUMPOFF);
+
+  // Set power supply transistor mode and state
+  pinMode(POWERSUPPLY, OUTPUT);
+  digitalWrite(POWERSUPPLY, LOW);
+
+  // Set activity LED mode and state, startup blink
+  pinMode(ACTIVITYLED, OUTPUT);
+  blinkActivity(50, 4);
+
+  serial_stream.flush();
 }
 
 void loop() {
