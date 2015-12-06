@@ -1,3 +1,5 @@
+// ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
+
 #include <aJSON.h>
 
 // Pin definitions
@@ -20,6 +22,7 @@
 #define POWERSUPPLY 19
 #define ACTIVITYLED 13
 
+// Allows default relay state to be changed
 #define PUMPON 0
 #define PUMPOFF 1
 
@@ -27,11 +30,10 @@
 int maxIngredients       = 10;     // Max num of ingredients passed from RPi in JSON object
 double timeToPourOneFlOz = 100;    // Time it takes to pour 1 fl oz (in milliseconds)
 
+// Globals
 int uniqueID = 0;
 int lastPrint = 0;
 aJsonStream serial_stream(&Serial);
-
-// ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
 
 // Blinks activity LED for short amount of time, x times
 void blinkActivity(int waitAfter, int x) {
