@@ -28,7 +28,7 @@
 
 // Config variables
 int maxIngredients       = 10;     // Max num of ingredients passed from RPi in JSON object
-double timeToPourOneFlOz = 100;    // Time it takes to pour 1 fl oz (in milliseconds)
+double timeToPourOneFlOz = 500;    // Time it takes to pour 1 fl oz (in milliseconds)
 
 // Globals
 int uniqueID = 0;
