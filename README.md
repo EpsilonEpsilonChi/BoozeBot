@@ -11,12 +11,12 @@ Code for our house bartending robot, BoozeBot (work in progress)
  - [aJson](https://github.com/interactive-matter/aJson) (import zip file in repo to Arduino IDE before programming)
 
 ## The Files
- - **aJson.zip**: zip file of aJson library (for importing into Arduino IDE)
+ - **arduino/aJson.zip**: zip file of aJson library (for importing into Arduino IDE)
  - **arduino/arduino.ino**: code to be programmed to the BoozeBot Arduino (Uno) for controlling pumps
- - **firebaseFunctions.js**: file with Javascript functions used in test.html (to manipulate Firebase)
  - **pullTransactionLogs.sh**: pulls transaction info from each user and puts it into an Excel document for analysis
  - **raspPi.js**: code to run on Raspberry Pi to communicate between Firebase and Arduino
- - **test.html**: site used for testing functionality
+ - **testing/sitetest.html**: site used for testing functionality
+ - **testingSite/firebaseFunctions.js**: file with Javascript functions used in test.html (to manipulate Firebase)
 
 <!--## Parts List-->
 <!--| Part | Cost | Quantity | Total |-->
@@ -32,12 +32,12 @@ Code for our house bartending robot, BoozeBot (work in progress)
 5. Raspberry Pi waits until response is received, then pulls another drink from the queue
 
 ## To-Do
-1. Write iOS app
-2. Start constructing BoozeBot shell
-3. Wire circuits
+1. Write iOS/Android apps
+2. Geting NPM to stop being so goddamn annoying on the Raspberry Pi so everything will work
+3. Figure out how to compile/upload Arduino sketches on the Raspberry Pi
 
 ### Notes
-- Use one of the relays to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
+- Use a transistor to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
 - Useful for sending recipes to Arduino from RaspPi: https://github.com/interactive-matter/aJson
 - Possibly helpful: https://github.com/ytham/barmixvah
 - **IDEA:**: make raspberry pi automatically archive a transaction history every day

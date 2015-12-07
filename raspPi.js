@@ -4,8 +4,9 @@ var Queue      = require("firebase-queue");
     Firebase   = require("firebase");
 
 // Configuration variables
-var verbose = true;
-var queueRef = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
+var verbose    = true;
+var serialBaud = 9600;
+var queueRef   = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
 
 // Find and open serial port to Arduino
 var serialPort;
@@ -16,7 +17,7 @@ SerialPort.list(function(err, ports) {
         serialComName = port.comName;
         serialComName = serialComName.replace("cu", "tty");
         serialPort = new SerialPort.SerialPort(serialComName, {
-            baudrate: 9600,
+            baudrate: serialBaud,
             parser: SerialPort.parsers.readline("\n")
         });
 
