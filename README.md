@@ -34,7 +34,6 @@ Code for our house bartending robot, BoozeBot (work in progress)
 ## To-Do
 1. Write iOS/Android apps
 2. Geting NPM to stop being so goddamn annoying on the Raspberry Pi so everything will work
-3. Figure out how to compile/upload Arduino sketches on the Raspberry Pi
 
 ### Notes
 - Use a transistor to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
