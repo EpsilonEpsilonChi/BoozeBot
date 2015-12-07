@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# NOT YET COMPLETE
-# Runs commands to setup environment once the repo has been pulled
+# Runs commands to setup environment once the repo has been pulled on Raspberry Pi
 
 function echo_bright_green {
     echo -e "\033[1;32m"$@"\033[m"
@@ -22,4 +21,6 @@ sudo python setup.py install
 echo_bright_green "Installing picocom to make ino's serial terminal functional..."
 sudo apt-get install picocom
 cd ..
+
+
 
