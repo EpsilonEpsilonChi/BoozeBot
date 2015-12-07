@@ -1,7 +1,22 @@
 {
     "name": "boozebot",
-    "description": "BoozeBot is a mixed drink dispenser alcoholics in EEX",
+    "description": "BoozeBot is a mixed drink dispenser for the alcoholics in EEX",
     "version": "0.0.1",
+    "author": "Connor Mason <connor@conmason.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/EpsilonEpsilonChi/BoozeBot.git"
+    },
+    "keywords": [
+        "alcohol",
+        "booze",
+        "boozebot",
+        "eex",
+        "epsilon",
+        "chi",
+        "robot",
+        "bartender"
+    ],
     "dependencies": {
         "firebase": "*",
         "firebase-queue": "*",
