@@ -26,7 +26,7 @@ then
 	echo "Running on ARM (Raspberry Pi)"
 
 	cd arduinoCode
-	ino build
-	ino upload
+	sudo ino build
+	sudo ino upload
 	cd ..
 fi
