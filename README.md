@@ -15,7 +15,7 @@ Code for our house bartending robot, BoozeBot (work in progress)
  - **arduino/arduino.ino**: code to be programmed to the BoozeBot Arduino (Uno) for controlling pumps
  - **pullTransactionLogs.sh**: pulls transaction info from each user and puts it into an Excel document for analysis
  - **raspPi.js**: code to run on Raspberry Pi to communicate between Firebase and Arduino
- - **testing/sitetest.html**: site used for testing functionality
+ - **testingSite/test.html**: site used for testing functionality
  - **testingSite/firebaseFunctions.js**: file with Javascript functions used in test.html (to manipulate Firebase)
 
 <!--## Parts List-->
