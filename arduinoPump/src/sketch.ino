@@ -14,13 +14,11 @@
 #define BOTTLERELAY9 10
 #define BOTTLERELAY10 11
 #define BOTTLERELAY11 12
-#define BOTTLERELAY12 14
-#define BOTTLERELAY13 15
-#define BOTTLERELAY14 16
-#define BOTTLERELAY15 17
-#define BOTTLERELAY16 18
-#define POWERSUPPLY 19
-#define ACTIVITYLED 13
+#define BOTTLERELAY12 13
+#define BOTTLERELAY13 14
+#define BOTTLERELAY14 15
+#define BOTTLERELAY15 16
+#define BOTTLERELAY16 17
 
 // Allows default relay state to be changed
 #define PUMPON 0
@@ -34,16 +32,6 @@ double timeToPourOneFlOz = 500;    // Time it takes to pour 1 fl oz (in millisec
 int uniqueID = 0;
 int lastPrint = 0;
 aJsonStream serial_stream(&Serial);
-
-// Blinks activity LED for short amount of time, x times
-void blinkActivity(int waitAfter, int x) {
-  for (int i = 0; i < x; i++) {
-    digitalWrite(ACTIVITYLED, HIGH);
-    delay(100);
-    digitalWrite(ACTIVITYLED, LOW);
-    delay(waitAfter);
-  }
-}
 
 // Selects proper pin constant based on bottle number
 int selectPin(int bottleNum) {
@@ -87,11 +75,9 @@ int selectPin(int bottleNum) {
 void dispenseLiquor(double amount, int bottleNum) {
   int liquorPin = selectPin(bottleNum);
 
-  digitalWrite(ACTIVITYLED, HIGH);
   digitalWrite(liquorPin, PUMPON);
   delay(timeToPourOneFlOz * amount);
   digitalWrite(liquorPin, PUMPOFF);
-  digitalWrite(ACTIVITYLED, LOW);
 }
 
 // Processes recipe transaction JSON data passed in
@@ -100,10 +86,6 @@ int processRecipe(aJsonObject *recipe) {
   if (!recipe) {
     return 1;
   }
-
-  // Start up power supply
-  digitalWrite(POWERSUPPLY, HIGH);
-  delay(500);
 
   // Read ingredients from JSON object
   for (int i = 1; i <= maxIngredients; i++) {
@@ -147,10 +129,7 @@ int processRecipe(aJsonObject *recipe) {
       }
     }
   }
-
-  // Turn off power supply
-  digitalWrite(POWERSUPPLY, LOW);
-
+  
   return 0;
 }
 
@@ -234,14 +213,6 @@ void setup() {
   digitalWrite(BOTTLERELAY14, PUMPOFF);
   digitalWrite(BOTTLERELAY15, PUMPOFF);
   digitalWrite(BOTTLERELAY16, PUMPOFF);
-
-  // Set power supply transistor mode and state
-  pinMode(POWERSUPPLY, OUTPUT);
-  digitalWrite(POWERSUPPLY, LOW);
-
-  // Set activity LED mode and state, startup blink
-  pinMode(ACTIVITYLED, OUTPUT);
-  blinkActivity(50, 4);
 
   serial_stream.flush();
 }
