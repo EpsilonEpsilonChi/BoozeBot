@@ -178,7 +178,7 @@ aJsonObject *createResponseMessage(int responseNum) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // Set bottle relay mode and state
   pinMode(BOTTLERELAY1, OUTPUT);

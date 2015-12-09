@@ -5,7 +5,7 @@ var Queue      = require("firebase-queue");
 
 // Configuration variables
 var verbose    = true;
-var serialBaud = 9600;
+var serialBaud = 115200;
 var queueRef   = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
 
 // Find and open serial port to Arduino
