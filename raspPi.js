@@ -68,9 +68,9 @@ var serialPortOpenCallback = function() {
 };
 
 // Find and open serial port to Arduino
+var serialPort;
+var serialComName = "";
 SerialPort.list(function(err, ports) {
-    var serialPort;
-    var serialComName = "";
     ports.forEach(function(port) {
         if (port.manufacturer == "Arduino (www.arduino.cc)") {
             serialComName = port.comName;

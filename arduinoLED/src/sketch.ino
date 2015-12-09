@@ -29,11 +29,20 @@ void twoLights() {
   }
 }
 
+void testBlink() {
+  Tlc.set(2, 4095);
+  Tlc.update();
+  delay(300);
+  Tlc.set(2, 0);
+  Tlc.update();
+}
+
 void setLED(int ledNum, int red, int green, int blue) {
   int firstPinNum = (ledNum - 1) * 3;
   Tlc.set(firstPinNum, red);
   Tlc.set(firstPinNum + 1, green);
   Tlc.set(firstPinNum + 2, blue);
+  Tlc.update();
 }
 
 void runProgram(int program) {
@@ -61,6 +70,7 @@ int processCommand(aJsonObject *command) {
   // Check command type (single LED assignment or program)
   aJsonObject *cmdType = aJson.getObjectItem(command, "cmdType");
   if (cmdType && (cmdType->valueint == 0)) {  // ASSUMES VALUE IS INT, MIGHT NEED CHECKING
+    // Set LED with given values
     aJsonObject *led = aJson.getObjectItem(command, "led");
 
     if (led) {
@@ -79,52 +89,9 @@ int processCommand(aJsonObject *command) {
   return 0;
 }
 
-// Creates response message to send back to Raspberry Pi
-// Format: { "response": <1 for success, 0 for failure>, "error": <error message, if any> } 
-aJsonObject *createResponseMessage(int responseNum) {
-  // int response = 0;
-  // char *message;
-  // switch(responseNum) {
-  //   case 0:     // Success
-  //     response = 1;
-  //     break;
-  //   case 1: 
-  //     message = "No command data\n";
-  //     break;
-  //   case 2:
-  //     message = "Invalid amount type\n";
-  //     break;
-  //   case 3:
-  //     message = "Invalid bottleNum type\n";
-  //     break;
-  // }
-
-  // // Create JSON object for response packet
-  // aJsonObject *packet = aJson.createObject();
-  // aJsonObject *responseItem = aJson.createItem(response);
-  // aJsonObject *uniqueIDItem = aJson.createItem(uniqueID);
-  // aJson.addItemToObject(packet, "response", responseItem);
-  // aJson.addItemToObject(packet, "uniqueID", uniqueIDItem);
-
-  // if (response == 1) {
-  //   aJsonObject *nullItem = aJson.createNull();
-  //   aJson.addItemToObject(packet, "error", nullItem);
-  // } else {
-  //   aJsonObject *errorItem = aJson.createItem(message);
-  //   aJson.addItemToObject(packet, "error", errorItem);
-  // }
-
-  // if (uniqueID == 99) {
-  //   uniqueID = 0;
-  // } else {
-  //   uniqueID++;
-  // }
-
-  // return packet;
-}
-
 void setup() {
   Tlc.init();
+  delay(200);
   Serial.begin(115200);
 
   serial_stream.flush();
@@ -141,11 +108,5 @@ void loop() {
     int returnVal = processCommand(command);
     aJson.deleteItem(command);
     serial_stream.flush();
-
-    // Send response
-    aJsonObject *response = createResponseMessage(returnVal);
-    aJson.print(response, &serial_stream);
-    Serial.println();
-    aJson.deleteItem(response);
   }
 }
