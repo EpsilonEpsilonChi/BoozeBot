@@ -84,30 +84,32 @@ var pumpPortOpen = function() {
 var promises = [];
 SerialPort.list(function(err, ports) {
     ports.forEach(function(port) {
-        serialNum = port.serialNumber;
-        serialNum = serialNum.replace("Arduino__www.arduino.cc__0043_", "");
+        if (port.serialNumber != undefined) {
+            serialNum = port.serialNumber;
+            serialNum = serialNum.replace("Arduino__www.arduino.cc__0043_", "");
 
-        if (port.serialNumber == ledArduinoSerialNum) {
-            var comName = port.comName;
-            comName = comName.replace("cu", "tty");
+            if (port.serialNumber == ledArduinoSerialNum) {
+                var comName = port.comName;
+                comName = comName.replace("cu", "tty");
 
-            // Open serial port to LED Arduino
-            serialPortLed = new SerialPort.SerialPort(comName, {
-                baudrate: serialBaud,
-                parser: SerialPort.parsers.readline("\n")
-            });
-            promises.push(ledPortOpen());
-        } else if (port.serialNumber == pumpArduinoSerialNum) {
-            var comName = port.comName;
-            comName = comName.replace("cu", "tty");
+                // Open serial port to LED Arduino
+                serialPortLed = new SerialPort.SerialPort(comName, {
+                    baudrate: serialBaud,
+                    parser: SerialPort.parsers.readline("\n")
+                });
+                promises.push(ledPortOpen());
+            } else if (port.serialNumber == pumpArduinoSerialNum) {
+                var comName = port.comName;
+                comName = comName.replace("cu", "tty");
 
-            // Open serial port to LED Arduino
-            serialPortPump = new SerialPort.SerialPort(comName, {
-                baudrate: serialBaud,
-                parser: SerialPort.parsers.readline("\n")
-            });
-            promises.push(pumpPortOpen());
-        }   
+                // Open serial port to LED Arduino
+                serialPortPump = new SerialPort.SerialPort(comName, {
+                    baudrate: serialBaud,
+                    parser: SerialPort.parsers.readline("\n")
+                });
+                promises.push(pumpPortOpen());
+            }   
+        }
     });
 
     // Requires that both Arduinos be connected, exits otherwise
