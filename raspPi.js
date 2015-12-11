@@ -89,7 +89,7 @@ SerialPort.list(function(err, ports) {
             serialNum = port.serialNumber;
             serialNum = serialNum.replace("Arduino__www.arduino.cc__0043_", "");
 
-            if (port.serialNumber == ledArduinoSerialNum) {
+            if (serialNum == ledArduinoSerialNum) {
                 var comName = port.comName;
                 comName = comName.replace("cu", "tty");
 
@@ -99,7 +99,7 @@ SerialPort.list(function(err, ports) {
                     parser: SerialPort.parsers.readline("\n")
                 });
                 promises.push(ledPortOpen());
-            } else if (port.serialNumber == pumpArduinoSerialNum) {
+            } else if (serialNum == pumpArduinoSerialNum) {
                 var comName = port.comName;
                 comName = comName.replace("cu", "tty");
 
