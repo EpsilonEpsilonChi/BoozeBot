@@ -83,7 +83,8 @@ var pumpPortOpen = function() {
 // Find and open serial ports to Arduinos
 var promises = [];
 SerialPort.list(function(err, ports) {
-    ports.forEach(function(port) {
+    for (var i = 0; i < ports.length; ++i) {
+        var port = ports[i];
         if (port.serialNumber != undefined) {
             serialNum = port.serialNumber;
             serialNum = serialNum.replace("Arduino__www.arduino.cc__0043_", "");
@@ -110,7 +111,7 @@ SerialPort.list(function(err, ports) {
                 promises.push(pumpPortOpen());
             }   
         }
-    });
+    }
 
     // Requires that both Arduinos be connected, exits otherwise
     if (serialPortLed == null) {
