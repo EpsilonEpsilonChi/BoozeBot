@@ -51,7 +51,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
 
         // Listen for response from Arduino
         serialPortPump.on('data', function(responseData) {
-            if (verbose) { console.log('  Response packet: ' + responseData); }
+            if (verbose) { console.log('  Message from Arduino: ' + responseData); }
 
             // Close and reopen serial port around parsing
             serialPortPump.close(function(closeErr) {
