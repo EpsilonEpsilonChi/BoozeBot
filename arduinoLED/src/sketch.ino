@@ -49,15 +49,17 @@ void runProgram(int program) {
 
 }
 
-// LED JSON Object format
-// { "cmdType": <0 for ind. LED assign, 1 for LED program>, 
+// Arduino -> Rasp Pi message structure 
+// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
 //   "prog": <program name>,
 //   "led": {
 //     "num": <led number>,
 //     "r": <red value 0 to 4095>,
 //     "g": <green value 0 to 4095>,
 //     "b": <blue value 0 to 4095>
-//   }
+//   },
+//   "response": <1 for success, 0 for failure>,
+//   "error": <error message, if any>
 // } 
 
 // Processes command JSON data passed in
@@ -68,8 +70,8 @@ int processCommand(aJsonObject *command) {
   }
 
   // Check command type (single LED assignment or program)
-  aJsonObject *cmdType = aJson.getObjectItem(command, "cmdType");
-  if (cmdType && (cmdType->valueint == 0)) {  // ASSUMES VALUE IS INT, MIGHT NEED CHECKING
+  aJsonObject *msgType = aJson.getObjectItem(command, "msgType");
+  if (msgType && (msgType->valueint == 0)) {  // ASSUMES VALUE IS INT, MIGHT NEED CHECKING
     // Set LED with given values
     aJsonObject *led = aJson.getObjectItem(command, "led");
 
@@ -80,7 +82,7 @@ int processCommand(aJsonObject *command) {
       aJsonObject *b = aJson.getObjectItem(led, "b"); // error checking?
       setLED(num->valueint, r->valueint, g->valueint, b->valueint);
     }
-  } else if (cmdType && (cmdType->valueint == 1)) {
+  } else if (msgType && (msgType->valueint == 1)) {
     // Run program
     aJsonObject *prog = aJson.getObjectItem(command, "prog"); // error checking?
     runProgram(prog->valueint);

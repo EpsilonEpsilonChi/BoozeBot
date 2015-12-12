@@ -15,6 +15,19 @@ var queueRef                = new Firebase('https://boozebot.firebaseio.com/drin
 var serialPortLed;
 var serialPortPump;
 
+// Arduino -> Rasp Pi message structure 
+// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
+//   "prog": <program name>,
+//   "led": {
+//     "num": <led number>,
+//     "r": <red value 0 to 4095>,
+//     "g": <green value 0 to 4095>,
+//     "b": <blue value 0 to 4095>
+//   },
+//   "response": <1 for success, 0 for failure>,
+//   "error": <error message, if any>
+// } 
+
 // Listens to Firebase queue for new data
 var firebaseListener = function(data, progress, resolve, reject) {
     console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
@@ -49,13 +62,21 @@ var firebaseListener = function(data, progress, resolve, reject) {
                     if (openErr != null) { console.log(colors.red("  Port reopen error: " + openErr)); }
                 });
 
-                // Check for success or failure
-                if (responseObj["response"] == 1) {
-                    console.log(colors.yellow("  Drink made successfully."));
-                    resolve();
+                // Determine type of message
+                if (responseObj["msgType"] == 2) {      // Drink made or error
+                    // Check for success or failure
+                    if (responseObj["response"] == 1) {
+                        console.log(colors.yellow("  Drink made successfully."));
+                        resolve();
+                    } else {
+                        console.log(colors.red("  Error making drink: " + responseObj["error"]));
+                        reject(responseObj["error"]);
+                    }
                 } else {
-                    console.log(colors.red("  Error making drink: " + responseObj["error"]));
-                    reject(responseObj["error"]);
+                    // Pass data onto LED Arduino
+                    serialPortLed.write(responseData, function(err, results) {
+                        if (err != null) { console.log(colors.red("  Write to LED Arduino errors: " + err)); }
+                    });
                 }
             });
         });

@@ -156,9 +156,7 @@ aJsonObject *createResponseMessage(int responseNum) {
   // Create JSON object for response packet
   aJsonObject *packet = aJson.createObject();
   aJsonObject *responseItem = aJson.createItem(response);
-  aJsonObject *uniqueIDItem = aJson.createItem(uniqueID);
   aJson.addItemToObject(packet, "response", responseItem);
-  aJson.addItemToObject(packet, "uniqueID", uniqueIDItem);
 
   if (response == 1) {
     aJsonObject *nullItem = aJson.createNull();
@@ -166,12 +164,6 @@ aJsonObject *createResponseMessage(int responseNum) {
   } else {
     aJsonObject *errorItem = aJson.createItem(message);
     aJson.addItemToObject(packet, "error", errorItem);
-  }
-
-  if (uniqueID == 99) {
-    uniqueID = 0;
-  } else {
-    uniqueID++;
   }
 
   return packet;
