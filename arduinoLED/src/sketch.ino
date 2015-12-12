@@ -1,8 +1,24 @@
 #include <Tlc5940.h>
 #include <aJSON.h>
 
+// Config variables
+int serialBaud           = 115200;  // Bit rate of serial connection
+
 // Globals
 aJsonStream serial_stream(&Serial);
+
+// Arduino -> Rasp Pi message structure 
+// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
+//   "prog": <program name>,
+//   "led": {
+//     "num": <led number>,
+//     "r": <red value 0 to 4095>,
+//     "g": <green value 0 to 4095>,
+//     "b": <blue value 0 to 4095>
+//   },
+//   "response": <1 for success, 0 for failure>,
+//   "error": <error message, if any>
+// } 
 
 void testSequence() {
   for (int i = 0; i < 3; ++i) {
@@ -49,19 +65,6 @@ void runProgram(int program) {
 
 }
 
-// Arduino -> Rasp Pi message structure 
-// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
-//   "prog": <program name>,
-//   "led": {
-//     "num": <led number>,
-//     "r": <red value 0 to 4095>,
-//     "g": <green value 0 to 4095>,
-//     "b": <blue value 0 to 4095>
-//   },
-//   "response": <1 for success, 0 for failure>,
-//   "error": <error message, if any>
-// } 
-
 // Processes command JSON data passed in
 int processCommand(aJsonObject *command) {
   // Check to make sure command exists
@@ -94,7 +97,7 @@ int processCommand(aJsonObject *command) {
 void setup() {
   Tlc.init();
   delay(200);
-  Serial.begin(115200);
+  Serial.begin(serialBaud);
 
   serial_stream.flush();
 }

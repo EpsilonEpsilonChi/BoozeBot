@@ -25,13 +25,27 @@
 #define PUMPOFF 1
 
 // Config variables
-int maxIngredients       = 10;     // Max num of ingredients passed from RPi in JSON object
-double timeToPourOneFlOz = 500;    // Time it takes to pour 1 fl oz (in milliseconds)
+int serialBaud           = 115200;  // Bit rate of serial connection
+int maxIngredients       = 10;      // Max num of ingredients passed from RPi in JSON object
+double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
+int messageToPumpDelay   = 150;     // Time between sending LED set message and pumping
 
 // Globals
-int uniqueID = 0;
-int lastPrint = 0;
+int curColor   = 0;
 aJsonStream serial_stream(&Serial);
+
+// Arduino -> Rasp Pi message structure 
+// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
+//   "prog": <program name>,
+//   "led": {
+//     "num": <led number>,
+//     "r": <red value 0 to 4095>,
+//     "g": <green value 0 to 4095>,
+//     "b": <blue value 0 to 4095>
+//   },
+//   "response": <1 for success, 0 for failure>,
+//   "error": <error message, if any>
+// } 
 
 // Selects proper pin constant based on bottle number
 int selectPin(int bottleNum) {
@@ -71,13 +85,85 @@ int selectPin(int bottleNum) {
   }
 }
 
+// Logic for determine what color the next bottle will light up when being pumped
+void lightUpPumpingBottle(int bottleNum) {
+  switch(curColor) {
+    case 0:
+      setLed(bottleNum, 4095, 0, 0);
+    case 1: 
+      setLed(bottleNum, 0, 4095, 0);
+    case 2:
+      setLed(bottleNum, 0, 0, 4095);
+    case 3:
+      setLed(bottleNum, 4095, 4095, 0);
+    case 4:
+      setLed(bottleNum, 0, 4095, 4095);
+    case 5:
+      setLed(bottleNum, 4095, 0, 4095);
+    case 5:
+      setLed(bottleNum, 4095, 4095, 4095);
+      curColor = 0;
+      break;
+  }
+}
+
+// Turns off an individual LED
+void turnOffLed(int ledNum) {
+  setLed(ledNum, 0, 0, 0);
+}
+
+// Sends message to set individual LED on LED Arduino
+void setLed(int ledNum, int red, int green, int blue) {
+  // Create packet with LED assign type
+  aJsonObject *packet = aJson.createObject();
+  aJsonObject *msgType = aJson.createItem(0);
+  aJson.addItemToObject(packet, "msgType", msgType);
+
+  // Create LED object with inputted RGB values
+  aJsonObject *led = aJson.createObject();
+
+  aJsonObject *num = aJson.createItem(ledNum);
+  aJsonObject *r = aJson.createItem(red);
+  aJsonObject *g = aJson.createItem(green);
+  aJsonObject *b = aJson.createItem(blue);
+
+  aJson.addItemToObject(led, "num", num);
+  aJson.addItemToObject(led, "r", r);
+  aJson.addItemToObject(led, "g", g);  
+  aJson.addItemToObject(led, "b", b);
+  aJson.addItemToObject(packet, "led", led);
+
+  // Send to Rasp Pi
+  aJson.print(packet, &serial_stream);
+  Serial.println();
+}
+
+// Sends message to start an LED program to LED Arduino
+void setProgram(int progNum) {
+  // Create packet with program set type and inputted program number
+  aJsonObject *packet = aJson.createObject();
+  aJsonObject *msgType = aJson.createItem(1);
+  aJson.addItemToObject(packet, "msgType", msgType);
+  aJsonObject *prog = aJson.createItem(1);
+  aJson.addItemToObject(packet, "prog", prog);
+
+  // Send to Rasp Pi
+  aJson.print(packet, &serial_stream);
+  Serial.println();
+}
+
 // Dispenses a certain amount of liquor
 void dispenseLiquor(double amount, int bottleNum) {
   int liquorPin = selectPin(bottleNum);
 
+  lightUpPumpingBottle(bottleNum);
+  delay(messageToPumpDelay);
+
   digitalWrite(liquorPin, PUMPON);
   delay(timeToPourOneFlOz * amount);
   digitalWrite(liquorPin, PUMPOFF);
+  
+  turnOffLed(bottleNum);
 }
 
 // Processes recipe transaction JSON data passed in
@@ -125,7 +211,6 @@ int processRecipe(aJsonObject *recipe) {
         }
 
         dispenseLiquor(amount, bottleNum);
-        delay(1000);                          // ***** REMOVE AFTER TESTING *****
       }
     }
   }
@@ -168,9 +253,9 @@ aJsonObject *createResponseMessage(int responseNum) {
 
   return packet;
 }
-
+ 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(serialBaud);
 
   // Set bottle relay mode and state
   pinMode(BOTTLERELAY1, OUTPUT);
