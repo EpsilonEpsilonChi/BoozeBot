@@ -100,7 +100,7 @@ void lightUpPumpingBottle(int bottleNum) {
       setLed(bottleNum, 0, 4095, 4095);
     case 5:
       setLed(bottleNum, 4095, 0, 4095);
-    case 5:
+    case 6:
       setLed(bottleNum, 4095, 4095, 4095);
       curColor = 0;
       break;
@@ -162,7 +162,7 @@ void dispenseLiquor(double amount, int bottleNum) {
   digitalWrite(liquorPin, PUMPON);
   delay(timeToPourOneFlOz * amount);
   digitalWrite(liquorPin, PUMPOFF);
-  
+
   turnOffLed(bottleNum);
 }
 
