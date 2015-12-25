@@ -1,5 +1,3 @@
-// ****** EDIT TO DISPENSE ALL INGREDIENTS AT THE SAME TIME
-
 #include <aJSON.h>
 
 // Pin definitions
@@ -26,26 +24,11 @@
 
 // Config variables
 int serialBaud           = 115200;  // Bit rate of serial connection
-int maxIngredients       = 10;      // Max num of ingredients passed from RPi in JSON object
 double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
-int messageToPumpDelay   = 150;     // Time between sending LED set message and pumping
+int messageToPumpDelay   = 100;     // Time between sending LED set message and pumping
 
 // Globals
-int curColor   = 0;
 aJsonStream serial_stream(&Serial);
-
-// Arduino -> Rasp Pi message structure 
-// { "msgType": <0 for ind. LED assign, 1 for LED program, 2 for drink completion>, 
-//   "prog": <program name>,
-//   "led": {
-//     "num": <led number>,
-//     "r": <red value 0 to 4095>,
-//     "g": <green value 0 to 4095>,
-//     "b": <blue value 0 to 4095>
-//   },
-//   "response": <1 for success, 0 for failure>,
-//   "error": <error message, if any>
-// } 
 
 // Selects proper pin constant based on bottle number
 int selectPin(int bottleNum) {
@@ -85,171 +68,70 @@ int selectPin(int bottleNum) {
   }
 }
 
-// Logic for determine what color the next bottle will light up when being pumped
-void lightUpPumpingBottle(int bottleNum) {
-  switch(curColor) {
-    case 0:
-      setLed(bottleNum, 4095, 0, 0);
-    case 1: 
-      setLed(bottleNum, 0, 4095, 0);
-    case 2:
-      setLed(bottleNum, 0, 0, 4095);
-    case 3:
-      setLed(bottleNum, 4095, 4095, 0);
-    case 4:
-      setLed(bottleNum, 0, 4095, 4095);
-    case 5:
-      setLed(bottleNum, 4095, 0, 4095);
-    case 5:
-      setLed(bottleNum, 4095, 4095, 4095);
-      curColor = 0;
-      break;
-  }
-}
-
-// Turns off an individual LED
-void turnOffLed(int ledNum) {
-  setLed(ledNum, 0, 0, 0);
-}
-
-// Sends message to set individual LED on LED Arduino
-void setLed(int ledNum, int red, int green, int blue) {
-  // Create packet with LED assign type
-  aJsonObject *packet = aJson.createObject();
-  aJsonObject *msgType = aJson.createItem(0);
-  aJson.addItemToObject(packet, "msgType", msgType);
-
-  // Create LED object with inputted RGB values
-  aJsonObject *led = aJson.createObject();
-
-  aJsonObject *num = aJson.createItem(ledNum);
-  aJsonObject *r = aJson.createItem(red);
-  aJsonObject *g = aJson.createItem(green);
-  aJsonObject *b = aJson.createItem(blue);
-
-  aJson.addItemToObject(led, "num", num);
-  aJson.addItemToObject(led, "r", r);
-  aJson.addItemToObject(led, "g", g);  
-  aJson.addItemToObject(led, "b", b);
-  aJson.addItemToObject(packet, "led", led);
-
-  // Send to Rasp Pi
-  aJson.print(packet, &serial_stream);
-  Serial.println();
-}
-
-// Sends message to start an LED program to LED Arduino
-void setProgram(int progNum) {
-  // Create packet with program set type and inputted program number
-  aJsonObject *packet = aJson.createObject();
-  aJsonObject *msgType = aJson.createItem(1);
-  aJson.addItemToObject(packet, "msgType", msgType);
-  aJsonObject *prog = aJson.createItem(1);
-  aJson.addItemToObject(packet, "prog", prog);
-
-  // Send to Rasp Pi
-  aJson.print(packet, &serial_stream);
-  Serial.println();
-}
-
 // Dispenses a certain amount of liquor
 void dispenseLiquor(double amount, int bottleNum) {
   int liquorPin = selectPin(bottleNum);
 
-  lightUpPumpingBottle(bottleNum);
   delay(messageToPumpDelay);
 
   digitalWrite(liquorPin, PUMPON);
   delay(timeToPourOneFlOz * amount);
   digitalWrite(liquorPin, PUMPOFF);
-  
-  turnOffLed(bottleNum);
 }
 
-// Processes recipe transaction JSON data passed in
-int processRecipe(aJsonObject *recipe) {
-  // Check to make sure recipe exists
-  if (!recipe) {
-    return 1;
+// Processes ingredient JSON data passed in
+int processIngredient(aJsonObject *ingredient) {
+  // Check to make sure ingredient exists
+  if (!ingredient) {
+    return 0;
   }
 
-  // Read ingredients from JSON object
-  for (int i = 1; i <= maxIngredients; i++) {
-    char charNum[10];
-    String strNum = String(i);
-    strNum.toCharArray(charNum, 10);
-    aJsonObject *ingredient = aJson.getObjectItem(recipe, charNum);
+  aJsonObject *amountIn = aJson.getObjectItem(ingredient, "amt");
+  aJsonObject *bottleNumIn = aJson.getObjectItem(ingredient, "bot"); 
 
-    if (ingredient) {      
-      aJsonObject *amountIn = aJson.getObjectItem(ingredient, "a");
-      aJsonObject *bottleNumIn = aJson.getObjectItem(ingredient, "b"); 
-
-      // Check for existance
-      if (amountIn && bottleNumIn) {
-        // Get amount type and set value accordingly
-        double amount = 0;
-        if (amountIn->type == 2) {
-          amount = amountIn->valueint;
-        } else if (amountIn->type == 3) {
-          amount = amountIn->valuefloat;
-        } else if (amountIn->type == 4) {
-          amount = atof(amountIn->valuestring);
-        } else {
-          return 2;
-        }
-
-        // Get bottleNum type and set value accordingly
-        int bottleNum = 0;
-        if (bottleNumIn->type == 2) {
-          bottleNum = bottleNumIn->valueint;
-        } else if (bottleNumIn->type == 3) {
-          bottleNum = bottleNumIn->valuefloat;
-        } else if (bottleNumIn->type == 4) {
-          bottleNum = atoi(bottleNumIn->valuestring);
-        } else {
-          return 3;
-        }
-
-        dispenseLiquor(amount, bottleNum);
-      }
+  // Check for existance
+  if (amountIn && bottleNumIn) {
+    // Get amount type and set value accordingly
+    double amount = 0;
+    if (amountIn->type == 2) {
+      amount = amountIn->valueint;
+    } else if (amountIn->type == 3) {
+      amount = amountIn->valuefloat;
+    } else if (amountIn->type == 4) {
+      amount = atof(amountIn->valuestring);
+    } else {
+      return 0;
     }
+
+    // Get bottleNum type and set value accordingly
+    int bottleNum = 0;
+    if (bottleNumIn->type == 2) {
+      bottleNum = bottleNumIn->valueint;
+    } else if (bottleNumIn->type == 3) {
+      bottleNum = bottleNumIn->valuefloat;
+    } else if (bottleNumIn->type == 4) {
+      bottleNum = atoi(bottleNumIn->valuestring);
+    } else {
+      return 0;
+    }
+
+    dispenseLiquor(amount, bottleNum);
+    return 3;
   }
-  
-  return 0;
 }
 
 // Creates response message to send back to Raspberry Pi
-// Format: { "response": <1 for success, 0 for failure>, "error": <error message, if any> } 
 aJsonObject *createResponseMessage(int responseNum) {
-  int response = 0;
-  char *message;
-  switch(responseNum) {
-    case 0:     // Success
-      response = 1;
-      break;
-    case 1: 
-      message = "No recipe data\n";
-      break;
-    case 2:
-      message = "Invalid amount type\n";
-      break;
-    case 3:
-      message = "Invalid bottleNum type\n";
-      break;
-  }
+  // Responses:
+  // 0: data error
+  // 1: drink cancelled
+  // 2: start making drink (drink accepted)
+  // 3: done pumping ingredient
+  // 99: no response message necessary
 
-  // Create JSON object for response packet
   aJsonObject *packet = aJson.createObject();
   aJsonObject *responseItem = aJson.createItem(response);
   aJson.addItemToObject(packet, "response", responseItem);
-
-  if (response == 1) {
-    aJsonObject *nullItem = aJson.createNull();
-    aJson.addItemToObject(packet, "error", nullItem);
-  } else {
-    aJsonObject *errorItem = aJson.createItem(message);
-    aJson.addItemToObject(packet, "error", errorItem);
-  }
 
   return packet;
 }
@@ -301,9 +183,9 @@ void loop() {
 
   if (serial_stream.available()) {
     // Parse input
-    aJsonObject *recipe = aJson.parse(&serial_stream);
-    int returnVal = processRecipe(recipe);
-    aJson.deleteItem(recipe);
+    aJsonObject *ingredient = aJson.parse(&serial_stream);
+    int returnVal = processIngredient(ingredient);
+    aJson.deleteItem(ingredient);
     serial_stream.flush();
 
     // Send response
