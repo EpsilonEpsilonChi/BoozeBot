@@ -121,9 +121,13 @@ void setLED(int ledNum, int red, int green, int blue) {
   Tlc.update();
 }
 
-// Does a "drink about to be made" light show before pouring
-void drinkBeingMadeLighting() {
-
+// Fades on ambient (white) LED strips
+void fadeOnAmbient() {
+  for (int i = 0; i <= 255; i++) {
+    analogWrite(TOP_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, i);
+    delay(3);
+  }
 }
 
 // Processes command JSON data passed in
@@ -205,7 +209,7 @@ int processCommand(aJsonObject *command) {
       digitalWrite(PSU_POWER_PIN, HIGH);              // Turn on power supply
       delay(500);
 
-      drinkBeingMadeLighting();
+      fadeOnAmbient();
       setLCDBacklight(0x0, 0x0, 0xFF);
 
       return 2;
@@ -219,10 +223,15 @@ int processCommand(aJsonObject *command) {
       aJsonObject *num = aJson.getObjectItem(led, "num");
       aJsonObject *r = aJson.getObjectItem(led, "r");
       aJsonObject *g = aJson.getObjectItem(led, "g");
-      aJsonObject *b = aJson.getObjectItem(led, "b"); // error checking?
+      aJsonObject *b = aJson.getObjectItem(led, "b");
       setLED(num->valueint, r->valueint, g->valueint, b->valueint);
       return 99;
     }
+  } else if (msgType && (msgType->valueint == 3)) {   // Drink completed
+    setLCDBacklight(0xFF, 0xFF, 0xFF);
+    clearLCD();
+    lcd.print("No queued drinks");
+    fadeOnAmbient();
   }
 }
 

@@ -79,44 +79,50 @@ void dispenseLiquor(double amount, int bottleNum) {
   digitalWrite(liquorPin, PUMPOFF);
 }
 
-// Processes ingredient JSON data passed in
-int processIngredient(aJsonObject *ingredient) {
-  // Check to make sure ingredient exists
-  if (!ingredient) {
+// Processes command JSON data passed in
+int processIngredient(aJsonObject *command) {
+  // Check to make sure command exists
+  if (!command) {
     return 0;
   }
 
-  aJsonObject *amountIn = aJson.getObjectItem(ingredient, "amt");
-  aJsonObject *bottleNumIn = aJson.getObjectItem(ingredient, "bot"); 
+  // Check command type
+  aJsonObject *msgType = aJson.getObjectItem(command, "msgType");
+  if (msgType && (msgType->valueint == 2)) {
+    aJsonObject *liquor = aJson.getObjectItem(command, "liquor");
 
-  // Check for existance
-  if (amountIn && bottleNumIn) {
-    // Get amount type and set value accordingly
-    double amount = 0;
-    if (amountIn->type == 2) {
-      amount = amountIn->valueint;
-    } else if (amountIn->type == 3) {
-      amount = amountIn->valuefloat;
-    } else if (amountIn->type == 4) {
-      amount = atof(amountIn->valuestring);
-    } else {
-      return 0;
+    aJsonObject *amountIn = aJson.getObjectItem(liquor, "amt");
+    aJsonObject *bottleNumIn = aJson.getObjectItem(liquor, "bot"); 
+
+    // Check for existance
+    if (amountIn && bottleNumIn) {
+      // Get amount type and set value accordingly
+      double amount = 0;
+      if (amountIn->type == 2) {
+        amount = amountIn->valueint;
+      } else if (amountIn->type == 3) {
+        amount = amountIn->valuefloat;
+      } else if (amountIn->type == 4) {
+        amount = atof(amountIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      // Get bottleNum type and set value accordingly
+      int bottleNum = 0;
+      if (bottleNumIn->type == 2) {
+        bottleNum = bottleNumIn->valueint;
+      } else if (bottleNumIn->type == 3) {
+        bottleNum = bottleNumIn->valuefloat;
+      } else if (bottleNumIn->type == 4) {
+        bottleNum = atoi(bottleNumIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      dispenseLiquor(amount, bottleNum);
+      return 3;
     }
-
-    // Get bottleNum type and set value accordingly
-    int bottleNum = 0;
-    if (bottleNumIn->type == 2) {
-      bottleNum = bottleNumIn->valueint;
-    } else if (bottleNumIn->type == 3) {
-      bottleNum = bottleNumIn->valuefloat;
-    } else if (bottleNumIn->type == 4) {
-      bottleNum = atoi(bottleNumIn->valuestring);
-    } else {
-      return 0;
-    }
-
-    dispenseLiquor(amount, bottleNum);
-    return 3;
   }
 }
 
