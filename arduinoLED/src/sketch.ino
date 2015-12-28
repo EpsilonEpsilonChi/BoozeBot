@@ -10,13 +10,15 @@
 #define BOTTOM_LED_STRIP 6
 
 // TO DO: Turn off power supply on timer
+// NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
 
 // Config variables
-int serialBaud           = 115200;  // Bit rate of serial connection to Rasp Pi
+int serialBaud           = 9600;    // Bit rate of serial connection to Rasp Pi
 int lcdBaud              = 9600;    // Bit rate of serial connection to LCD
+int psuTurnOnTime        = 1000;    // Time it takes for the PSU to turn on (in ms)
 
 // Initialize LCD display
-SoftwareSerial lcd = SoftwareSerial(0, LCD_TX_PIN);     // Change RX pin?
+SoftwareSerial lcd = SoftwareSerial(15, LCD_TX_PIN);     // Change RX pin?
 
 // Globals
 aJsonStream serial_stream(&Serial);
@@ -71,9 +73,14 @@ void initLCD() {
   delay(10);
 
   // Splash screen
-  lcd.print("BoozeBot by:");
+  setLCDBacklight(0xFF, 0x0, 0x0);
+  lcd.print("BoozeBot by:    ");
   lcd.print("EEX House");
-  delay(1500);
+  delay(500);
+  setLCDBacklight(0x0, 0xFF, 0x0);
+  delay(500);
+  setLCDBacklight(0x0, 0x0, 0xFF);
+  delay(500);
 
   // Clear screen and return to top left corner
   clearLCD();
@@ -144,6 +151,7 @@ int processCommand(aJsonObject *command) {
     aJsonObject *drinkName = aJson.getObjectItem(command, "drinkName");
 
     clearLCD();
+    setLCDBacklight(0xFF, 0xFF, 0xFF);
     lcd.print("Next drink:     ");
     lcd.print(drinkName->valuestring);                // To do: Handle wrap around if > 16 characters
 
@@ -203,14 +211,12 @@ int processCommand(aJsonObject *command) {
       return 1;
     } else if (statusValue == 2) {                    // Start making drink
       clearLCD();
-      setLCDBacklight(0x0, 0xFF, 0x0);
+      setLCDBacklight(0x0, 0x0, 0xFF);
       lcd.print("Making drink:     ");
       lcd.print(drinkName->valuestring);              // To do: Handle wrap around if > 16 characters
       digitalWrite(PSU_POWER_PIN, HIGH);              // Turn on power supply
       delay(500);
-
       fadeOnAmbient();
-      setLCDBacklight(0x0, 0x0, 0xFF);
 
       return 2;
     }
@@ -225,9 +231,11 @@ int processCommand(aJsonObject *command) {
       aJsonObject *g = aJson.getObjectItem(led, "g");
       aJsonObject *b = aJson.getObjectItem(led, "b");
       setLED(num->valueint, r->valueint, g->valueint, b->valueint);
+
       return 99;
     }
   } else if (msgType && (msgType->valueint == 3)) {   // Drink completed
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
     setLCDBacklight(0xFF, 0xFF, 0xFF);
     clearLCD();
     lcd.print("No queued drinks");
@@ -257,8 +265,8 @@ void setup() {
   pinMode(TOP_LED_STRIP, OUTPUT);
   pinMode(BOTTOM_LED_STRIP, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
-  pinMode(PSU_POWER, OUTPUT);
-  digitalWrite(PSU_POWER, LOW);
+  pinMode(PSU_POWER_PIN, OUTPUT);
+  digitalWrite(PSU_POWER_PIN, LOW);
 
   initLCD();
   setLCDBacklight(0xFF, 0xFF, 0xFF);

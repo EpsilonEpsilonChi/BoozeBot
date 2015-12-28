@@ -12,18 +12,20 @@
 #define BOTTLERELAY9 10
 #define BOTTLERELAY10 11
 #define BOTTLERELAY11 12
-#define BOTTLERELAY12 13
-#define BOTTLERELAY13 14
-#define BOTTLERELAY14 15
-#define BOTTLERELAY15 16
-#define BOTTLERELAY16 17
+#define BOTTLERELAY12 14
+#define BOTTLERELAY13 15
+#define BOTTLERELAY14 16
+#define BOTTLERELAY15 17
+#define BOTTLERELAY16 18
 
 // Allows default relay state to be changed
 #define PUMPON 0
 #define PUMPOFF 1
 
+// NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
+
 // Config variables
-int serialBaud           = 115200;  // Bit rate of serial connection
+int serialBaud           = 9600;    // Bit rate of serial connection
 double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
 int messageToPumpDelay   = 100;     // Time between sending LED set message and pumping
 
@@ -123,6 +125,8 @@ int processIngredient(aJsonObject *command) {
       dispenseLiquor(amount, bottleNum);
       return 3;
     }
+  } else {
+    return 0;
   }
 }
 
@@ -136,7 +140,7 @@ aJsonObject *createResponseMessage(int responseNum) {
   // 99: no response message necessary
 
   aJsonObject *packet = aJson.createObject();
-  aJsonObject *responseItem = aJson.createItem(response);
+  aJsonObject *responseItem = aJson.createItem(responseNum);
   aJson.addItemToObject(packet, "response", responseItem);
 
   return packet;

@@ -7,9 +7,10 @@ var exec       = require('child_process').exec;
 
 // Configuration variables
 var verbose                 = true;
-var serialBaud              = 115200;
-var ledArduinoSerialNum     = "754373038303515150C1";
-var pumpArduinoSerialNum    = "75437303830351917221";
+var serialBaud              = 9600;
+var timeoutAfterLedOff      = 750;
+var ledArduinoSerialNum     = "75437303830351917221";
+var pumpArduinoSerialNum    = "754373038303515150C1";
 var queueRef                = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
 
 // Serial ports
@@ -17,7 +18,7 @@ var serialPortLed;
 var serialPortPump;
 
 // Keep track of previous bottle lighting color
-var colorNum = 0;
+var colorNum = 1;
 
 // Rasp Pi -> Arduino message structure { 
 //     "msgType": <0: drink on queue, 1: set individual LED color, 2: dispense liquor, 3: done making drink>
@@ -43,7 +44,7 @@ var colorNum = 0;
 // }
 
 // Chooses color to light bottle for when next liquor pours
-var pickLightingColor = function() {
+var pickLightingColor = function(bottleNum) {
     var colorRGB;
     switch(colorNum) {
         case 0:
@@ -75,6 +76,9 @@ var pickLightingColor = function() {
     } else {
         colorNum++;
     }
+
+    colorRGB["num"] = parseInt(bottleNum);
+    return colorRGB;
 }
 
 // Light up bottle
@@ -84,7 +88,7 @@ var lightUpBottle = function(callback, ingredient) {
     // Create data packet to send to LED Arduino
     var lightingPacket = {
         "msgType": 1,
-        "led": pickLightingColor();
+        "led": pickLightingColor(ingredient["liquorBottleNum"])
     };
     var lightingPacketString = JSON.stringify(lightingPacket);
 
@@ -127,12 +131,12 @@ var dispenseIngredient = function(callback, ingredient) {
                 var ingredientResponseObj = JSON.parse(ingredientResponseData);
                 serialPortPump.open(function(ingredientOpenErr) {
                     if (ingredientOpenErr != null) { console.log(colors.red("    Port reopen error: " + ingredientOpenErr)); }
-                });
 
-                if (ingredientResponseObj["response"] == 3) {
-                    if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
-                    callback(ingredientWriteErr, "two");
-                }
+                    if (ingredientResponseObj["response"] == 3) {
+                        if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
+                        callback(ingredientWriteErr, "two");
+                    }
+                });
             });
         });
     });
@@ -145,7 +149,7 @@ var turnOffLed = function(callback, ingredient) {
     // Create data packet to send to LED Arduino
     var lightingOff = {
         "msgType": 1,
-        "led": {"r": 0, "g": 0, "b": 0}
+        "led": {"num": parseInt(ingredient["liquorBottleNum"]), "r": 0, "g": 0, "b": 0}
     };
     var lightingOffString = JSON.stringify(lightingOff);
 
@@ -153,7 +157,11 @@ var turnOffLed = function(callback, ingredient) {
     if (verbose) { console.log(colors.white("    Lighting off string: " + lightingOffString)); }
     serialPortLed.write(lightingOffString, function(lightingOffErr, lightingOffResults) {
         if (lightingOffErr != null) { console.log(colors.red("    Write errors: " + lightingOffErr)); }
-        callback(lightingOffErr, "three");
+
+        // Pause to let serial port to LED Arduino clear out
+        setTimeout(function() {
+            callback(lightingOffErr, "three");
+        }, timeoutAfterLedOff);
     });
 }
 
@@ -181,58 +189,63 @@ var firebaseListener = function(data, progress, resolve, reject) {
             serialPortLed.close(function(closeErr) {
                 if (closeErr != null) { console.log(colors.red("  Port close error: " + closeErr)); }
 
-                var responseObj = JSON.parse(responseData);
-                serialPortPump.open(function(openErr) {
+                var responseObj = JSON.parse(drinkResponse);
+                serialPortLed.open(function(openErr) {
                     if (openErr != null) { console.log(colors.red("  Port reopen error: " + openErr)); }
-                });
 
-                if (responseObj["response"] == 0) {         // Data error
-                    console.log(colors.red("LED Arduino says there was an error with its received data"));
-                    reject("Data error");
-                } else if (responseObj["response"] == 1) {  // Drink cancelled
-                    console.log(colors.blue("Drink cancelled by user"));
-                    reject("Drink cancelled by user");
-                } else if (responseObj["response"] == 2) {  // Continue making drink on queue
-                    console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
+                    if (responseObj["response"] == 0) {         // Data error
+                        console.log(colors.red("LED Arduino says there was an error with its received data"));
+                        reject("Data error");
+                    } else if (responseObj["response"] == 1) {  // Drink cancelled
+                        console.log(colors.blue("Drink cancelled by user"));
+                        reject("Drink cancelled by user");
 
-                    // Compress/reformat ingredient list
-                    var ingredientList = {};
-                    for (var i = 1; i <= parseInt(data["ingredientCount"], 10); i++) {
-                        var ingredientList[i] = data["ingredient" + i];
-                    }
+                        // **** TIMEOUT AND CLEAR SCREEN AND LED
 
-                    // Pump each liquor in recipe and light corresponding bottle LED
-                    async.eachSeries(ingredientList, function(ingredient, loopCallback) {
-                        async.series([
-                            function(innerCallback) {   // Light up corresponding bottle LED
-                                lightUpBottle(innerCallback, ingredient);
-                            },
-                            function(innerCallback) {   // Dispense ingredient
-                                dispenseIngredient(innerCallback, ingredient);
-                            },
-                            function(innerCallback) {   // Turn off corresponding bottle LED
-                                turnOffLed(innerCallback, ingredient);
-                            }
-                        ], loopCallback);
-                    }, function(err) {
-                        console.log(colors.green("BoozeBot finished making drink: ") + colors.green.underline(data["recipeUsed"]));
 
-                        // Create completion data packet to send to LED Arduino
-                        var completionPacket = {
-                            "msgType": 1,
-                            "led": {"r": 0, "g": 0, "b": 0}
-                        };
-                        var completionString = JSON.stringify(completionPacket);
 
-                        // Write to LED Arduino
-                        if (verbose) { console.log(colors.white("  Completion string: " + completionString)); }
-                        serialPortLed.write(completionString, function(completionErr, completionResult) {
-                            if (completionErr != null) { console.log(colors.red("  Write errors: " + completionErr)); }
+                    } else if (responseObj["response"] == 2) {  // Continue making drink on queue
+                        console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
 
-                            resolve();
+                        // Compress/reformat ingredient list
+                        var ingredientList = {};
+                        for (var i = 1; i <= parseInt(data["ingredientCount"], 10); i++) {
+                            ingredientList[i] = data["ingredient" + i];
+                        }
+
+                        // Pump each liquor in recipe and light corresponding bottle LED
+                        async.eachSeries(ingredientList, function(ingredient, loopCallback) {
+                            async.series([
+                                function(innerCallback) {   // Light up corresponding bottle LED
+                                    lightUpBottle(innerCallback, ingredient);
+                                },
+                                function(innerCallback) {   // Dispense ingredient
+                                    dispenseIngredient(innerCallback, ingredient);
+                                },
+                                function(innerCallback) {   // Turn off corresponding bottle LED
+                                    turnOffLed(innerCallback, ingredient);
+                                }
+                            ], loopCallback);
+                        }, function(err) {
+                            console.log(colors.green("BoozeBot finished making drink: ") + colors.green.underline(data["recipeUsed"]));
+
+                            // Create completion data packet to send to LED Arduino
+                            var completionPacket = {
+                                "msgType": 3
+                            };
+                            var completionString = JSON.stringify(completionPacket);
+
+                            // Write to LED Arduino
+                            if (verbose) { console.log(colors.white("  Completion string: " + completionString)); }
+                            serialPortLed.write(completionString, function(completionErr, completionResult) {
+                                if (completionErr != null) { console.log(colors.red("  Write errors: " + completionErr)); }
+
+                                resolve();
+                            });
                         });
-                    });
-                }
+                    }
+                });
+            });
         });
     });
 }

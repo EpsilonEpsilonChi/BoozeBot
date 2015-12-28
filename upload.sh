@@ -8,23 +8,23 @@
 # ***** STILL NEEDS PORT DETECTION FOR WHEN MULTIPLE ARDUINOS ARE CONNECTED *****
 
 function echo_green { 
-	echo "\033[1;32m"$@"\033[m" 
+	echo -e "\033[1;32m"$@"\033[m" 
 }
 
 function echo_white { 
-	echo "\033[1;37m"$@"\033[m" 
+	echo -e "\033[1;37m"$@"\033[m" 
 }
 
 function echo_red { 
-	echo "\033[1;31m"$@"\033[m" 
+	echo -e "\033[1;31m"$@"\033[m" 
 }
 
 function echo_yellow { 
-	echo "\033[1;33m"$@"\033[m" 
+	echo -e "\033[1;33m"$@"\033[m" 
 }
 
 function echo_blue { 
-	echo "\033[1;34m"$@"\033[m" 
+	echo -e "\033[1;34m"$@"\033[m" 
 }
 
 if [ $# == 0 ]; then
