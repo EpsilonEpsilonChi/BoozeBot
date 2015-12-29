@@ -90,23 +90,23 @@ else
 	then
 		echo_yellow "Running on ARM (Raspberry Pi)"
 
-		# Build and upload arduinoPump
-		cd arduinoPump
-		echo_blue "  Building arduinoPump..."
-		sudo ino build
-		echo_blue "  Uploading arduinoPump to board..."
-		sudo ino upload
-		echo_green "  Done"
-		cd ..
-
-		# Build and upload arduinoLED
-		cd arduinoLED
-		echo_blue "  Building arduinoLED..."
-		sudo ino build
-		echo_blue "  Uploading arduinoLED to board..."
-		sudo ino upload
-		echo_green "  Done"
-		cd ..
+		if [ $1 == "pump" ]; then
+			cd arduinoPump
+			echo_blue "  Building arduinoPump..."
+			sudo ino build
+			echo_blue "  Uploading arduinoPump to board..."
+			sudo ino upload
+			echo_green "  Done"
+			cd ..
+		elif [ $1 == "led" ]; then
+			cd arduinoLED
+			echo_blue "  Building arduinoLED..."
+			sudo ino build
+			echo_blue "  Uploading arduinoLED to board..."
+			sudo ino upload
+			echo_green "  Done"
+			cd ..
+		fi
 	fi
 fi
 

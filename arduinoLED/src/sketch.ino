@@ -208,6 +208,11 @@ int processCommand(aJsonObject *command) {
       setLCDBacklight(0xFF, 0x0, 0x0);
       lcd.print("Drink cancelled ");
 
+      delay(2500);
+      setLCDBacklight(0xFF, 0xFF, 0xFF);
+      clearLCD();
+      lcd.print("No queued drinks");
+
       return 1;
     } else if (statusValue == 2) {                    // Start making drink
       clearLCD();
