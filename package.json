@@ -23,6 +23,7 @@
         "serialport": "*",
         "colors": "*",
         "mkdirp": "*",
-        "jsonfile": "*"
+        "jsonfile": "*",
+	"async": "*"
     }
 }
