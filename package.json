@@ -24,6 +24,9 @@
         "colors": "*",
         "mkdirp": "*",
         "jsonfile": "*",
-	"async": "*"
+	    "async": "*"
+    },
+    "config": { 
+        "unsafe-perm": true 
     }
 }
