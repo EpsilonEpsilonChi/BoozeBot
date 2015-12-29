@@ -95,7 +95,7 @@ else
 			echo_blue "  Building arduinoPump..."
 			sudo ino build
 			echo_blue "  Uploading arduinoPump to board..."
-			sudo ino upload
+			sudo ino upload -p /dev/ttyPumpArduino
 			echo_green "  Done"
 			cd ..
 		elif [ $1 == "led" ]; then
@@ -103,7 +103,7 @@ else
 			echo_blue "  Building arduinoLED..."
 			sudo ino build
 			echo_blue "  Uploading arduinoLED to board..."
-			sudo ino upload
+			sudo ino upload -p /dev/ttyLEDArduino
 			echo_green "  Done"
 			cd ..
 		fi
