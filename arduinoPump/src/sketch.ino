@@ -25,7 +25,6 @@
 // NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
 
 // Config variables
-int serialBaud           = 9600;    // Bit rate of serial connection
 double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
 int messageToPumpDelay   = 100;     // Time between sending LED set message and pumping
 
@@ -147,7 +146,7 @@ aJsonObject *createResponseMessage(int responseNum) {
 }
  
 void setup() {
-  Serial.begin(serialBaud);
+  Serial.begin(9600);
 
   // Set bottle relay mode and state
   pinMode(BOTTLERELAY1, OUTPUT);
