@@ -8,23 +8,23 @@
 # ***** STILL NEEDS PORT DETECTION FOR WHEN MULTIPLE ARDUINOS ARE CONNECTED *****
 
 function echo_green { 
-	echo "\033[1;32m"$@"\033[m" 
+	echo -e "\033[1;32m"$@"\033[m" 
 }
 
 function echo_white { 
-	echo "\033[1;37m"$@"\033[m" 
+	echo -e "\033[1;37m"$@"\033[m" 
 }
 
 function echo_red { 
-	echo "\033[1;31m"$@"\033[m" 
+	echo -e "\033[1;31m"$@"\033[m" 
 }
 
 function echo_yellow { 
-	echo "\033[1;33m"$@"\033[m" 
+	echo -e "\033[1;33m"$@"\033[m" 
 }
 
 function echo_blue { 
-	echo "\033[1;34m"$@"\033[m" 
+	echo -e "\033[1;34m"$@"\033[m" 
 }
 
 if [ $# == 0 ]; then
@@ -90,23 +90,23 @@ else
 	then
 		echo_yellow "Running on ARM (Raspberry Pi)"
 
-		# Build and upload arduinoPump
-		cd arduinoPump
-		echo_blue "  Building arduinoPump..."
-		sudo ino build
-		echo_blue "  Uploading arduinoPump to board..."
-		sudo ino upload
-		echo_green "  Done"
-		cd ..
-
-		# Build and upload arduinoLED
-		cd arduinoLED
-		echo_blue "  Building arduinoLED..."
-		sudo ino build
-		echo_blue "  Uploading arduinoLED to board..."
-		sudo ino upload
-		echo_green "  Done"
-		cd ..
+		if [ $1 == "pump" ]; then
+			cd arduinoPump
+			echo_blue "  Building arduinoPump..."
+			sudo ino build
+			echo_blue "  Uploading arduinoPump to board..."
+			sudo ino upload
+			echo_green "  Done"
+			cd ..
+		elif [ $1 == "led" ]; then
+			cd arduinoLED
+			echo_blue "  Building arduinoLED..."
+			sudo ino build
+			echo_blue "  Uploading arduinoLED to board..."
+			sudo ino upload
+			echo_green "  Done"
+			cd ..
+		fi
 	fi
 fi
 
