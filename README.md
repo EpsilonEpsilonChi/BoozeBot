@@ -39,4 +39,18 @@ Code for our house bartending robot, BoozeBot (work in progress)
 - Use a transistor to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
 - Useful for sending recipes to Arduino from RaspPi: https://github.com/interactive-matter/aJson
 - Possibly helpful: https://github.com/ytham/barmixvah
-- **IDEA:**: make raspberry pi automatically archive a transaction history every day
+- **IDEA**: make raspberry pi automatically archive a transaction history every day
+ 
+
+### Setting up Raspberry Pi serial ports
+In order to make sure the Arduinos are assigned to their own serial port at boot (so they don't get mixed up), magic is required. 
+- Get the short ID of each Arduino by plugging each one in seperately and running: 
+```sudo udevadm info --query=property --name=/dev/ttyACM0 | grep SERIAL```. Copy the ```ID_SERIAL_SHORT```, which is also required for raspPi.js.
+- Once you have the short ID for each Arduino, create a new rules file with: ```sudo nano /etc/udev/rules.d/99-usbserial.rules```. Inside this file, add the following two lines and save:
+
+```
+ ACTION=="add",ENV{ID_BUS}=="usb",ENV{ID_SERIAL_SHORT}=="<SHORT SERIAL FOR LED ARDUINO HERE>",SYMLINK+="ttyLEDArduino"
+ ACTION=="add",ENV{ID_BUS}=="usb",ENV{ID_SERIAL_SHORT}=="<SHORT SERIAL FOR PUMP ARDUINO HERE>",SYMLINK+="ttyPumpArduino"
+```
+
+This will allow upload.sh to upload to each Arduino correctly every time.
