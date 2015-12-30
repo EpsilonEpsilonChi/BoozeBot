@@ -31,7 +31,7 @@ void clearLCD() {
   lcd.write(0x58);
   lcd.write(0xFE);
   lcd.write(0x48);
-  delay(100);
+  delay(150);
 }
 
 // Set :CD backlight RGB values based on inputs
@@ -84,6 +84,7 @@ void initLCD() {
   setLCDBacklight(0x0, 0x0, 0xFF);
   delay(500);
   setLCDBacklight(0x10, 0x0, 0x0);
+  delay(100);
 
   // Clear screen and return to top left corner
   clearLCD();
@@ -106,8 +107,10 @@ void powerOn() {
   int blinkDelay      = 200;
 
   // Display boot up indicator
-  clearLCD();
+  
   setLCDBacklight(0x0, 0xFF, 0x0);
+  delay(50);
+  clearLCD();
   lcd.print("Powering on...  ");
 
   // Blink button four times
@@ -178,6 +181,7 @@ void powerOn() {
   // Set display
   clearLCD();
   setLCDBacklight(0xFF, 0xFF, 0xFF);
+  delay(50);
   lcd.print("BoozeBot ready  ");
   lcd.print("No queued drinks");
 }
@@ -190,6 +194,7 @@ void powerOff() {
   // Display shutdown indicator
   clearLCD();
   setLCDBacklight(0xFF, 0x0, 0x0);
+  delay(50);
   lcd.print("Shutting down...");
 
   // Blink button four times
@@ -240,6 +245,7 @@ void powerOff() {
   digitalWrite(PSU_POWER_PIN, LOW);
   setLCDBacklight(0x10, 0x0, 0x0);
   clearLCD();
+  delay(50);
   lcd.print("Hold button to  ");
   lcd.print("turn on BoozeBot");
 }
@@ -265,6 +271,7 @@ int processCommand(aJsonObject *command) {
 
     clearLCD();
     setLCDBacklight(0xFF, 0xFF, 0xFF);
+    delay(50);
     lcd.print("Queued drink:   ");
     lcd.print(drinkNameString.substring(0, 15));
 
@@ -319,11 +326,13 @@ int processCommand(aJsonObject *command) {
     if (statusValue == 1) { // Drink cancelled
       clearLCD();
       setLCDBacklight(0xFF, 0x0, 0x0);
+      delay(50);
       lcd.print("Drink cancelled ");
 
       delay(2500);
-      setLCDBacklight(0xFF, 0xFF, 0xFF);
       setLED(BUTTON_LED_NUM, 0, 0, 0);
+      setLCDBacklight(0xFF, 0xFF, 0xFF);
+      delay(50);
       clearLCD();
       lcd.print("BoozeBot ready  ");
       lcd.print("No queued drinks");
@@ -332,6 +341,7 @@ int processCommand(aJsonObject *command) {
     } else if (statusValue == 2) {  // Start making drink
       clearLCD();
       setLCDBacklight(0x0, 0x0, 0xFF);
+      delay(50);
       lcd.print("Making drink:     ");
       lcd.print(drinkNameString.substring(0, 15));
 
@@ -357,6 +367,7 @@ int processCommand(aJsonObject *command) {
   } else if (msgType && (msgType->valueint == 3)) { // Drink completed
     setLED(BUTTON_LED_NUM, 0, 0, 0);
     setLCDBacklight(0xFF, 0xFF, 0xFF);
+    delay(50);
     clearLCD();
     lcd.print("BoozeBot ready  ");
     lcd.print("No queued drinks");
