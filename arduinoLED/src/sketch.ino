@@ -369,7 +369,7 @@ int processCommand(aJsonObject *command) {
 
       // Restart auto-shutoff timer
       autoOffTimer.restartTimer(timerId);
-      autoOffTimer.enable();
+      autoOffTimer.enable(timerId);
 
       return 1;
     } else if (statusValue == 2) {  // Start making drink
@@ -413,7 +413,7 @@ int processCommand(aJsonObject *command) {
 
     // Restart auto-shutoff timer
       autoOffTimer.restartTimer(timerId);
-      autoOffTimer.enable();
+      autoOffTimer.enable(timerId);
   }
 }
 
