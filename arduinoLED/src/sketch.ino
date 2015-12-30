@@ -13,7 +13,8 @@
 // TO DO: Turn off power supply on timer
 
 // Config variables
-int psuTurnOnTime  = 1000;    // Time it takes for the PSU to turn on (in ms)
+int psuTurnOnTime   = 1000; // Time it takes for the PSU to turn on (in ms)
+int autoShutoffTime = 1;    // Time BoozeBot stays on before shutting down (in secs)
 
 // Globals
 SimpleTimer autoOffTimer;
@@ -185,7 +186,7 @@ void powerOn() {
   lcd.print("No queued drinks");
 
   // Start auto-shutoff timer
-  timer.setTimeout(60000, powerOff);
+  autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
 }
 
 // Run shutdown animation and turn off power supply
@@ -364,7 +365,7 @@ int processCommand(aJsonObject *command) {
       lcd.print("No queued drinks");
 
       // Start auto-shutoff timer
-      timer.setTimeout(60000, powerOff);
+      autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
 
       return 1;
     } else if (statusValue == 2) {  // Start making drink
@@ -407,7 +408,7 @@ int processCommand(aJsonObject *command) {
     lcd.print("No queued drinks");
 
     // Start auto-shutoff timer
-    timer.setTimeout(60000, powerOff);
+    autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
   }
 }
 
