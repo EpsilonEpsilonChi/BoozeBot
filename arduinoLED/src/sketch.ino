@@ -14,10 +14,11 @@
 
 // Config variables
 int psuTurnOnTime   = 1000; // Time it takes for the PSU to turn on (in ms)
-int autoShutoffTime = 1;    // Time BoozeBot stays on before shutting down (in secs)
+int autoShutoffTime = 20;   // Time BoozeBot stays on before shutting down (in secs)
 
 // Globals
 SimpleTimer autoOffTimer;
+int timerId;
 bool powerStatus   = false; // False = off, True = on
 int powerHoldCount = 0;
 
@@ -186,7 +187,7 @@ void powerOn() {
   lcd.print("No queued drinks");
 
   // Start auto-shutoff timer
-  autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
+  timerId = autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
 }
 
 // Run shutdown animation and turn off power supply
@@ -253,7 +254,7 @@ void powerOff() {
 void fadeOutLighting() {
   int fadeDelay = 10;
 
-  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom,
     analogWrite(TOP_LED_STRIP, i);
     analogWrite(BOTTOM_LED_STRIP, i);
     for (int j = 1; j <= 12; j++) {
@@ -268,7 +269,7 @@ void fadeOutLighting() {
 void fadeInLighting() {
   int fadeDelay = 10;
 
-  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
+  for (int i = 0; i <= 255; i++) {  // Fade on top and bottom
     analogWrite(TOP_LED_STRIP, i);
     analogWrite(BOTTOM_LED_STRIP, i);
     for (int j = 1; j <= 12; j++) {
@@ -289,6 +290,8 @@ int processCommand(aJsonObject *command) {
   // Check command type
   aJsonObject *msgType = aJson.getObjectItem(command, "msgType");
   if (msgType && (msgType->valueint == 0)) {  // New drink on queue
+    autoOffTimer.disable(timerId);
+
     // Display drink name on LCD
     aJsonObject *drinkName = aJson.getObjectItem(command, "drinkName");
     String drinkNameString = drinkName->valuestring;
@@ -364,8 +367,9 @@ int processCommand(aJsonObject *command) {
       delay(50);
       lcd.print("No queued drinks");
 
-      // Start auto-shutoff timer
-      autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
+      // Restart auto-shutoff timer
+      autoOffTimer.restartTimer(timerId);
+      autoOffTimer.enable();
 
       return 1;
     } else if (statusValue == 2) {  // Start making drink
@@ -407,8 +411,9 @@ int processCommand(aJsonObject *command) {
     delay(50);
     lcd.print("No queued drinks");
 
-    // Start auto-shutoff timer
-    autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
+    // Restart auto-shutoff timer
+      autoOffTimer.restartTimer(timerId);
+      autoOffTimer.enable();
   }
 }
 
