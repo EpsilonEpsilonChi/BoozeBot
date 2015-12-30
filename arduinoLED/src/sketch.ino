@@ -12,7 +12,7 @@
 
 // Config variables
 int psuTurnOnTime   = 1000; // Time it takes for the PSU to turn on (in ms)
-int autoShutoffTime = 1;    // Time BoozeBot stays on before shutting down (in secs)
+int autoShutoffTime = 20;   // Time BoozeBot stays on before shutting down (in secs)
 
 // Globals
 int timerId;
