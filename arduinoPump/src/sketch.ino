@@ -22,8 +22,6 @@
 #define PUMPON 0
 #define PUMPOFF 1
 
-// NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
-
 // Config variables
 double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
 int messageToPumpDelay   = 100;     // Time between sending LED set message and pumping

@@ -1,5 +1,6 @@
 #include <aJSON.h>
 #include <Tlc5940.h>
+#include <SimpleTimer.h>
 #include <SoftwareSerial.h>
 
 #define LCD_TX_PIN 2
@@ -10,12 +11,12 @@
 #define BOTTOM_LED_STRIP 6
 
 // TO DO: Turn off power supply on timer
-// NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
 
 // Config variables
 int psuTurnOnTime  = 1000;    // Time it takes for the PSU to turn on (in ms)
 
 // Globals
+SimpleTimer autoOffTimer;
 bool powerStatus   = false; // False = off, True = on
 int powerHoldCount = 0;
 
@@ -182,6 +183,9 @@ void powerOn() {
   setLCDBacklight(0xFF, 0xFF, 0xFF);
   lcd.print("BoozeBot ready  ");
   lcd.print("No queued drinks");
+
+  // Start auto-shutoff timer
+  timer.setTimeout(60000, powerOff);
 }
 
 // Run shutdown animation and turn off power supply
@@ -359,6 +363,9 @@ int processCommand(aJsonObject *command) {
       delay(50);
       lcd.print("No queued drinks");
 
+      // Start auto-shutoff timer
+      timer.setTimeout(60000, powerOff);
+
       return 1;
     } else if (statusValue == 2) {  // Start making drink
 
@@ -398,6 +405,9 @@ int processCommand(aJsonObject *command) {
     lcd.print("BoozeBot ready  ");
     delay(50);
     lcd.print("No queued drinks");
+
+    // Start auto-shutoff timer
+    timer.setTimeout(60000, powerOff);
   }
 }
 
