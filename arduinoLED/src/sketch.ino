@@ -83,7 +83,7 @@ void initLCD() {
   delay(500);
   setLCDBacklight(0x0, 0x0, 0xFF);
   delay(500);
-  setLCDBacklight(0x10, 0x0, 0x0);
+  setLCDBacklight(0x00, 0x0, 0x0);
   delay(100);
 
   // Clear screen and return to top left corner
@@ -240,8 +240,38 @@ void powerOff() {
   // Turn off power supply and set display
   powerStatus = false;
   digitalWrite(PSU_POWER_PIN, LOW);
-  setLCDBacklight(0x10, 0x0, 0x0);
+  setLCDBacklight(0x0, 0x0, 0x0);
   clearLCD();
+}
+
+// Fades out all white lighting to make drink
+void fadeOutLighting() {
+  int fadeDelay = 10;
+
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
+    analogWrite(TOP_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, i);
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 16 * i, 16 * i, 16 * i);
+    }
+
+    delay(fadeDelay);
+  }
+}
+
+// Fades in all white lighting after making drink
+void fadeInLighting() {
+  int fadeDelay = 10;
+
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
+    analogWrite(TOP_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, i);
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 16 * i, 16 * i, 16 * i);
+    }
+
+    delay(fadeDelay);
+  }
 }
 
 // Processes command JSON data passed in
@@ -332,7 +362,7 @@ int processCommand(aJsonObject *command) {
       return 1;
     } else if (statusValue == 2) {  // Start making drink
 
-      // FADE OUT LIGHTING
+      fadeOutLighting();
 
       clearLCD();
       setLCDBacklight(0x0, 0x0, 0xFF);
@@ -360,7 +390,7 @@ int processCommand(aJsonObject *command) {
     }
   } else if (msgType && (msgType->valueint == 3)) { // Drink completed
 
-    // FADE IN LIGHTING
+    fadeInLighting();
 
     setLED(BUTTON_LED_NUM, 0, 0, 0);
     setLCDBacklight(0xFF, 0xFF, 0xFF);
@@ -398,9 +428,6 @@ void setup() {
 
   initLCD();
   clearLCD();
-  lcd.print("Press button to "); 
-  delay(50);
-  lcd.print("turn on Boozebot");
 
   serial_stream.flush();
 }
