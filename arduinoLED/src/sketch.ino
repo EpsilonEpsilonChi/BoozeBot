@@ -325,15 +325,17 @@ int processCommand(aJsonObject *command) {
 
         // Pulsing LED logic
         if (pulseCounter >= 819) {
-          if (pulseState) {
-            setLED(BUTTON_LED_NUM, 0, pulseCounter * 5, 0);
-            pulseState = false;
-          } else {
-            setLED(BUTTON_LED_NUM, 0, 819 - (pulseCounter * 5), 0);
-            pulseState = true;
-          }
           pulseCounter = 0;
         }
+
+        if (pulseState) {
+          setLED(BUTTON_LED_NUM, 0, pulseCounter * 5, 0);
+          pulseState = false;
+        } else {
+          setLED(BUTTON_LED_NUM, 0, 819 - (pulseCounter * 5), 0);
+          pulseState = true;
+        }
+
         pulseCounter += refreshRate;  
       }
 
