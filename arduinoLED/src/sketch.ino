@@ -98,21 +98,6 @@ void setLED(int ledNum, int red, int green, int blue) {
   Tlc.update();
 }
 
-// Fades on ambient (white) LED strips
-void fadeOnAmbient() {
-  for (int i = 0; i <= 255; i++) {
-    analogWrite(TOP_LED_STRIP, i);
-    analogWrite(BOTTOM_LED_STRIP, i);
-    delay(6);
-  }
-}
-
-// Immediately turn off ambient LED strips
-void turnOffAmbient() {
-  analogWrite(TOP_LED_STRIP, 0);
-  analogWrite(BOTTOM_LED_STRIP, 0);
-}
-
 // Power on power supply and run power on animation
 void powerOn() {
   int fadeDelay = 6;
@@ -154,7 +139,7 @@ void powerOn() {
   }
 
   for (int i = 255; i >= 0; i--) {  // Fade off top strip
-    analogWrite(BOTTOM_LED_STRIP, i);
+    analogWrite(TOP_LED_STRIP, i);
     delay(fadeDelay);
   }
 
@@ -200,7 +185,7 @@ void powerOff() {
 
   for (int i = 0; i <= 255; i++) {  // Fade off bottom strip, fade red up bottles
     int iInverse = 255 - i;
-    analogWrite(BOTTOM_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, iInverse);
     for (int j = 1; j <= 12; j++) {
       setLED(j, 16 * i, 0, 0);
     }
@@ -353,7 +338,6 @@ int processCommand(aJsonObject *command) {
     clearLCD();
     lcd.print("BoozeBot ready  ");
     lcd.print("No queued drinks");
-    fadeOnAmbient();
   }
 }
 
