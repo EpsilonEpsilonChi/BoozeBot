@@ -10,23 +10,18 @@
 #define TOP_LED_STRIP 5
 #define BOTTOM_LED_STRIP 6
 
-// TO DO: Turn off power supply on timer
-
 // Config variables
 int psuTurnOnTime   = 1000; // Time it takes for the PSU to turn on (in ms)
-int autoShutoffTime = 20;   // Time BoozeBot stays on before shutting down (in secs)
+int autoShutoffTime = 1;    // Time BoozeBot stays on before shutting down (in secs)
 
 // Globals
-SimpleTimer autoOffTimer;
 int timerId;
 bool powerStatus   = false; // False = off, True = on
 int powerHoldCount = 0;
 
-// Initialize LCD display
-SoftwareSerial lcd = SoftwareSerial(15, LCD_TX_PIN);
-
-// Globals
+SimpleTimer autoOffTimer;
 aJsonStream serial_stream(&Serial);
+SoftwareSerial lcd = SoftwareSerial(15, LCD_TX_PIN);
 
 // Clear the LCD and return cursor to top left corner
 void clearLCD() {
@@ -110,7 +105,6 @@ void powerOn() {
   int blinkDelay      = 200;
 
   // Display boot up indicator
-  
   setLCDBacklight(0x0, 0xFF, 0x0);
   clearLCD();
   lcd.print("Powering on...  ");
@@ -307,22 +301,19 @@ int processCommand(aJsonObject *command) {
     lcd.print(drinkNameString.substring(0, 15));
 
     // Blink dispense button green until action received 
-    // To do: make LED fade pulse instead of blink
-    int blinkRate = 400;
-    int refreshRate = 5;
-
+    int refreshRate = 1;
     bool pressed = false;
-    bool blinkState = true;
+    bool pulseState = true;
     int holdCount = 0;
     int statusValue = 0;
-    int blinkCounter = 0;
+    int pulseCounter = 0;
     while (statusValue == 0) {
       if (digitalRead(BUTTON_PIN)) {  // Check if button is pressed
         if (!pressed) { // Indicate press with white LED
           setLED(BUTTON_LED_NUM, 4095, 4095, 4095);
         }
         pressed = true;
-        blinkCounter = 0;
+        pulseCounter = 0;
         holdCount += refreshRate; // Count how long button is held
       } else {
         if (holdCount > 0) {  // Short press, exit loop
@@ -332,18 +323,18 @@ int processCommand(aJsonObject *command) {
         pressed = false;
         holdCount = 0;
 
-        if (blinkCounter >= blinkRate) {  // Check if time to change LED (for blink)
-          if (blinkState) {
-            setLED(BUTTON_LED_NUM, 0, 4095, 0);
-            blinkState = false;
+        // Pulsing LED logic
+        if (pulseCounter >= 819) {
+          if (pulseState) {
+            setLED(BUTTON_LED_NUM, pulseCounter * 5);
+            pulseState = false;
           } else {
-            setLED(BUTTON_LED_NUM, 0, 0, 0);
-            blinkState = true;
+            setLED(BUTTON_LED_NUM, 819 - (pulseCounter * 5))
+            pulseState = true;
           }
-          blinkCounter = 0;
+          pulseCounter = 0;
         }
-
-        blinkCounter += refreshRate;  
+        pulseCounter += refreshRate;  
       }
 
       if (holdCount >= 3000) {  // Long press if held for 3 seconds, exit loop
