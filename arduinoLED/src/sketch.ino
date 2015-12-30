@@ -83,6 +83,7 @@ void initLCD() {
   delay(500);
   setLCDBacklight(0x0, 0x0, 0xFF);
   delay(500);
+  setLCDBacklight(0x0, 0x0, 0x0);
 
   // Clear screen and return to top left corner
   clearLCD();
