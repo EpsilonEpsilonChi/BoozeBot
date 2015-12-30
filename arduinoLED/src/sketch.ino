@@ -16,8 +16,7 @@
 int psuTurnOnTime  = 1000;    // Time it takes for the PSU to turn on (in ms)
 
 // Globals
-bool powerOn       = false;
-int loopStatus     = 0;
+bool powerStatus   = false; // False = off, True = on
 int powerHoldCount = 0;
 
 // Initialize LCD display
@@ -123,7 +122,7 @@ void powerOn() {
   lcd.print("Powering on...  ");
 
   // Turn on power supply
-  powerOn = true;
+  powerStatus = true;
   digitalWrite(PSU_POWER_PIN, HIGH);
   delay(psuTurnOnTime);
 
@@ -233,7 +232,7 @@ void powerOff() {
   }
 
   // Turn off power supply and set display
-  powerOn = false;
+  powerStatus = false;
   digitalWrite(PSU_POWER_PIN, LOW);
 }
 
@@ -252,7 +251,7 @@ int processCommand(aJsonObject *command) {
     String drinkNameString = drinkName->valuestring;
 
     // Power on BoozeBot if necessary
-    if (!powerOn) {
+    if (!powerStatus) {
       powerOn();
     }
 
@@ -393,7 +392,7 @@ void setup() {
 void loop() {
   // Logic to allow power on and off with button hold
   while (digitalRead(BUTTON_PIN)) {
-    if (powerOn) {
+    if (powerStatus) {
       setLED(BUTTON_LED_NUM, 4095, 0, 0);
 
       if (powerHoldCount >= 2500) {
