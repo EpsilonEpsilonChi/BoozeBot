@@ -208,25 +208,29 @@ void powerOff() {
   }
 
   // Fade out red in wave pattern
-  for (int i = 255; i >= 0; i--) {
-    int iOffset = 128 + i
-    for (int k = 1; k <= 4; k++) {
-      setLED(k, 16 * i, 16 * i, 16 * i);
+  for (int i = 0; i <= 511; i++) {
+    if (i <= 255) {
+      int firstOff = 255 - i;
+      for (int j = 1; j <= 4; j++) {
+        setLED(j, 16 * firstOff, 0, 0);
+      }
     }
 
-    if (i < 128) {
-      for (int k = 1; k <= 4; k++) {
-        setLED(k, 16 * iOffset, 16 * iOffset, 16 * iOffset);
+    if ((i >= 128) && (i <= 383)) {
+      int secondOff = 383 - i;
+      for (int j = 5; j <= 8; j++) {
+        setLED(j, 16 * secondOff, 0, 0);
+      }
+    }
+
+    if (i >= 256) {
+      int thirdOff = 511 - i;
+      for (int j = 9; j <= 12; j++) {
+        setLED(j, 16 * thirdOff, 0, 0);
       }
     }
     delay(fadeDelay);
   }
-
-
-  // for (int i = 510; i >= 0; i--) {
-  //   int firstOffset = 510 - 
-  //   if (i)
-  // }
 
   // Turn off power supply and set display
   powerOn = false;
