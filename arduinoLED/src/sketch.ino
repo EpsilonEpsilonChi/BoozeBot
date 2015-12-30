@@ -83,7 +83,7 @@ void initLCD() {
   delay(500);
   setLCDBacklight(0x0, 0x0, 0xFF);
   delay(500);
-  setLCDBacklight(0x0, 0x0, 0x0);
+  setLCDBacklight(0x10, 0x0, 0x0);
 
   // Clear screen and return to top left corner
   clearLCD();
@@ -102,8 +102,8 @@ void setLED(int ledNum, int red, int green, int blue) {
 void powerOn() {
   int bottleFadeDelay = 1;
   int stripFadeDelay  = 5;
-  int bounceDelay = 70;
-  int blinkDelay  = 200;
+  int bounceDelay     = 120;
+  int blinkDelay      = 200;
 
   // Display boot up indicator
   clearLCD();
@@ -160,6 +160,7 @@ void powerOn() {
     analogWrite(TOP_LED_STRIP, i);
     delay(stripFadeDelay);
   }
+  delay(100);
 
   for (int i = 0; i <= 4095; i+=5) { // Fade in white bottles
     for (int j = 1; j <= 12; j++) {
@@ -167,8 +168,9 @@ void powerOn() {
     }
     delay(bottleFadeDelay);
   }
+  delay(100);
 
-  for (int i = 0; i <= 255; i++) {  // Fade on bottom strip
+  for (int i = 0; i <= 255; i++) {  // Fade in bottom strip
     analogWrite(BOTTOM_LED_STRIP, i);
     delay(stripFadeDelay);
   }
@@ -236,7 +238,7 @@ void powerOff() {
   // Turn off power supply and set display
   powerStatus = false;
   digitalWrite(PSU_POWER_PIN, LOW);
-  setLCDBacklight(0x10, 0x10, 0x10);
+  setLCDBacklight(0x10, 0x0, 0x0);
   clearLCD();
   lcd.print("Hold button to  ");
   lcd.print("turn on BoozeBot");
