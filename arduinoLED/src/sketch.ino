@@ -301,19 +301,22 @@ int processCommand(aJsonObject *command) {
     lcd.print(drinkNameString.substring(0, 15));
 
     // Blink dispense button green until action received 
-    int refreshRate = 1;
+    // To do: make LED fade pulse instead of blink
+    int blinkRate = 400;
+    int refreshRate = 5;
+
     bool pressed = false;
-    bool pulseState = true;
+    bool blinkState = true;
     int holdCount = 0;
     int statusValue = 0;
-    int pulseCounter = 0;
+    int blinkCounter = 0;
     while (statusValue == 0) {
       if (digitalRead(BUTTON_PIN)) {  // Check if button is pressed
         if (!pressed) { // Indicate press with white LED
           setLED(BUTTON_LED_NUM, 4095, 4095, 4095);
         }
         pressed = true;
-        pulseCounter = 0;
+        blinkCounter = 0;
         holdCount += refreshRate; // Count how long button is held
       } else {
         if (holdCount > 0) {  // Short press, exit loop
@@ -323,20 +326,18 @@ int processCommand(aJsonObject *command) {
         pressed = false;
         holdCount = 0;
 
-        // Pulsing LED logic
-        if (pulseCounter >= 819) {
-          pulseCounter = 0;
+        if (blinkCounter >= blinkRate) {  // Check if time to change LED (for blink)
+          if (blinkState) {
+            setLED(BUTTON_LED_NUM, 0, 4095, 0);
+            blinkState = false;
+          } else {
+            setLED(BUTTON_LED_NUM, 0, 0, 0);
+            blinkState = true;
+          }
+          blinkCounter = 0;
         }
 
-        if (pulseState) {
-          setLED(BUTTON_LED_NUM, 0, pulseCounter * 5, 0);
-          pulseState = false;
-        } else {
-          setLED(BUTTON_LED_NUM, 0, 819 - (pulseCounter * 5), 0);
-          pulseState = true;
-        }
-
-        pulseCounter += refreshRate;  
+        blinkCounter += refreshRate;  
       }
 
       if (holdCount >= 3000) {  // Long press if held for 3 seconds, exit loop
