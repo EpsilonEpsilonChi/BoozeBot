@@ -31,7 +31,7 @@ void clearLCD() {
   lcd.write(0x58);
   lcd.write(0xFE);
   lcd.write(0x48);
-  delay(10);
+  delay(100);
 }
 
 // Set :CD backlight RGB values based on inputs
