@@ -444,6 +444,8 @@ void setup() {
 }
 
 void loop() {
+  autoOffTimer.run();
+
   // Logic to allow power on and off with button hold
   while (digitalRead(BUTTON_PIN)) {
     if (powerStatus) {
