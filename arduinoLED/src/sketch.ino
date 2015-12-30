@@ -100,12 +100,23 @@ void setLED(int ledNum, int red, int green, int blue) {
 
 // Power on power supply and run power on animation
 void powerOn() {
-  int fadeDelay = 6;
+  int bottleFadeDelay = 1
+  int stripFadeDelay  = 5;
+  int bounceDelay = 70;
+  int blinkDelay  = 200;
 
   // Display boot up indicator
   clearLCD();
   setLCDBacklight(0x0, 0xFF, 0x0);
   lcd.print("Powering on...  ");
+
+  // Blink button four times
+  for (int count = 0; count < 4; count++) {
+    setLED(BUTTON_LED_NUM, 0, 4095, 0);
+    delay(blinkDelay);
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    delay(blinkDelay);
+  }
 
   // Turn on power supply
   powerStatus = true;
@@ -113,45 +124,53 @@ void powerOn() {
   delay(psuTurnOnTime);
 
   // Animation
+  setLED(1, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(2, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(3, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(4, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(8, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(12, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(11, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(10, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(9, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(5, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(6, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(7, 0, 4095, 0);
+  delay(2 * bounceDelay);
+
+  for (int i = 4095; i >= 0; i-=5) { // Fade out green bottles
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 0, i, 0);
+    }
+    delay(bottleFadeDelay);
+  }
+
+  for (int i = 0; i <= 255; i++) {  // Fade in top strip
+    analogWrite(TOP_LED_STRIP, i);
+    delay(stripFadeDelay);
+  }
+
+  for (int i = 0; i <= 4095; i+=5) { // Fade in white bottles
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, i, i, i);
+    }
+    delay(bottleFadeDelay);
+  }
+
   for (int i = 0; i <= 255; i++) {  // Fade on bottom strip
     analogWrite(BOTTOM_LED_STRIP, i);
-    delay(fadeDelay);
-  }
-
-  for (int i = 0; i <= 255; i++) {  // Fade off bottom, on bottles
-    int iInverse = 255 - i;
-
-    analogWrite(BOTTOM_LED_STRIP, iInverse);
-    for (int j = 1; j <= 12; j++) {
-      setLED(j, 16 * i, 16 * i, 16 * i);
-    }
-    delay(fadeDelay);
-  }
-
-  for (int i = 0; i <= 255; i++) {  // Fade off bottles, on top
-    int iInverse = 255 - i;
-
-    for (int j = 1; j <= 12; j++) {
-      setLED(j, 16 * iInverse, 16 * iInverse, 16 * iInverse);
-    }
-    analogWrite(TOP_LED_STRIP, i);
-    delay(fadeDelay);
-  }
-
-  for (int i = 255; i >= 0; i--) {  // Fade off top strip
-    analogWrite(TOP_LED_STRIP, i);
-    delay(fadeDelay);
-  }
-
-  for (int i = 0; i <= 255; i++) {  // Fade on everything
-    analogWrite(TOP_LED_STRIP, i);
-    analogWrite(BOTTOM_LED_STRIP, i);
-    for (int j = 1; j <= 12; j++) {
-      setLED(j, 16 * i, 16 * i, 16 * i);
-    }
-  }
-  for (int k = 1; k <= 12; k++) {   // Max out bottle LEDs
-    setLED(k, 4095, 4095, 4095);
+    delay(stripFadeDelay);
   }
 
   // Set display
@@ -163,37 +182,33 @@ void powerOn() {
 
 // Run shutdown animation and turn off power supply
 void powerOff() {
-  int fadeDelay = 6;
+  int fadeDelay = 5;
 
   // Display shutdown indicator
   clearLCD();
   setLCDBacklight(0xFF, 0x0, 0x0);
   lcd.print("Shutting down...");
 
+  // Blink button four times
+  for (int count = 0; count < 4; count++) {
+    setLED(BUTTON_LED_NUM, 4095, 0, 0);
+    delay(blinkDelay);
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    delay(blinkDelay);
+  }
+
   // Animation
-  for (int i = 255; i >= 0; i--) {  // Fade off top strip
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
     analogWrite(TOP_LED_STRIP, i);
-    delay(fadeDelay);
-  }
-
-  for (int i = 255; i >= 0; i--) {  // Fade off bottles
+    analogWrite(BOTTOM_LED_STRIP, i);
     for (int j = 1; j <= 12; j++) {
-      setLED(j, 16 * i, 16 * i, 16 * i);
+      setLED(j, 4080, 16 * i, 16 * i);
     }
+
     delay(fadeDelay);
   }
 
-  for (int i = 0; i <= 255; i++) {  // Fade off bottom strip, fade red up bottles
-    int iInverse = 255 - i;
-    analogWrite(BOTTOM_LED_STRIP, iInverse);
-    for (int j = 1; j <= 12; j++) {
-      setLED(j, 16 * i, 0, 0);
-    }
-    delay(fadeDelay);
-  }
-
-  // Fade out red in wave pattern
-  for (int i = 0; i <= 511; i++) {
+  for (int i = 0; i <= 511; i++) {  // Fade out red in wave pattern
     if (i <= 255) {
       int firstOff = 255 - i;
       for (int j = 1; j <= 4; j++) {
@@ -220,6 +235,10 @@ void powerOff() {
   // Turn off power supply and set display
   powerStatus = false;
   digitalWrite(PSU_POWER_PIN, LOW);
+  setLCDBacklight(0x10, 0x10, 0x10);
+  clearLCD();
+  lcd.print("Hold button to  ");
+  lcd.print("turn on BoozeBot");
 }
 
 // Processes command JSON data passed in
@@ -368,8 +387,8 @@ void setup() {
 
   initLCD();
   clearLCD();
-  lcd.print("BoozeBot off, hold");
-  lcd.print("button to turn on ");
+  lcd.print("Hold button to  ");
+  lcd.print("turn on BoozeBot");
 
   serial_stream.flush();
 }
