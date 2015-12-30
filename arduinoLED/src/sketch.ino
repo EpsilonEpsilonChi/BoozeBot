@@ -97,6 +97,13 @@ void setLED(int ledNum, int red, int green, int blue) {
   Tlc.update();
 }
 
+// Clears all LEDs (no power)
+void clearLeds() {
+  for (int i = 1; i <= 12; i++) {
+    setLED(i, 0, 0, 0);
+  }
+}
+
 // Power on power supply and run power on animation
 void powerOn() {
   int bottleFadeDelay = 1;
@@ -377,9 +384,8 @@ int processCommand(aJsonObject *command) {
 
       return 2;
     }
-
-    // turn off button LED?
   } else if (msgType && (msgType->valueint == 1)) { // Set LED with given values
+    clearLeds();
     aJsonObject *led = aJson.getObjectItem(command, "led");
 
     if (led) {
