@@ -392,29 +392,29 @@ void setup() {
 
 void loop() {
   // Logic to allow power on and off with button hold
-  while (loopStatus != 0) {
-    if (digitalRead(PSU_POWER_PIN) == true) { // Button pressed
-      if ((loopStatus == 0) && (powerOn == false)) {  // Attempting power on
-        setLED(BUTTON_LED_NUM, 0, 4095, 0);
-      } else if ((loopStatus == 0) && (powerOn == true)) {  // Attempting power off
-        setLED(BUTTON_LED_NUM, 4095, 0, 0);
-      }
+  while (digitalRead(BUTTON_PIN)) {
+    if (powerOn) {
+      setLED(BUTTON_LED_NUM, 4095, 0, 0);
 
-      loopStatus = 1;
-      powerHoldCount++;
-    } else {  // Button released
-      if ((powerHoldCount >= 2000) && (powerOn == false)) { // Power on BoozeBot
-        powerOn();
-      } else if ((powerHoldCount >= 2000) && (powerOn == true)) { // Power off BoozeBot
+      if (powerHoldCount >= 2500) {
         powerOff();
-      } else {
-        setLED(BUTTON_LED_NUM, 0, 0, 0);
-        powerHoldCount = 0;
       }
+    } else {
+      setLED(BUTTON_LED_NUM, 0, 4095, 0);
 
-      loopStatus = 0;
+      if (powerHoldCount >= 2500) {
+        powerOn();
+      }
     }
-    delay(1)
+
+    powerHoldCount++;
+    delay(1);
+  } 
+
+  // Clear if button released
+  if (!digitalRead(BUTTON_PIN)) {
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    powerHoldCount = 0;
   }
 
   // Skip garbage
