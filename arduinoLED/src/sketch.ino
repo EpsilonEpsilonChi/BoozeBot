@@ -100,7 +100,7 @@ void setLED(int ledNum, int red, int green, int blue) {
 
 // Power on power supply and run power on animation
 void powerOn() {
-  int bottleFadeDelay = 1
+  int bottleFadeDelay = 1;
   int stripFadeDelay  = 5;
   int bounceDelay = 70;
   int blinkDelay  = 200;
@@ -182,7 +182,8 @@ void powerOn() {
 
 // Run shutdown animation and turn off power supply
 void powerOff() {
-  int fadeDelay = 5;
+  int fadeDelay   = 5;
+  int blinkDelay  = 200;
 
   // Display shutdown indicator
   clearLCD();
