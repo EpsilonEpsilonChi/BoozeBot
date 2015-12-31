@@ -14,6 +14,7 @@
 		4B5BF4F91C34C731008A1B80 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B5BF4F71C34C731008A1B80 /* LaunchScreen.storyboard */; };
 		4B5BF5041C34C731008A1B80 /* BoozeBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5BF5031C34C731008A1B80 /* BoozeBotTests.swift */; };
 		4B5BF50F1C34C731008A1B80 /* BoozeBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5BF50E1C34C731008A1B80 /* BoozeBotUITests.swift */; };
+		EB80C95B139AD42E9B633C08 /* libPods-BoozeBot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 281A43783DDA800749E5220F /* libPods-BoozeBot.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		281A43783DDA800749E5220F /* libPods-BoozeBot.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BoozeBot.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B5BF4EB1C34C731008A1B80 /* BoozeBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoozeBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B5BF4EE1C34C731008A1B80 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B5BF4F01C34C731008A1B80 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +49,8 @@
 		4B5BF50A1C34C731008A1B80 /* BoozeBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoozeBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B5BF50E1C34C731008A1B80 /* BoozeBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoozeBotUITests.swift; sourceTree = "<group>"; };
 		4B5BF5101C34C731008A1B80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B7E2A9F87EEF2B94FAF0AB3 /* Pods-BoozeBot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoozeBot.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BoozeBot/Pods-BoozeBot.debug.xcconfig"; sourceTree = "<group>"; };
+		D9DC5A7E12CA5FF9A06F3890 /* Pods-BoozeBot.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoozeBot.release.xcconfig"; path = "Pods/Target Support Files/Pods-BoozeBot/Pods-BoozeBot.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB80C95B139AD42E9B633C08 /* libPods-BoozeBot.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +79,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E9CEB4310766626AECC693A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4B7E2A9F87EEF2B94FAF0AB3 /* Pods-BoozeBot.debug.xcconfig */,
+				D9DC5A7E12CA5FF9A06F3890 /* Pods-BoozeBot.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4B5BF4E21C34C731008A1B80 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +95,8 @@
 				4B5BF5021C34C731008A1B80 /* BoozeBotTests */,
 				4B5BF50D1C34C731008A1B80 /* BoozeBotUITests */,
 				4B5BF4EC1C34C731008A1B80 /* Products */,
+				3E9CEB4310766626AECC693A /* Pods */,
+				B19359B5200A7EF4DAAD5FEA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +141,14 @@
 			path = BoozeBotUITests;
 			sourceTree = "<group>";
 		};
+		B19359B5200A7EF4DAAD5FEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				281A43783DDA800749E5220F /* libPods-BoozeBot.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +156,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4B5BF5131C34C731008A1B80 /* Build configuration list for PBXNativeTarget "BoozeBot" */;
 			buildPhases = (
+				5C8CB0ABCDF432E547E4B5D0 /* Check Pods Manifest.lock */,
 				4B5BF4E71C34C731008A1B80 /* Sources */,
 				4B5BF4E81C34C731008A1B80 /* Frameworks */,
 				4B5BF4E91C34C731008A1B80 /* Resources */,
+				975EEE525E1701911E550B09 /* Embed Pods Frameworks */,
+				AE869D403B011EC86AC1DAEF /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -250,6 +277,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5C8CB0ABCDF432E547E4B5D0 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		975EEE525E1701911E550B09 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoozeBot/Pods-BoozeBot-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AE869D403B011EC86AC1DAEF /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BoozeBot/Pods-BoozeBot-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4B5BF4E71C34C731008A1B80 /* Sources */ = {
@@ -395,6 +470,7 @@
 		};
 		4B5BF5141C34C731008A1B80 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4B7E2A9F87EEF2B94FAF0AB3 /* Pods-BoozeBot.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = BoozeBot/Info.plist;
@@ -406,6 +482,7 @@
 		};
 		4B5BF5151C34C731008A1B80 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D9DC5A7E12CA5FF9A06F3890 /* Pods-BoozeBot.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = BoozeBot/Info.plist;
@@ -482,6 +559,7 @@
 				4B5BF5151C34C731008A1B80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4B5BF5161C34C731008A1B80 /* Build configuration list for PBXNativeTarget "BoozeBotTests" */ = {
 			isa = XCConfigurationList;
@@ -490,6 +568,7 @@
 				4B5BF5181C34C731008A1B80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4B5BF5191C34C731008A1B80 /* Build configuration list for PBXNativeTarget "BoozeBotUITests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +577,7 @@
 				4B5BF51B1C34C731008A1B80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

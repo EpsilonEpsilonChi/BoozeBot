@@ -54,3 +54,6 @@ In order to make sure the Arduinos are assigned to their own serial port at boot
 ```
 
 This will allow upload.sh to upload to each Arduino correctly every time.
+
+## Notes for setting up for iOS modifications
+Be sure to add the Firebase Pod: https://www.firebase.com/docs/ios/quickstart.html (see section 2)
