@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:gravity="center_horizontal"
-        />
+        android:layout_marginBottom="64dp"
+        android:textSize="50dp"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -42,7 +43,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/login_button"
         android:textColor="@color/white"
-        />
+        android:backgroundTint="#157ff9"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,5 +51,5 @@
         android:layout_marginRight="64dp"
         android:text="@string/create_account_button"
         android:textColor="@color/white"
-        />
+        android:backgroundTint="#1e5996"/>
 </LinearLayout>
