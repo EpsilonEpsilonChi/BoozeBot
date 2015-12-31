@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BoozeBot</string>
+    <string name="login_button">Login</string>
+    <string name="create_account_button">Create Account</string>
 </resources>
