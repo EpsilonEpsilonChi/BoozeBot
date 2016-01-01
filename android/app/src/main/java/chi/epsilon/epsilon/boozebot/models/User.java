@@ -5,7 +5,7 @@ public class User {
     private String lastName;
     private String username;
     private String email;
-    private boolean isEex;
+    private boolean isEex = false;
 
     public User() {
     }
@@ -63,7 +63,7 @@ public class User {
         private String lastName;
         private String username;
         private String email;
-        private boolean isEex;
+        private boolean isEex = false;
 
         public UserBuilder() {}
         public UserBuilder firstName(String fn) {

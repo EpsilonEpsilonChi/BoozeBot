@@ -13,17 +13,30 @@
         android:gravity="center_horizontal"
         android:textSize="24sp"/>
 
-    <!--  Name Label -->
+    <!--  First Name Label -->
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
-        <EditText android:id="@+id/input_name"
+        <EditText android:id="@+id/input_first_name"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:inputType="textCapWords"
-                  android:hint="@string/name" />
+                  android:hint="@string/first_name" />
+    </android.support.design.widget.TextInputLayout>
+
+    <!--  Last Name Label -->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/input_last_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:inputType="textCapWords"
+                  android:hint="@string/last_name" />
     </android.support.design.widget.TextInputLayout>
 
     <!--  User Name Label -->

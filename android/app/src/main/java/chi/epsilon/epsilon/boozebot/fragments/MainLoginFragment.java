@@ -65,12 +65,9 @@ public class MainLoginFragment extends Fragment {
                 transaction.replace(R.id.fragment_container, createAccount)
                         .addToBackStack(null)
                         .commit();
-
-
             }
         });
 
         return v;
     }
-
 }
