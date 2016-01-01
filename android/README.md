@@ -7,3 +7,4 @@ Android app for BoozeBot
 ## TODO
 * get rid of weird red lines around EditTexts on login page
 * figure out why app title bar isn't going away on actual device (it's gone on layout previews)
+* figure out weird rendering error -- doesn't actually impact functionality

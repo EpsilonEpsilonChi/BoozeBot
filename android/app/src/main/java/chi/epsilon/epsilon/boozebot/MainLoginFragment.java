@@ -2,6 +2,7 @@ package chi.epsilon.epsilon.boozebot;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import com.firebase.client.FirebaseError;
 
 import java.util.Map;
 
-public class LoginFragment extends Fragment {
+public class MainLoginFragment extends Fragment {
     private Button mLoginButton;
     private Button  mCreateButton;
 
@@ -28,7 +29,6 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_main_login, container, false);
         final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
-
 
         mLoginButton = (Button) v.findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -59,18 +59,13 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // show create account fragment
+                CreateAccountFragment createAccount = new CreateAccountFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, createAccount)
+                        .addToBackStack(null)
+                        .commit();
 
-                rootRef.createUser("test@blah.com", "pw", new Firebase.ValueResultHandler<Map<String, Object>>() {
-                    @Override
-                    public void onSuccess(Map<String, Object> result) {
-                        System.out.println("Successfully created user account with uid: " + result.get("uid"));
-                    }
 
-                    @Override
-                    public void onError(FirebaseError firebaseError) {
-                        // there was an error
-                    }
-                });
             }
         });
 
