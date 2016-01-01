@@ -13,19 +13,20 @@
         android:gravity="center_horizontal"
         android:layout_marginBottom="64dp"
         android:textColor="@color/white"
-        android:textSize="50dp"/>
+        android:textSize="50sp"/>
 
     <EditText
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/username"
         android:background="@drawable/rounded_edittext"
         />
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginLeft="32dp"
@@ -33,10 +34,10 @@
         android:layout_marginTop="16dp"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/password"
         android:background="@drawable/rounded_edittext"
         />
     <Button
+        android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="64dp"
@@ -46,6 +47,7 @@
         android:textColor="@color/white"
         android:backgroundTint="#157ff9"/>
     <Button
+        android:id="@+id/create_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="64dp"
