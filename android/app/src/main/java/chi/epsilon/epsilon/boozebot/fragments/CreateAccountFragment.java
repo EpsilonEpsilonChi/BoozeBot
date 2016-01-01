@@ -1,4 +1,4 @@
-package chi.epsilon.epsilon.boozebot;
+package chi.epsilon.epsilon.boozebot.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +13,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import java.util.Map;
+
+import chi.epsilon.epsilon.boozebot.R;
 
 public class CreateAccountFragment extends Fragment {
     @Override
