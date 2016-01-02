@@ -16,12 +16,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
-//        Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
-//        Firebase rootRef = new Firebase("https://kenzandroidtest.firebaseio.com/");
-//        rootRef.child("users").push().setValue("Kenziscool");
-//        rootRef.child("users").child("newuser").setValue("new one");
-
-
         setContentView(R.layout.activity_login);
 
         FragmentManager fm = getSupportFragmentManager();

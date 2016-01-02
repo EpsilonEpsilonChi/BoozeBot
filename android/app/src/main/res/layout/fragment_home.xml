@@ -28,21 +28,21 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_boarder"
             android:textColor="@color/white"
             android:text="Recipes"
+            android:background="@drawable/button_boarder"
             android:singleLine="false"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_boarder"
             android:textColor="@color/white"
+            android:background="@drawable/button_boarder"
             android:text="Drink Queue"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_boarder"
             android:textColor="@color/white"
+            android:background="@drawable/button_boarder"
             android:text="History"/>
     </LinearLayout>
 </LinearLayout>

@@ -1,5 +1,7 @@
 package chi.epsilon.epsilon.boozebot.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +17,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import chi.epsilon.epsilon.boozebot.R;
+import chi.epsilon.epsilon.boozebot.activities.LoginActivity;
+import chi.epsilon.epsilon.boozebot.activities.MainActivity;
 import chi.epsilon.epsilon.boozebot.fragments.CreateAccountFragment;
 
 public class MainLoginFragment extends Fragment {
@@ -44,6 +48,8 @@ public class MainLoginFragment extends Fragment {
                     public void onAuthenticated(AuthData authData) {
                         Toast.makeText(getContext(), "Successful Login!", Toast.LENGTH_SHORT).show();
                         // If successful, start main activity
+                        Intent i = new Intent(getActivity(), MainActivity.class);
+                        startActivity(i);
                     }
 
                     @Override
