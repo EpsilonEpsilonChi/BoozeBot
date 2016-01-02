@@ -35,11 +35,21 @@ public class CreateAccountFragment extends Fragment {
         createAcct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                final String firstName = ((EditText)v.findViewById(R.id.input_first_name)).getText().toString();
-                final String lastName = ((EditText)v.findViewById(R.id.input_last_name)).getText().toString();
-                final String un = ((EditText)v.findViewById(R.id.input_username)).getText().toString();
-                final String email = ((EditText)v.findViewById(R.id.input_email)).getText().toString();
-                final String pw = ((EditText)v.findViewById(R.id.input_password)).getText().toString();
+                final String firstName = ((EditText)v.findViewById(R.id.input_first_name))
+                        .getText()
+                        .toString();
+                final String lastName = ((EditText)v.findViewById(R.id.input_last_name))
+                        .getText()
+                        .toString();
+                final String un = ((EditText)v.findViewById(R.id.input_username))
+                        .getText()
+                        .toString();
+                final String email = ((EditText)v.findViewById(R.id.input_email))
+                        .getText()
+                        .toString();
+                final String pw = ((EditText)v.findViewById(R.id.input_password))
+                        .getText()
+                        .toString();
 
                 if (firstName.isEmpty()) {
                     Toast.makeText(getContext(), R.string.no_first_name, Toast.LENGTH_SHORT).show();
@@ -52,14 +62,19 @@ public class CreateAccountFragment extends Fragment {
                 } else if (pw.isEmpty()) {
                     Toast.makeText(getContext(), R.string.no_pw, Toast.LENGTH_SHORT).show();
                 } else {
-                    // TODO(mshelley) check that username is unique; if not, show an error & do not create the account.
+                    // TODO(mshelley) check that username is unique;
+                    // if not, show an error & do not create the account.
 
                     // If all fields are filled in:
                     rootRef.createUser(email, pw, new Firebase.ValueResultHandler<Map<String, Object>>() {
                         @Override
                         public void onSuccess(Map<String, Object> result) {
                             User.UserBuilder builder = new User.UserBuilder();
-                            User newUser = builder.firstName(firstName).lastName(lastName).username(un).email(email).build();
+                            User newUser = builder.firstName(firstName)
+                                    .lastName(lastName)
+                                    .username(un)
+                                    .email(email)
+                                    .build();
 
                             // Add the user to db
                             rootRef.child("Users").child(un).setValue(newUser);
