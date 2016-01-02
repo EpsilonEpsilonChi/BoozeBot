@@ -5,26 +5,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.firebase.client.Firebase;
-
-import chi.epsilon.epsilon.boozebot.fragments.MainLoginFragment;
 import chi.epsilon.epsilon.boozebot.R;
+import chi.epsilon.epsilon.boozebot.fragments.HomeFragment;
+import chi.epsilon.epsilon.boozebot.fragments.MainLoginFragment;
 
-public class LoginActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(this);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        Fragment fragment = fm.findFragmentById(R.id.home_fragment_container);
 
         if (fragment == null) {
-            fragment = new MainLoginFragment();
+            fragment = new HomeFragment();
             fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .add(R.id.home_fragment_container, fragment)
                     .commit();
         }
     }

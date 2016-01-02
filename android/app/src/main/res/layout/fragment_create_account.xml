@@ -85,7 +85,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:padding="12dp"
+        android:background="@drawable/button_boarder"
         android:text="@string/signup"/>
 
     <TextView android:id="@+id/link_login"
