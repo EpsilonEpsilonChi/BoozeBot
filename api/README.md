@@ -10,7 +10,7 @@ POST /queue_drink {user: "user_name", drink: "drink_name"}
 ## To Deploy: 
 1) cd into 'deployed' directory 
 2) commit any changes to the openshift git repo in the 'deployed' dir
-3) push changes -- ourput should indicate that the app was automatically
+3) push changes -- output should indicate that the app was automatically
 deployed.
 
 ## SSH:
