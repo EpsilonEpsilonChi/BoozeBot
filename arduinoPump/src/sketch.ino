@@ -24,7 +24,7 @@
 
 // Config variables
 double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
-int messageToPumpDelay   = 100;     // Time between sending LED set message and pumping
+int messageToPumpDelay   = 400;     // Time between sending LED set message and pumping
 
 // Globals
 aJsonStream serial_stream(&Serial);

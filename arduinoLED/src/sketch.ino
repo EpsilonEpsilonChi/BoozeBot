@@ -440,7 +440,6 @@ void setup() {
   pinMode(BOTTOM_LED_STRIP, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
   pinMode(PSU_POWER_PIN, OUTPUT);
-  digitalWrite(PSU_POWER_PIN, LOW);
 
   initLCD();
   clearLCD();
@@ -498,3 +497,5 @@ void loop() {
     }
   }
 }
+
+//{"msgType":2,"led":{"num":12,"r":4095,"g":0,"b":0}}
