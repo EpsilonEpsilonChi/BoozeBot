@@ -20,7 +20,7 @@
 .build/uno/aJson/utility/stringbuffer.o : lib/aJson/utility/stringbuffer.c
 	@echo [93maJson/utility/stringbuffer.c[0m
 	@mkdir -p .build/uno/aJson/utility
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c lib/aJson/utility/stringbuffer.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c lib/aJson/utility/stringbuffer.c
 include .build/uno/aJson/utility/stringbuffer.d
 
 
@@ -31,7 +31,7 @@ include .build/uno/aJson/utility/stringbuffer.d
 .build/uno/aJson/aJSON.o : lib/aJson/aJSON.cpp
 	@echo [93maJson/aJSON.cpp[0m
 	@mkdir -p .build/uno/aJson
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c lib/aJson/aJSON.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c lib/aJson/aJSON.cpp
 include .build/uno/aJson/aJSON.d
 
 
@@ -54,7 +54,7 @@ include .build/uno/aJson/aJSON.d
 .build/uno/Tlc5940-master/Tlc5940.o : lib/Tlc5940-master/Tlc5940.cpp
 	@echo [93mTlc5940-master/Tlc5940.cpp[0m
 	@mkdir -p .build/uno/Tlc5940-master
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c lib/Tlc5940-master/Tlc5940.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c lib/Tlc5940-master/Tlc5940.cpp
 include .build/uno/Tlc5940-master/Tlc5940.d
 
 
@@ -74,10 +74,33 @@ include .build/uno/Tlc5940-master/Tlc5940.d
 
 
 
+.build/uno/SimpleTimer/SimpleTimer.o : lib/SimpleTimer/SimpleTimer.cpp
+	@echo [93mSimpleTimer/SimpleTimer.cpp[0m
+	@mkdir -p .build/uno/SimpleTimer
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c lib/SimpleTimer/SimpleTimer.cpp
+include .build/uno/SimpleTimer/SimpleTimer.d
+
+
+
+.build/uno/SimpleTimer/libSimpleTimer.a : .build/uno/SimpleTimer/SimpleTimer.o
+	@echo [92mLinking libSimpleTimer.a[0m
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-ar rcs $@ $^
+
+
+
+
+
+
+
+
+
+
+
+
 .build/uno/SoftwareSerial/SoftwareSerial.o : /usr/share/arduino/libraries/SoftwareSerial/SoftwareSerial.cpp
 	@echo [93mSoftwareSerial/SoftwareSerial.cpp[0m
 	@mkdir -p .build/uno/SoftwareSerial
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/libraries/SoftwareSerial/SoftwareSerial.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/libraries/SoftwareSerial/SoftwareSerial.cpp
 include .build/uno/SoftwareSerial/SoftwareSerial.d
 
 
@@ -95,49 +118,49 @@ include .build/uno/SoftwareSerial/SoftwareSerial.d
 .build/uno/arduino/WInterrupts.o : /usr/share/arduino/hardware/arduino/cores/arduino/WInterrupts.c
 	@echo [93marduino/WInterrupts.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WInterrupts.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WInterrupts.c
 include .build/uno/arduino/WInterrupts.d
 
 .build/uno/arduino/avr-libc/realloc.o : /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/realloc.c
 	@echo [93marduino/avr-libc/realloc.c[0m
 	@mkdir -p .build/uno/arduino/avr-libc
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/realloc.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/realloc.c
 include .build/uno/arduino/avr-libc/realloc.d
 
 .build/uno/arduino/avr-libc/malloc.o : /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/malloc.c
 	@echo [93marduino/avr-libc/malloc.c[0m
 	@mkdir -p .build/uno/arduino/avr-libc
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/malloc.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/avr-libc/malloc.c
 include .build/uno/arduino/avr-libc/malloc.d
 
 .build/uno/arduino/wiring_pulse.o : /usr/share/arduino/hardware/arduino/cores/arduino/wiring_pulse.c
 	@echo [93marduino/wiring_pulse.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_pulse.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_pulse.c
 include .build/uno/arduino/wiring_pulse.d
 
 .build/uno/arduino/wiring_shift.o : /usr/share/arduino/hardware/arduino/cores/arduino/wiring_shift.c
 	@echo [93marduino/wiring_shift.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_shift.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_shift.c
 include .build/uno/arduino/wiring_shift.d
 
 .build/uno/arduino/wiring.o : /usr/share/arduino/hardware/arduino/cores/arduino/wiring.c
 	@echo [93marduino/wiring.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring.c
 include .build/uno/arduino/wiring.d
 
 .build/uno/arduino/wiring_analog.o : /usr/share/arduino/hardware/arduino/cores/arduino/wiring_analog.c
 	@echo [93marduino/wiring_analog.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_analog.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_analog.c
 include .build/uno/arduino/wiring_analog.d
 
 .build/uno/arduino/wiring_digital.o : /usr/share/arduino/hardware/arduino/cores/arduino/wiring_digital.c
 	@echo [93marduino/wiring_digital.c[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_digital.c
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc   -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/wiring_digital.c
 include .build/uno/arduino/wiring_digital.d
 
 
@@ -148,73 +171,73 @@ include .build/uno/arduino/wiring_digital.d
 .build/uno/arduino/WMath.o : /usr/share/arduino/hardware/arduino/cores/arduino/WMath.cpp
 	@echo [93marduino/WMath.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WMath.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WMath.cpp
 include .build/uno/arduino/WMath.d
 
 .build/uno/arduino/HardwareSerial.o : /usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.cpp
 	@echo [93marduino/HardwareSerial.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.cpp
 include .build/uno/arduino/HardwareSerial.d
 
 .build/uno/arduino/WString.o : /usr/share/arduino/hardware/arduino/cores/arduino/WString.cpp
 	@echo [93marduino/WString.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WString.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/WString.cpp
 include .build/uno/arduino/WString.d
 
 .build/uno/arduino/new.o : /usr/share/arduino/hardware/arduino/cores/arduino/new.cpp
 	@echo [93marduino/new.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/new.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/new.cpp
 include .build/uno/arduino/new.d
 
 .build/uno/arduino/IPAddress.o : /usr/share/arduino/hardware/arduino/cores/arduino/IPAddress.cpp
 	@echo [93marduino/IPAddress.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/IPAddress.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/IPAddress.cpp
 include .build/uno/arduino/IPAddress.d
 
 .build/uno/arduino/Tone.o : /usr/share/arduino/hardware/arduino/cores/arduino/Tone.cpp
 	@echo [93marduino/Tone.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Tone.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Tone.cpp
 include .build/uno/arduino/Tone.d
 
 .build/uno/arduino/Print.o : /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp
 	@echo [93marduino/Print.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Print.cpp
 include .build/uno/arduino/Print.d
 
 .build/uno/arduino/main.o : /usr/share/arduino/hardware/arduino/cores/arduino/main.cpp
 	@echo [93marduino/main.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/main.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/main.cpp
 include .build/uno/arduino/main.d
 
 .build/uno/arduino/HID.o : /usr/share/arduino/hardware/arduino/cores/arduino/HID.cpp
 	@echo [93marduino/HID.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/HID.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/HID.cpp
 include .build/uno/arduino/HID.d
 
 .build/uno/arduino/USBCore.o : /usr/share/arduino/hardware/arduino/cores/arduino/USBCore.cpp
 	@echo [93marduino/USBCore.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/USBCore.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/USBCore.cpp
 include .build/uno/arduino/USBCore.d
 
 .build/uno/arduino/CDC.o : /usr/share/arduino/hardware/arduino/cores/arduino/CDC.cpp
 	@echo [93marduino/CDC.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/CDC.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/CDC.cpp
 include .build/uno/arduino/CDC.d
 
 .build/uno/arduino/Stream.o : /usr/share/arduino/hardware/arduino/cores/arduino/Stream.cpp
 	@echo [93marduino/Stream.cpp[0m
 	@mkdir -p .build/uno/arduino
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Stream.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions  -o $@ -c /usr/share/arduino/hardware/arduino/cores/arduino/Stream.cpp
 include .build/uno/arduino/Stream.d
 
 
@@ -240,7 +263,7 @@ include .build/uno/arduino/Stream.d
 .build/uno/src/sketch.o : .build/uno/src/sketch.cpp
 	@echo [93msrc/sketch.cpp[0m
 	@mkdir -p .build/uno/src
-	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions -iquote src  -o $@ -c .build/uno/src/sketch.cpp
+	@/usr/share/arduino/hardware/tools/avr/bin/avr-g++ -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=105 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/standard -Ilib/aJson -Ilib/aJson/utility -Ilib/Tlc5940-master -Ilib/Tlc5940-master/pinouts -Ilib/SimpleTimer -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/hardware/arduino/cores/arduino/avr-libc -fno-exceptions -iquote src  -o $@ -c .build/uno/src/sketch.cpp
 include .build/uno/src/sketch.d
 
 
@@ -249,7 +272,7 @@ include .build/uno/src/sketch.d
 
 
 
-.build/uno/firmware.elf : .build/uno/src/sketch.o .build/uno/aJson/libaJson.a .build/uno/Tlc5940-master/libTlc5940-master.a .build/uno/SoftwareSerial/libSoftwareSerial.a .build/uno/arduino/libarduino.a
+.build/uno/firmware.elf : .build/uno/src/sketch.o .build/uno/aJson/libaJson.a .build/uno/Tlc5940-master/libTlc5940-master.a .build/uno/SimpleTimer/libSimpleTimer.a .build/uno/SoftwareSerial/libSoftwareSerial.a .build/uno/arduino/libarduino.a
 	@echo [92mLinking firmware.elf[0m
 	@/usr/share/arduino/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p -Wl,-Os -Wl,--gc-sections -o $@ $^ -lm
 
@@ -258,7 +281,7 @@ include .build/uno/src/sketch.d
 	@echo [92mConverting to firmware.hex[0m
 	@/usr/share/arduino/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom $^ $@
 
-include .build/uno/src/dependencies.d .build/uno/arduino/dependencies.d .build/uno/aJson/dependencies.d .build/uno/Tlc5940-master/dependencies.d .build/uno/SoftwareSerial/dependencies.d
+include .build/uno/src/dependencies.d .build/uno/arduino/dependencies.d .build/uno/aJson/dependencies.d .build/uno/Tlc5940-master/dependencies.d .build/uno/SimpleTimer/dependencies.d .build/uno/SoftwareSerial/dependencies.d
 
 all : .build/uno/firmware.hex
 	@true

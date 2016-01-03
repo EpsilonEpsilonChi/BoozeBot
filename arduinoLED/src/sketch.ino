@@ -441,6 +441,9 @@ void setup() {
   pinMode(BUTTON_PIN, INPUT);
   pinMode(PSU_POWER_PIN, OUTPUT);
 
+  // Power supply initially on so pump Arduino can connect to Rasp Pi
+  digitalWrite(PSU_POWER_PIN, HIGH);
+
   initLCD();
   clearLCD();
 

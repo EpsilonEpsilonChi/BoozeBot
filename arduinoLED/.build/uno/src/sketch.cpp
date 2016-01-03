@@ -1,15 +1,17 @@
 #include <Arduino.h>
 #include <aJSON.h>
 #include <Tlc5940.h>
+#include <SimpleTimer.h>
 #include <SoftwareSerial.h>
 void clearLCD();
 void setLCDBacklight(uint8_t red, uint8_t green, uint8_t blue);
 void initLCD();
-void testSequence();
-void twoLights();
-void testBlink();
 void setLED(int ledNum, int red, int green, int blue);
-void fadeOnAmbient();
+void clearLeds();
+void powerOn();
+void powerOff();
+void fadeOutLighting();
+void fadeInLighting();
 int processCommand(aJsonObject *command);
 aJsonObject *createResponseMessage(int response);
 void setup();
@@ -17,28 +19,28 @@ void loop();
 #line 1 "src/sketch.ino"
 //#include <aJSON.h>
 //#include <Tlc5940.h>
+//#include <SimpleTimer.h>
 //#include <SoftwareSerial.h>
 
 #define LCD_TX_PIN 2
 #define PSU_POWER_PIN 12
-#define BUTTON_PIN 4
+#define BUTTON_PIN 8
 #define BUTTON_LED_NUM 13
 #define TOP_LED_STRIP 5
 #define BOTTOM_LED_STRIP 6
 
-// TO DO: Turn off power supply on timer
-// NOTE: aJson stream acts weird when serialBaud is not 9600 for some reason...
-
 // Config variables
-int serialBaud           = 9600;    // Bit rate of serial connection to Rasp Pi
-int lcdBaud              = 9600;    // Bit rate of serial connection to LCD
-int psuTurnOnTime        = 1000;    // Time it takes for the PSU to turn on (in ms)
-
-// Initialize LCD display
-SoftwareSerial lcd = SoftwareSerial(15, LCD_TX_PIN);     // Change RX pin?
+int psuTurnOnTime   = 1000; // Time it takes for the PSU to turn on (in ms)
+int autoShutoffTime = 20;   // Time BoozeBot stays on before shutting down (in secs)
 
 // Globals
+int timerId;
+bool powerStatus   = false; // False = off, True = on
+int powerHoldCount = 0;
+
+SimpleTimer autoOffTimer;
 aJsonStream serial_stream(&Serial);
+SoftwareSerial lcd = SoftwareSerial(15, LCD_TX_PIN);
 
 // Clear the LCD and return cursor to top left corner
 void clearLCD() {
@@ -46,7 +48,7 @@ void clearLCD() {
   lcd.write(0x58);
   lcd.write(0xFE);
   lcd.write(0x48);
-  delay(10);
+  delay(50);
 }
 
 // Set :CD backlight RGB values based on inputs
@@ -61,7 +63,7 @@ void setLCDBacklight(uint8_t red, uint8_t green, uint8_t blue) {
 
 // Initializes LCD Display
 void initLCD() {
-  lcd.begin(lcdBaud);
+  lcd.begin(9600);
 
   // Set the size of the display
   lcd.write(0xFE);
@@ -98,42 +100,11 @@ void initLCD() {
   delay(500);
   setLCDBacklight(0x0, 0x0, 0xFF);
   delay(500);
+  setLCDBacklight(0x00, 0x0, 0x0);
+  delay(100);
 
   // Clear screen and return to top left corner
   clearLCD();
-}
-
-void testSequence() {
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 36; j = j + 3) {
-      Tlc.set(j + i, 4095);
-    }
-    for (int j = 36; j > 0; j = j - 3) {
-      Tlc.set(j + i, 0);
-    }
-  }
-}
-
-void twoLights() {
-  for (int i = 0; i < 3; i++) {
-    Tlc.clear();
-    Tlc.set(i, 4095);
-    Tlc.update();
-    delay(25);
-
-    Tlc.clear();
-    Tlc.set(i + 3, 4095);
-    Tlc.update();
-    delay(25);
-  }
-}
-
-void testBlink() {
-  Tlc.set(2, 4095);
-  Tlc.update();
-  delay(300);
-  Tlc.set(2, 0);
-  Tlc.update();
 }
 
 // Sets an individual LED to the inputted RGB values
@@ -145,12 +116,187 @@ void setLED(int ledNum, int red, int green, int blue) {
   Tlc.update();
 }
 
-// Fades on ambient (white) LED strips
-void fadeOnAmbient() {
-  for (int i = 0; i <= 255; i++) {
+// Clears all LEDs (no power)
+void clearLeds() {
+  for (int i = 1; i <= 12; i++) {
+    setLED(i, 0, 0, 0);
+  }
+}
+
+// Power on power supply and run power on animation
+void powerOn() {
+  int bottleFadeDelay = 1;
+  int stripFadeDelay  = 5;
+  int bounceDelay     = 120;
+  int blinkDelay      = 200;
+
+  // Display boot up indicator
+  setLCDBacklight(0x0, 0xFF, 0x0);
+  clearLCD();
+  lcd.print("Powering on...  ");
+
+  // Blink button four times
+  for (int count = 0; count < 4; count++) {
+    setLED(BUTTON_LED_NUM, 0, 4095, 0);
+    delay(blinkDelay);
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    delay(blinkDelay);
+  }
+
+  // Turn on power supply
+  powerStatus = true;
+  digitalWrite(PSU_POWER_PIN, HIGH);
+  delay(psuTurnOnTime);
+
+  // Animation
+  setLED(1, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(2, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(3, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(4, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(8, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(12, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(11, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(10, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(9, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(5, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(6, 0, 4095, 0);
+  delay(bounceDelay);
+  setLED(7, 0, 4095, 0);
+  delay(2 * bounceDelay);
+
+  for (int i = 4095; i >= 0; i-=5) { // Fade out green bottles
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 0, i, 0);
+    }
+    delay(bottleFadeDelay);
+  }
+
+  for (int i = 0; i <= 255; i++) {  // Fade in top strip
+    analogWrite(TOP_LED_STRIP, i);
+    delay(stripFadeDelay);
+  }
+  delay(50);
+
+  for (int i = 0; i <= 4095; i+=5) { // Fade in white bottles
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, i, i, i);
+    }
+    delay(bottleFadeDelay);
+  }
+  delay(50);
+
+  for (int i = 0; i <= 255; i++) {  // Fade in bottom strip
+    analogWrite(BOTTOM_LED_STRIP, i);
+    delay(stripFadeDelay);
+  }
+
+  // Set display
+  clearLCD();
+  setLCDBacklight(0xFF, 0xFF, 0xFF);
+  lcd.print("BoozeBot ready  ");
+  lcd.print("No queued drinks");
+
+  // Start auto-shutoff timer
+  timerId = autoOffTimer.setTimeout(autoShutoffTime * 60000, powerOff);
+}
+
+// Run shutdown animation and turn off power supply
+void powerOff() {
+  int fadeDelay   = 5;
+  int blinkDelay  = 200;
+
+  // Display shutdown indicator
+  clearLCD();
+  setLCDBacklight(0xFF, 0x0, 0x0);
+  lcd.print("Shutting down...");
+
+  // Blink button four times
+  for (int count = 0; count < 4; count++) {
+    setLED(BUTTON_LED_NUM, 4095, 0, 0);
+    delay(blinkDelay);
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    delay(blinkDelay);
+  }
+
+  // Animation
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom, fade bottles to red
     analogWrite(TOP_LED_STRIP, i);
     analogWrite(BOTTOM_LED_STRIP, i);
-    delay(3);
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 4080, 16 * i, 16 * i);
+    }
+
+    delay(fadeDelay);
+  }
+
+  for (int i = 0; i <= 511; i++) {  // Fade out red in wave pattern
+    if (i <= 255) {
+      int firstOff = 255 - i;
+      for (int j = 1; j <= 4; j++) {
+        setLED(j, 16 * firstOff, 0, 0);
+      }
+    }
+
+    if ((i >= 128) && (i <= 383)) {
+      int secondOff = 383 - i;
+      for (int j = 5; j <= 8; j++) {
+        setLED(j, 16 * secondOff, 0, 0);
+      }
+    }
+
+    if (i >= 256) {
+      int thirdOff = 511 - i;
+      for (int j = 9; j <= 12; j++) {
+        setLED(j, 16 * thirdOff, 0, 0);
+      }
+    }
+    delay(fadeDelay);
+  }
+
+  // Turn off power supply and set display
+  powerStatus = false;
+  digitalWrite(PSU_POWER_PIN, LOW);
+  setLCDBacklight(0x0, 0x0, 0x0);
+  clearLCD();
+}
+
+// Fades out all white lighting to make drink
+void fadeOutLighting() {
+  int fadeDelay = 10;
+
+  for (int i = 255; i >= 0; i--) {  // Fade off top and bottom,
+    analogWrite(TOP_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, i);
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 16 * i, 16 * i, 16 * i);
+    }
+
+    delay(fadeDelay);
+  }
+}
+
+// Fades in all white lighting after making drink
+void fadeInLighting() {
+  int fadeDelay = 10;
+
+  for (int i = 0; i <= 255; i++) {  // Fade on top and bottom
+    analogWrite(TOP_LED_STRIP, i);
+    analogWrite(BOTTOM_LED_STRIP, i);
+    for (int j = 1; j <= 12; j++) {
+      setLED(j, 16 * i, 16 * i, 16 * i);
+    }
+
+    delay(fadeDelay);
   }
 }
 
@@ -163,14 +309,22 @@ int processCommand(aJsonObject *command) {
 
   // Check command type
   aJsonObject *msgType = aJson.getObjectItem(command, "msgType");
-  if (msgType && (msgType->valueint == 0)) {          // New drink on queue
+  if (msgType && (msgType->valueint == 0)) {  // New drink on queue
+    autoOffTimer.disable(timerId);
+
     // Display drink name on LCD
     aJsonObject *drinkName = aJson.getObjectItem(command, "drinkName");
+    String drinkNameString = drinkName->valuestring;
+
+    // Power on BoozeBot if necessary
+    if (!powerStatus) {
+      powerOn();
+    }
 
     clearLCD();
     setLCDBacklight(0xFF, 0xFF, 0xFF);
-    lcd.print("Next drink:     ");
-    lcd.print(drinkName->valuestring);                // To do: Handle wrap around if > 16 characters
+    lcd.print("Queued drink:   ");
+    lcd.print(drinkNameString.substring(0, 15));
 
     // Blink dispense button green until action received 
     // To do: make LED fade pulse instead of blink
@@ -183,22 +337,22 @@ int processCommand(aJsonObject *command) {
     int statusValue = 0;
     int blinkCounter = 0;
     while (statusValue == 0) {
-      if (digitalRead(BUTTON_PIN)) {                  // Check if button is pressed
-        if (!pressed) {                               // Indicate press with white LED
+      if (digitalRead(BUTTON_PIN)) {  // Check if button is pressed
+        if (!pressed) { // Indicate press with white LED
           setLED(BUTTON_LED_NUM, 4095, 4095, 4095);
         }
         pressed = true;
         blinkCounter = 0;
-        holdCount += refreshRate;                     // Count how long button is held
+        holdCount += refreshRate; // Count how long button is held
       } else {
-        if (holdCount > 0) {                          // Short press, exit loop
+        if (holdCount > 0) {  // Short press, exit loop
           setLED(BUTTON_LED_NUM, 0, 0, 4095);
           statusValue = 2;
         }
         pressed = false;
         holdCount = 0;
 
-        if (blinkCounter >= blinkRate) {              // Check if time to change LED (for blink)
+        if (blinkCounter >= blinkRate) {  // Check if time to change LED (for blink)
           if (blinkState) {
             setLED(BUTTON_LED_NUM, 0, 4095, 0);
             blinkState = false;
@@ -212,7 +366,7 @@ int processCommand(aJsonObject *command) {
         blinkCounter += refreshRate;  
       }
 
-      if (holdCount >= 3000) {                        // Long press if held for 3 seconds, exit loop
+      if (holdCount >= 3000) {  // Long press if held for 3 seconds, exit loop
         setLED(BUTTON_LED_NUM, 4095, 0, 0);
         statusValue = 1;
       }
@@ -220,48 +374,65 @@ int processCommand(aJsonObject *command) {
       delay(refreshRate);
     }
 
-    if (statusValue == 1) {                           // Drink cancelled
+    if (statusValue == 1) { // Drink cancelled
       clearLCD();
       setLCDBacklight(0xFF, 0x0, 0x0);
       lcd.print("Drink cancelled ");
 
       delay(2500);
+      setLED(BUTTON_LED_NUM, 0, 0, 0);
       setLCDBacklight(0xFF, 0xFF, 0xFF);
       clearLCD();
+      lcd.print("BoozeBot ready  ");
+      delay(50);
       lcd.print("No queued drinks");
 
+      // Restart auto-shutoff timer
+      autoOffTimer.restartTimer(timerId);
+      autoOffTimer.enable(timerId);
+
       return 1;
-    } else if (statusValue == 2) {                    // Start making drink
+    } else if (statusValue == 2) {  // Start making drink
+
+      fadeOutLighting();
+
       clearLCD();
       setLCDBacklight(0x0, 0x0, 0xFF);
       lcd.print("Making drink:     ");
-      lcd.print(drinkName->valuestring);              // To do: Handle wrap around if > 16 characters
-      digitalWrite(PSU_POWER_PIN, HIGH);              // Turn on power supply
-      delay(500);
-      fadeOnAmbient();
+      lcd.print(drinkNameString.substring(0, 15));
 
       return 2;
     }
-
-    // turn off button LED?
-  } else if (msgType && (msgType->valueint == 1)) {   // Set LED with given values
+  } else if (msgType && (msgType->valueint == 1)) { // Set LED with given values
+    clearLeds();
     aJsonObject *led = aJson.getObjectItem(command, "led");
 
     if (led) {
       aJsonObject *num = aJson.getObjectItem(led, "num");
-      aJsonObject *r = aJson.getObjectItem(led, "r");
-      aJsonObject *g = aJson.getObjectItem(led, "g");
-      aJsonObject *b = aJson.getObjectItem(led, "b");
-      setLED(num->valueint, r->valueint, g->valueint, b->valueint);
+
+      if ((num->valueint > 0) && (num->valueint < 13)) {
+        aJsonObject *r = aJson.getObjectItem(led, "r");
+        aJsonObject *g = aJson.getObjectItem(led, "g");
+        aJsonObject *b = aJson.getObjectItem(led, "b");
+        setLED(num->valueint, r->valueint, g->valueint, b->valueint);
+      }
 
       return 99;
     }
-  } else if (msgType && (msgType->valueint == 3)) {   // Drink completed
+  } else if (msgType && (msgType->valueint == 3)) { // Drink completed
+
+    fadeInLighting();
+
     setLED(BUTTON_LED_NUM, 0, 0, 0);
     setLCDBacklight(0xFF, 0xFF, 0xFF);
     clearLCD();
+    lcd.print("BoozeBot ready  ");
+    delay(50);
     lcd.print("No queued drinks");
-    fadeOnAmbient();
+
+    // Restart auto-shutoff timer
+      autoOffTimer.restartTimer(timerId);
+      autoOffTimer.enable(timerId);
   }
 }
 
@@ -283,22 +454,51 @@ aJsonObject *createResponseMessage(int response) {
 
 void setup() {
   Tlc.init();
-  Serial.begin(serialBaud);
+  Serial.begin(9600);
   pinMode(TOP_LED_STRIP, OUTPUT);
   pinMode(BOTTOM_LED_STRIP, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
   pinMode(PSU_POWER_PIN, OUTPUT);
-  digitalWrite(PSU_POWER_PIN, LOW);
+
+  // Power supply initially on so pump Arduino can connect to Rasp Pi
+  digitalWrite(PSU_POWER_PIN, HIGH);
 
   initLCD();
-  setLCDBacklight(0xFF, 0xFF, 0xFF);
   clearLCD();
-  lcd.print("No queued drinks");
 
   serial_stream.flush();
 }
 
 void loop() {
+  autoOffTimer.run();
+
+  // Logic to allow power on and off with button hold
+  while (digitalRead(BUTTON_PIN)) {
+    if (powerStatus) {
+      setLED(BUTTON_LED_NUM, 4095, 0, 0);
+
+      if (powerHoldCount >= 2500) {
+        powerOff();
+      }
+    } else {
+      setLED(BUTTON_LED_NUM, 0, 4095, 0);
+
+      if (powerHoldCount >= 2500) {
+        powerOn();
+      }
+    }
+
+    powerHoldCount++;
+    delay(1);
+  } 
+
+  // Clear if button released
+  if (!digitalRead(BUTTON_PIN)) {
+    setLED(BUTTON_LED_NUM, 0, 0, 0);
+    powerHoldCount = 0;
+  }
+
+  // Skip garbage
   if (serial_stream.available()) {
     serial_stream.skip();
   }
@@ -319,3 +519,5 @@ void loop() {
     }
   }
 }
+
+//{"msgType":2,"led":{"num":12,"r":4095,"g":0,"b":0}}

@@ -17,5 +17,5 @@
  /usr/share/arduino/hardware/arduino/cores/arduino/Printable.h \
  lib/Tlc5940-master/Tlc5940.h lib/Tlc5940-master/tlc_config.h \
  lib/Tlc5940-master/pinouts/chip_includes.h \
- lib/Tlc5940-master/pinouts/ATmega_xx8.h \
+ lib/Tlc5940-master/pinouts/ATmega_xx8.h lib/SimpleTimer/SimpleTimer.h \
  /usr/share/arduino/libraries/SoftwareSerial/SoftwareSerial.h
