@@ -81,6 +81,18 @@ var pickLightingColor = function(bottleNum) {
     return colorRGB;
 }
 
+// Open pump Arduino serial port
+var reopenPumpPort = function(callback) {
+    console.log(colors.blue("Reopening serial port to Pump Arduino"));
+
+    serialPortPump.on("open", function(reopenPumpPortErr) {
+        console.log(colors.blue("Serial port to Pump Arduino open"));
+        if (reopenPumpPortErr != null) { console.log(colors.red("  Pump Arduino port reopen error: " + reopenPumpPortErr)); }
+        
+        callback(reopenPumpPortErr, "zero");
+    });
+}
+
 // Light up bottle
 var lightUpBottle = function(callback, ingredient) { 
     console.log(colors.cyan("  Lighting up bottle ") + colors.cyan.underline(ingredient["liquorBottleNum"]));
@@ -212,10 +224,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
                         async.eachSeries(ingredientList, function(ingredient, loopCallback) {
                             async.series([
                                 function(innerCallback) {   // Reopen pump serial port
-                                    serialPortPump.on("open", function() {
-                                        console.log(colors.blue("Serial port to Pump Arduino open"));
-                                        resolve();
-                                    });
+                                    reopenPumpPort(innerCallback);
                                 },
                                 function(innerCallback) {   // Light up corresponding bottle LED
                                     lightUpBottle(innerCallback, ingredient);
