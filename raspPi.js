@@ -199,11 +199,6 @@ var firebaseListener = function(data, progress, resolve, reject) {
                     } else if (responseObj["response"] == 1) {  // Drink cancelled
                         console.log(colors.blue("Drink cancelled by user"));
                         reject("Drink cancelled by user");
-
-                        // **** TIMEOUT AND CLEAR SCREEN AND LED
-
-
-
                     } else if (responseObj["response"] == 2) {  // Continue making drink on queue
                         console.log(colors.green("BoozeBot making drink: ") + colors.green.underline(data["recipeUsed"]));
 
@@ -216,6 +211,12 @@ var firebaseListener = function(data, progress, resolve, reject) {
                         // Pump each liquor in recipe and light corresponding bottle LED
                         async.eachSeries(ingredientList, function(ingredient, loopCallback) {
                             async.series([
+                                function(innerCallback) {   // Reopen pump serial port
+                                    serialPortPump.on("open", function() {
+                                        console.log(colors.blue("Serial port to Pump Arduino open"));
+                                        resolve();
+                                    });
+                                },
                                 function(innerCallback) {   // Light up corresponding bottle LED
                                     lightUpBottle(innerCallback, ingredient);
                                 },
