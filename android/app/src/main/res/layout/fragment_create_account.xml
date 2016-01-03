@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/loginPageBlue"
+    android:background="@color/colorPrimary"
     android:gravity="center_vertical">
     <TextView
         android:layout_width="match_parent"
@@ -89,6 +89,7 @@
         android:layout_marginLeft="15dp"
         android:padding="12dp"
         android:background="@drawable/button_boarder"
+        android:textColor="@color/colorText"
         android:text="@string/signup"/>
 
     <TextView android:id="@+id/link_login"

@@ -2,7 +2,9 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryLight">#C5CAE9</color>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="colorText">#FFFFFF</color>
     <color name="loginPageBlue">#27496D</color>
     <color name="loginButtonBlue">#157EFB</color>
     <color name="createButtonBlue">#1E5998</color>
