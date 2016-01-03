@@ -7,7 +7,9 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express":"*" 
+    "express": "*",
+    "body-parser": "*",
+    "firebase": "*"
   },
   "author": "",
   "license": "ISC"
