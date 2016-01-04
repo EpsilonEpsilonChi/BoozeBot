@@ -128,11 +128,69 @@
                     <connections>
                         <outlet property="textFieldLoginEmail" destination="dZM-l2-S5C" id="vQd-Zf-ads"/>
                         <outlet property="textFieldLoginPassword" destination="R5Y-aq-cq8" id="HfB-wX-eBh"/>
+                        <segue destination="ETC-fF-Y4Q" kind="presentation" identifier="LoginToDrinksMenu" id="noM-Mo-W2U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="324" y="399"/>
+            <point key="canvasLocation" x="69" y="-242"/>
+        </scene>
+        <!--Drinks Menu-->
+        <scene sceneID="2lJ-66-Hxo">
+            <objects>
+                <tableViewController title="Drinks Menu" id="I81-0h-REX" customClass="DrinksMenuTableViewController" customModule="BoozeBot" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="rJP-lp-Zi7">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DrinkCell" textLabel="ubI-sf-5L9" style="IBUITableViewCellStyleDefault" id="zOu-WT-seh">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zOu-WT-seh" id="w3x-jd-G41">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ubI-sf-5L9">
+                                            <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="widthClass=compact">
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            </variation>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="I81-0h-REX" id="22X-wv-Afm"/>
+                            <outlet property="delegate" destination="I81-0h-REX" id="CYA-Ud-kUL"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Drinks Menu" id="ucq-gZ-f6r"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2Qc-Yq-oxJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1987.5" y="-242"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Eoq-z9-zTy">
+            <objects>
+                <navigationController id="ETC-fF-Y4Q" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="rfH-VX-FdX">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="I81-0h-REX" kind="relationship" relationship="rootViewController" id="7rV-Vr-Q90"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jcc-C4-GhP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1003.5" y="-242"/>
         </scene>
     </scenes>
 </document>

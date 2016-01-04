@@ -12,6 +12,8 @@ import Firebase
 class LoginViewController: UIViewController {
     
     var ref: Firebase!
+    
+    let LoginToDrinksMenu = "LoginToDrinksMenu"
 
     @IBOutlet weak var textFieldLoginEmail: UITextField!
     @IBOutlet weak var textFieldLoginPassword: UITextField!
@@ -21,10 +23,14 @@ class LoginViewController: UIViewController {
         ref = Firebase(url: "https://boozebot.firebaseio.com/")
         // Do any additional setup after loading the view, typically from a nib.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        ref.observeAuthEventWithBlock( { (authData) -> Void in
+            if authData != nil {
+                self.performSegueWithIdentifier(self.LoginToDrinksMenu, sender: nil)
+            }
+        })
     }
 
     @IBAction func loginAction(sender: UIButton) {
