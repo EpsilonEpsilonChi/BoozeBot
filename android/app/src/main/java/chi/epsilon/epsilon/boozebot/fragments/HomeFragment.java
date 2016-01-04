@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import chi.epsilon.epsilon.boozebot.R;
+import chi.epsilon.epsilon.boozebot.models.Task;
 
 public class HomeFragment extends Fragment {
     private RecyclerView mQueueRecyclerView;
@@ -39,11 +43,27 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateUI() {
+        final List<String> drinks = new ArrayList<>();
         // Get list of drinks in Queue
-        List<String> drinks = new ArrayList<String>();
-        drinks.add("Test Drink1");
-        drinks.add("Test Drink2");
-        drinks.add("Test Drink3");
+        final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
+        rootRef.child("drinkQueue").child("tasks").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                drinks.clear();
+                Log.d("LOOK", dataSnapshot.getValue().toString());
+                for (DataSnapshot taskSnap : dataSnapshot.getChildren()) {
+                    Task task = taskSnap.getValue(Task.class);
+                    drinks.add(task.getRecipeUsed());
+                }
+                mAdapter = new DrinkAdapter(drinks);
+                mQueueRecyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
         mAdapter = new DrinkAdapter(drinks);
         mQueueRecyclerView.setAdapter(mAdapter);
@@ -83,7 +103,6 @@ public class HomeFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            Log.d("LOOK", String.valueOf(mDrinks.size()));
             return mDrinks.size();
         }
     }

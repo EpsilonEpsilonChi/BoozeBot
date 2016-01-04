@@ -4,15 +4,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
     <item android:id="@+id/menu_item_queue"
-        android:icon="@drawable/queue_icon"
+        android:icon="@drawable/ic_more_vert_black_24dp"
         android:title="queue"
-        app:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/menu_item_recipes"
-        android:icon="@drawable/martini_glass_icon"
-        android:title="drinks"
-        app:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/menu_item_profile"
-        android:icon="@drawable/person_icon"
-        android:title="social"
         app:showAsAction="ifRoom|withText"/>
 </menu>
