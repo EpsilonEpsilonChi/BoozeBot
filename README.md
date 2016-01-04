@@ -1,38 +1,24 @@
 # BoozeBot
 Code for our house bartending robot, BoozeBot (work in progress)
 
-## Required Packages
- - [serialport](https://github.com/voodootikigod/node-serialport) (install with npm)
- - [colors](https://github.com/marak/colors.js/) (install with npm)
- - [firebase](https://github.com/firebase) (install with npm)
- - [firebase-queue](https://github.com/firebase/firebase-queue) (install with npm)
- - [mkdirp](https://github.com/substack/node-mkdirp) (install with npm)
- - [jsonfile](https://github.com/jprichardson/node-jsonfile) (install with npm)
- - [aJson](https://github.com/interactive-matter/aJson) (import zip file in repo to Arduino IDE before programming)
-
-## The Files
- - **arduino/aJson.zip**: zip file of aJson library (for importing into Arduino IDE)
- - **arduino/arduino.ino**: code to be programmed to the BoozeBot Arduino (Uno) for controlling pumps
+## The Files/Folders
+ - **android**: code for Android BoozeBot app
+ - **api**: HTTP API for BoozeBot
+ - **arduinoLED**: code and libraries for Arduino that controls the PSU, LCD, button, and all LEDs
+ - **arduinoPump**: code and libraries for Arduino that controls the pump relays
+ - **helpers**: helper functions for pullTransactionLogs.sh
+ - **iOS**: code for iOS BoozeBot app
+ - **testSite**: code for BoozeBot testing website
+ - **piSetup.sh**: sets up Raspberry Pi for uploading sketches to Arduinos using upload.sh
  - **pullTransactionLogs.sh**: pulls transaction info from each user and puts it into an Excel document for analysis
- - **raspPi.js**: code to run on Raspberry Pi to communicate between Firebase and Arduino
- - **testingSite/test.html**: site used for testing functionality
- - **testingSite/firebaseFunctions.js**: file with Javascript functions used in test.html (to manipulate Firebase)
-
-## Flow of Drink Info
-1. Website or app sends drink request to Firebase (transaction under user, as well as queue)
-2. Raspberry Pi running server that pulls drink request from queue
-3. Raspberry Pi sends drink recipe to Arduino to pour
-4. Arduino pours drink and then sends completion response back to Raspberry Pi
-5. Raspberry Pi waits until response is received, then pulls another drink from the queue
+ - **raspPi.js**: code to run on Raspberry Pi, communication layer between Firebase and Arduinos
+ - **upload.sh**: allows for easy upload of code to LED or Pump Arduino
 
 ## To-Do
-1. Write iOS/Android apps
-2. Make a script for updating Arduino serial ports
+1. Fix power integrity issues
+2. Write iOS/Android apps
 
 ### Notes
-- Use a transistor to toggle the 12volt PSU on and off (only needs to be on when making drinks to power pumps)
-- Useful for sending recipes to Arduino from RaspPi: https://github.com/interactive-matter/aJson
-- Possibly helpful: https://github.com/ytham/barmixvah
 - **IDEA**: make raspberry pi automatically archive a transaction history every day
  
 
