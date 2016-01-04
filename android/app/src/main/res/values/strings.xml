@@ -16,8 +16,6 @@
     <string name="no_username"> Username is required!</string>
     <string name="no_email"> Email is required!</string>
     <string name="no_pw"> Password is required!</string>
-
     <string name="title_activity_main">MainActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="new_drink">Select Your Drink: </string>
 </resources>

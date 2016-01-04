@@ -10,7 +10,7 @@
                                         android:background="@color/colorPrimaryLight">
     </android.support.v7.widget.RecyclerView>
     <android.support.design.widget.FloatingActionButton
-    android:id="@+id/myFAB"
+    android:id="@+id/newDrinkButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/ic_add_black"
