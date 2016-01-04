@@ -25,6 +25,7 @@ import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.models.Ingredient;
 import chi.epsilon.epsilon.boozebot.models.Recipe;
 
+// THIS CLASS IS DEPRECATED -- REMOVE
 public class AddDrinkFragment extends Fragment {
     private RecyclerView mDrinkRecyclerView;
     private DrinkRecipeAdapter mAdapter;

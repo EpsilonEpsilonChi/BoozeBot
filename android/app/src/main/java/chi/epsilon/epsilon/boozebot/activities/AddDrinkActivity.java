@@ -50,16 +50,10 @@ public class AddDrinkActivity extends AppCompatActivity {
 
     private void updateUI() {
         final List<Recipe> recipes = new ArrayList<>();
-        final List<String> testList = new ArrayList<String>();
         final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
         rootRef.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                testList.add("Recipe 1");
-                testList.add("Recipe 2");
-                testList.add("Recipe 3");
-                testList.add("Recipe 4");
-
                 recipes.clear();
                 for (DataSnapshot recipeSnap : dataSnapshot.getChildren()) {
                     Recipe recipe = new Recipe(recipeSnap.getKey());
@@ -69,32 +63,36 @@ public class AddDrinkActivity extends AppCompatActivity {
                     }
                     recipes.add(recipe);
                 }
-                mAdapter = new DrinkRecipeAdapter(testList);
+                mAdapter = new DrinkRecipeAdapter(recipes);
                 mDrinkRecyclerView.setAdapter(mAdapter);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
         });
-        mAdapter = new DrinkRecipeAdapter(testList);
+        mAdapter = new DrinkRecipeAdapter(recipes);
         mDrinkRecyclerView.setAdapter(mAdapter);
     }
 
     private class DrinkRecipeHolder extends RecyclerView.ViewHolder {
-        public TextView mRecipeImage;
+        public TextView mRecipe;
 
         public DrinkRecipeHolder(View itemView) {
             super(itemView);
 
-            mRecipeImage = (TextView)itemView;
+            mRecipe = (TextView)itemView;
+        }
+
+        public void bindDrink(Recipe drink) {
+            mRecipe.setText(drink.getName());
         }
     }
 
     private class DrinkRecipeAdapter extends RecyclerView.Adapter<DrinkRecipeHolder> {
-        private List<String> mDrinkImages;
+        private List<Recipe> mRecipes;
 
-        public DrinkRecipeAdapter(List<String> drinkRecipes) {
-            mDrinkImages = drinkRecipes;
+        public DrinkRecipeAdapter(List<Recipe> drinkRecipes) {
+            mRecipes = drinkRecipes;
         }
 
         @Override
@@ -107,14 +105,13 @@ public class AddDrinkActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(DrinkRecipeHolder holder, int position) {
-            String string = mDrinkImages.get(position);
-            holder.mRecipeImage.setText(string);
-            holder.mRecipeImage.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            Recipe recipe = mRecipes.get(position);
+            holder.bindDrink(recipe);
         }
 
         @Override
         public int getItemCount() {
-            return mDrinkImages.size();
+            return mRecipes.size();
         }
     }
 }
