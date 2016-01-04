@@ -404,7 +404,6 @@ int processCommand(aJsonObject *command) {
       return 2;
     }
   } else if (msgType && (msgType->valueint == 1)) { // Set LED with given values
-    clearLeds();
     aJsonObject *led = aJson.getObjectItem(command, "led");
 
     if (led) {
