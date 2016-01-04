@@ -258,10 +258,10 @@ var ledPortOpen = function() {
 // Opens serial port to Pump Arduino
 var pumpPortOpen = function() {
     return new Promise(function(resolve, reject) {
-	serialPortPump.on("open", function() {
-	    console.log(colors.blue.bgWhite("Serial port to Pump Arduino open"));
+    	serialPortPump.on("open", function() {
+    	    console.log(colors.blue.bgWhite("Serial port to Pump Arduino open"));
             resolve();
-	});
+    	});
     });
 }
 
