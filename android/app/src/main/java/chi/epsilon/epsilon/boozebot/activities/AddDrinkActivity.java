@@ -1,11 +1,13 @@
 package chi.epsilon.epsilon.boozebot.activities;
 
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +20,12 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import chi.epsilon.epsilon.boozebot.R;
+import chi.epsilon.epsilon.boozebot.fragments.ConfirmDrinkFragment;
 import chi.epsilon.epsilon.boozebot.models.Ingredient;
 import chi.epsilon.epsilon.boozebot.models.Recipe;
 
@@ -90,9 +95,14 @@ public class AddDrinkActivity extends AppCompatActivity {
 
     private class DrinkRecipeAdapter extends RecyclerView.Adapter<DrinkRecipeHolder> {
         private List<Recipe> mRecipes;
+        private Map<String, Recipe> mNameToRecipe;
 
         public DrinkRecipeAdapter(List<Recipe> drinkRecipes) {
             mRecipes = drinkRecipes;
+            mNameToRecipe = new HashMap<>();
+            for (Recipe recipe : mRecipes) {
+                mNameToRecipe.put(recipe.getName(), recipe);
+            }
         }
 
         @Override
@@ -100,6 +110,18 @@ public class AddDrinkActivity extends AppCompatActivity {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
             View view = layoutInflater
                     .inflate(android.R.layout.simple_list_item_1, parent, false);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView tv = (TextView) v;
+                    String recipe = tv.getText().toString();
+                    Log.d("AddDrinkActivity.java", recipe);
+                    FragmentManager manager = getFragmentManager();
+                    ConfirmDrinkFragment dialog = new ConfirmDrinkFragment();
+                    dialog.show(manager, "confused");
+                }
+            });
             return new DrinkRecipeHolder(view);
         }
 
