@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimaryLight">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="32sp"
+        android:text="@string/new_drink"
+        android:id="@+id/new_drink_text"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drink_recipe_recycler"
+        android:layout_width="match_parent"
+        android:layout_weight=".6"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/select_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".2"
+        android:text="HELLO"
+        android:layout_below="@id/drink_recipe_recycler"
+        android:background="@drawable/button_boarder"/>
+
+</LinearLayout>
