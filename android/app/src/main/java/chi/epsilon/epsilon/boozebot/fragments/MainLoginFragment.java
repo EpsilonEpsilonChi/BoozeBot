@@ -1,6 +1,5 @@
 package chi.epsilon.epsilon.boozebot.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,9 +20,7 @@ import com.firebase.client.ValueEventListener;
 
 import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
-import chi.epsilon.epsilon.boozebot.activities.LoginActivity;
 import chi.epsilon.epsilon.boozebot.activities.MainActivity;
-import chi.epsilon.epsilon.boozebot.fragments.CreateAccountFragment;
 
 public class MainLoginFragment extends Fragment {
     private Button mLoginButton;

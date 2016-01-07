@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,14 +17,11 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.activities.AddDrinkActivity;
-import chi.epsilon.epsilon.boozebot.activities.MainActivity;
 import chi.epsilon.epsilon.boozebot.models.Task;
 
 public class QueueFragment extends Fragment {
@@ -90,6 +85,7 @@ public class QueueFragment extends Fragment {
 
     private class DrinkHolder extends RecyclerView.ViewHolder {
         public TextView mRecipeNameTextView;
+        public TextView mUsernameTextView;
         public TextView mTimestampTextView;
         private Task mTask;
 
@@ -97,12 +93,14 @@ public class QueueFragment extends Fragment {
             super(itemView);
 
             mRecipeNameTextView = (TextView) itemView.findViewById(R.id.drinkName);
+            mUsernameTextView = (TextView) itemView.findViewById(R.id.username);
             mTimestampTextView = (TextView) itemView.findViewById(R.id.timestamp);
         }
 
         public void bindDrink(Task task) {
             mTask = task;
             mRecipeNameTextView.setText(mTask.getRecipeUsed());
+            mUsernameTextView.setText(mTask.getUsername());
             mTimestampTextView.setText(mTask.getTimestamp());
         }
     }

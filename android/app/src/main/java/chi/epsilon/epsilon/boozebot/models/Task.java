@@ -8,6 +8,15 @@ public class Task {
     private String recipeUsed;
     private String timestamp;
     private Double totalCost;
+    private String username;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     public String getRecipeUsed() {
         return recipeUsed;

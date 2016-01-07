@@ -16,7 +16,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import chi.epsilon.epsilon.boozebot.Util.HttpClient;
+import chi.epsilon.epsilon.boozebot.util.HttpClient;
 
 public class ConfirmDrinkFragment extends DialogFragment {
     @Override
@@ -53,6 +53,7 @@ public class ConfirmDrinkFragment extends DialogFragment {
                             }
                         };
                         queue.add(request);
+                        getActivity().finish();
                     }
                 })
                 .setNegativeButton("Naw", null)
