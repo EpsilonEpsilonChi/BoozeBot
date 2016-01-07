@@ -5,6 +5,14 @@ Android app for BoozeBot
 1) Ensure that Firebase is enabled in Android Studio by going to: 'File->Project Structure->Cloud' and checking 'Firebase'. 
 
 ## TODO
-* get rid of weird red lines around EditTexts on login page
-* figure out why app title bar isn't going away on actual device (it's gone on layout previews)
-* figure out weird rendering error -- doesn't actually impact functionality
+* Display ingredients in confirmation dialog on add drink page
+* Make drink queue use cards for each drink (pretty)
+* Make add drink page use cards as well 
+* Implement recipes page
+* Implement add recipes page
+* Implement user page
+  - Show user's drink history
+  - Add an area for 'favorite' drinks? 
+  - Display user's tab
+  - Stretch: Have a button that the user can click to pay their tab on venmo
+  - Show 'score' ( total # of standard drinks consumed? )
