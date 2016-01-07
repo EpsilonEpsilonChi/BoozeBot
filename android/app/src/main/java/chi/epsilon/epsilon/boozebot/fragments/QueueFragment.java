@@ -81,7 +81,6 @@ public class QueueFragment extends Fragment {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
             }
         });
 

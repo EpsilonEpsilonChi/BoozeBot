@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.fragments.ConfirmDrinkFragment;
 import chi.epsilon.epsilon.boozebot.models.Ingredient;
@@ -41,14 +42,6 @@ public class AddDrinkActivity extends AppCompatActivity {
 
         mDrinkRecyclerView = (RecyclerView) findViewById(R.id.drink_recipe_recycler);
         mDrinkRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mAddDrinkButton = (Button) findViewById(R.id.select_button);
-        mAddDrinkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         updateUI();
     }
@@ -80,12 +73,13 @@ public class AddDrinkActivity extends AppCompatActivity {
     }
 
     private class DrinkRecipeHolder extends RecyclerView.ViewHolder {
-        public TextView mRecipe;
+        //public TextView mRecipe;
+        public Button mRecipe;
 
         public DrinkRecipeHolder(View itemView) {
             super(itemView);
 
-            mRecipe = (TextView)itemView;
+            mRecipe = (Button) itemView.findViewById(R.id.recipe_button);
         }
 
         public void bindDrink(Recipe drink) {
@@ -109,16 +103,23 @@ public class AddDrinkActivity extends AppCompatActivity {
         public DrinkRecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
             View view = layoutInflater
-                    .inflate(android.R.layout.simple_list_item_1, parent, false);
+                    .inflate(R.layout.select_recipe_item, parent, false);
 
-            view.setOnClickListener(new View.OnClickListener() {
+            Button recipeButton = (Button)view.findViewById(R.id.recipe_button);
+            recipeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView tv = (TextView) v;
                     String recipe = tv.getText().toString();
                     Log.d("AddDrinkActivity.java", recipe);
+
                     FragmentManager manager = getFragmentManager();
                     ConfirmDrinkFragment dialog = new ConfirmDrinkFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("drink", recipe);
+                    args.putSerializable("user", ((BoozeBotApp) getApplication()).getCurrentUser());
+
+                    dialog.setArguments(args);
                     dialog.show(manager, "confused");
                 }
             });

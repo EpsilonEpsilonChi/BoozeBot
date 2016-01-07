@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
+import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.activities.LoginActivity;
 import chi.epsilon.epsilon.boozebot.activities.MainActivity;
@@ -39,14 +43,37 @@ public class MainLoginFragment extends Fragment {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                String un = ((EditText)v.findViewById(R.id.username)).getText().toString();
-                String pw =  ((EditText)v.findViewById(R.id.password)).getText().toString();
+                final String email = ((EditText)v.findViewById(R.id.username)).getText().toString();
+                final String pw =  ((EditText)v.findViewById(R.id.password)).getText().toString();
 
                 // Attempt to authenticate the user
-                rootRef.authWithPassword(un, pw, new Firebase.AuthResultHandler() {
+                rootRef.authWithPassword(email, pw, new Firebase.AuthResultHandler() {
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         Toast.makeText(getContext(), "Successful Login!", Toast.LENGTH_SHORT).show();
+                        // Set app username variable
+                        rootRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                boolean foundUser = false;
+                                for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                    if (email.equals(user.child("email").getValue().toString())) {
+                                        ((BoozeBotApp) getActivity().getApplication()).setCurrentUser(user.getKey());
+                                        foundUser = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundUser) {
+                                    Log.e("MainLoginFrag", "No username associated with account: " + email);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        });
+
                         // If successful, start main activity
                         Intent i = new Intent(getActivity(), MainActivity.class);
                         startActivity(i);
