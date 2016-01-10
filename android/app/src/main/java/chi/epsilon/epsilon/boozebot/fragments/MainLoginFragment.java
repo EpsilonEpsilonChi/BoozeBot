@@ -54,6 +54,9 @@ public class MainLoginFragment extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 boolean foundUser = false;
                                 for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                    if (user.child("email").getValue() == null) {
+                                        continue;
+                                    }
                                     if (email.equals(user.child("email").getValue().toString())) {
                                         ((BoozeBotApp) getActivity().getApplication()).setCurrentUser(user.getKey());
                                         foundUser = true;

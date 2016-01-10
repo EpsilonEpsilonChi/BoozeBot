@@ -1,9 +1,10 @@
 package chi.epsilon.epsilon.boozebot.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String name;
     private List<Ingredient> mIngredientList;
 
