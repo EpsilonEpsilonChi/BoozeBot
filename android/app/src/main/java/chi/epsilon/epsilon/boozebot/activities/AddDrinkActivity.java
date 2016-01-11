@@ -120,6 +120,8 @@ public class AddDrinkActivity extends AppCompatActivity {
 
                     dialog.setArguments(args);
                     dialog.show(manager, "confused");
+
+
                 }
             });
             return new DrinkRecipeHolder(view);
