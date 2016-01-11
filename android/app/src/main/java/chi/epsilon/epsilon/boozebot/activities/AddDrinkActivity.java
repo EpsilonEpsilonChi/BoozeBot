@@ -116,9 +116,12 @@ public class AddDrinkActivity extends AppCompatActivity {
                     Bundle args = new Bundle();
                     args.putSerializable("drink", recipe);
                     args.putSerializable("user", ((BoozeBotApp) getApplication()).getCurrentUser());
+                    args.putSerializable("recipe", mNameToRecipe.get(recipe));
 
                     dialog.setArguments(args);
                     dialog.show(manager, "confused");
+
+
                 }
             });
             return new DrinkRecipeHolder(view);

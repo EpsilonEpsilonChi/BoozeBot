@@ -16,6 +16,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import chi.epsilon.epsilon.boozebot.models.Recipe;
 import chi.epsilon.epsilon.boozebot.util.HttpClient;
 
 public class ConfirmDrinkFragment extends DialogFragment {
@@ -23,6 +24,8 @@ public class ConfirmDrinkFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final String username = (String)getArguments().get("user");
         final String drinkname = (String)getArguments().get("drink");
+        final Recipe recipe = (Recipe) getArguments().get("recipe");
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle(String.format("Order a %s for %s?", drinkname, username))
                 .setPositiveButton("Fuck Yes.", new DialogInterface.OnClickListener() {
@@ -57,6 +60,7 @@ public class ConfirmDrinkFragment extends DialogFragment {
                     }
                 })
                 .setNegativeButton("Naw", null)
+                .setView(new RecipeDialogFragment(getContext(), recipe))
                 .create();
     }
 }
