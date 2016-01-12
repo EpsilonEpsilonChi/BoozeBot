@@ -1,8 +1,8 @@
 package chi.epsilon.epsilon.boozebot.fragments;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +19,11 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.models.Ingredient;
 import chi.epsilon.epsilon.boozebot.models.Recipe;
@@ -39,20 +42,44 @@ public class RecipesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_recipes, container, false);
+        String username = ((BoozeBotApp) getActivity().getApplication()).getCurrentUser();
         Log.d("RecipeFragment.java", "onCreate");
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recipe_recycler);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRecyclerView.setAdapter(mAdapter);
 
-        updateUI();
+        updateUI(username);
 
         return v;
     }
 
-    private void updateUI() {
+    private void updateUI(String username) {
         final List<Recipe> recipes = new ArrayList<>();
+        final List<Task> tasks = new ArrayList<>();
         final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
+
+        // This feels weird -- we make a request here to check if there are transactions,
+        // and then another one inside the fragment to actually get the transactions.
+        rootRef.child("Users").child(username).child("pendingTransactions").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tasks.clear();
+                // If there are queued drinks
+                if (dataSnapshot.hasChildren()) {
+                    Log.d("RecipesFrag", "Has children");
+
+                    QueuedDrinksFragment queuedDrinksFragment = new QueuedDrinksFragment();
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.add(R.id.queue_fragment_container, queuedDrinksFragment)
+                            .commit();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
 
         rootRef.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
@@ -98,15 +125,38 @@ public class RecipesFragment extends Fragment {
 
     private class RecipeAdapter extends RecyclerView.Adapter<RecipeHolder> {
         private List<Recipe> mRecipeList;
+        private Map<String, Recipe> mNameToRecipe;
 
         public RecipeAdapter(List<Recipe> recipes) {
             mRecipeList = recipes;
+            mNameToRecipe = new HashMap<>();
+            for (Recipe recipe : mRecipeList) {
+                mNameToRecipe.put(recipe.getName(), recipe);
+            }
         }
 
         @Override
         public RecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.recipe_grid_item, parent, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView textView = (TextView) v.findViewById(R.id.recipe_title);
+                    String recipe = textView.getText().toString();
+                    Log.d("RecipesFragment", "Ordering a " + recipe);
+
+                    FragmentManager manager = getFragmentManager();
+                    ConfirmDrinkFragment dialog = new ConfirmDrinkFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("drink", recipe);
+                    args.putSerializable("user", ((BoozeBotApp) getActivity().getApplication()).getCurrentUser());
+                    args.putSerializable("recipe", mNameToRecipe.get(recipe));
+
+                    dialog.setArguments(args);
+                    dialog.show(manager, "confused");
+                }
+            });
             return new RecipeHolder(view);
         }
 

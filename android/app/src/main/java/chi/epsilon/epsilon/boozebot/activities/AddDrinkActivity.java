@@ -1,6 +1,6 @@
 package chi.epsilon.epsilon.boozebot.activities;
 
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -111,7 +111,7 @@ public class AddDrinkActivity extends AppCompatActivity {
                     String recipe = tv.getText().toString();
                     Log.d("AddDrinkActivity.java", recipe);
 
-                    FragmentManager manager = getFragmentManager();
+                    FragmentManager manager = getSupportFragmentManager();
                     ConfirmDrinkFragment dialog = new ConfirmDrinkFragment();
                     Bundle args = new Bundle();
                     args.putSerializable("drink", recipe);

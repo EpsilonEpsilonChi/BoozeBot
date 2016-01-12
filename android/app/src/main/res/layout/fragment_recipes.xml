@@ -5,6 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorPrimaryLight">
+    <LinearLayout
+        android:layout_weight="1"
+        android:id="@+id/queue_fragment_container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
     <TextView
         android:textColor="@color/colorAccent"
         android:layout_width="match_parent"
@@ -16,6 +22,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recipe_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="400dp">
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

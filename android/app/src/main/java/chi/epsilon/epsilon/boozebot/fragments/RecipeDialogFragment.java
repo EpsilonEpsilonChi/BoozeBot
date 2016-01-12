@@ -1,5 +1,6 @@
 package chi.epsilon.epsilon.boozebot.fragments;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,24 +8,44 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.models.Ingredient;
 import chi.epsilon.epsilon.boozebot.models.Recipe;
+import chi.epsilon.epsilon.boozebot.util.HttpClient;
 
 public class RecipeDialogFragment extends LinearLayout {
     private List<Ingredient> mIngredientList;
 
-    public RecipeDialogFragment(Context context, Recipe recipe) {
+    public RecipeDialogFragment(final Context context, final Recipe recipe) {
         super(context);
         mIngredientList = recipe.getIngredientList();
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.fragment_recipe_dialog, null);
+
+        TextView recipeTitle = (TextView) v.findViewById(R.id.recipe_title);
+        recipeTitle.setText(recipe.getName());
+
+        // Set temp image
+        ImageView recipeImage = (ImageView) v.findViewById(R.id.recipe_image);
+        recipeImage.setImageDrawable(getResources().getDrawable(R.drawable.martini_glass_icon));
+
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.ingredients_recycler);
         recyclerView.setAdapter(new IngredientAdapter(mIngredientList));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -44,7 +65,7 @@ public class RecipeDialogFragment extends LinearLayout {
         public void bindIngredient(Ingredient ingredient) {
             mIngredient = ingredient;
             mIngredientView.setText(ingredient.getType());
-            mIngredientView.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+            mIngredientView.setTextColor(getResources().getColor(R.color.colorAccent));
             Log.d("ConfirmDrink", "Binding ingredient!" + ingredient.getType());
         }
     }

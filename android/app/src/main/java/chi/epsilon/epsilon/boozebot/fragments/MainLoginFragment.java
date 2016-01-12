@@ -42,6 +42,7 @@ public class MainLoginFragment extends Fragment {
             public void onClick(View buttonView) {
                 final String email = ((EditText)v.findViewById(R.id.username)).getText().toString();
                 final String pw =  ((EditText)v.findViewById(R.id.password)).getText().toString();
+                Log.d("MainLoginFrag", "Clicked login!");
 
                 // Attempt to authenticate the user
                 rootRef.authWithPassword(email, pw, new Firebase.AuthResultHandler() {
@@ -59,8 +60,11 @@ public class MainLoginFragment extends Fragment {
                                     }
                                     if (email.equals(user.child("email").getValue().toString())) {
                                         ((BoozeBotApp) getActivity().getApplication()).setCurrentUser(user.getKey());
+                                        Log.d("MainLoginFrag", "Just set the username");
                                         foundUser = true;
-                                        break;
+                                        // If successful, start main activity
+                                        Intent i = new Intent(getActivity(), MainActivity.class);
+                                        startActivity(i);
                                     }
                                 }
 
@@ -73,10 +77,6 @@ public class MainLoginFragment extends Fragment {
                             public void onCancelled(FirebaseError firebaseError) {
                             }
                         });
-
-                        // If successful, start main activity
-                        Intent i = new Intent(getActivity(), MainActivity.class);
-                        startActivity(i);
                     }
 
                     @Override
