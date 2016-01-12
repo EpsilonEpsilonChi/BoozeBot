@@ -1,6 +1,7 @@
 package chi.epsilon.epsilon.boozebot.activities;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -31,7 +31,6 @@ import chi.epsilon.epsilon.boozebot.models.Recipe;
 public class AddDrinkActivity extends AppCompatActivity {
     private RecyclerView mDrinkRecyclerView;
     private DrinkRecipeAdapter mAdapter;
-    private Button mAddDrinkButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +40,10 @@ public class AddDrinkActivity extends AppCompatActivity {
         mDrinkRecyclerView = (RecyclerView) findViewById(R.id.drink_recipe_recycler);
         mDrinkRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        updateUI();
+        updateUI(this);
     }
 
-    private void updateUI() {
+    private void updateUI(final Context context) {
         final List<Recipe> recipes = new ArrayList<>();
         final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
         rootRef.child("Recipes").addValueEventListener(new ValueEventListener() {
@@ -72,16 +71,18 @@ public class AddDrinkActivity extends AppCompatActivity {
 
     private class DrinkRecipeHolder extends RecyclerView.ViewHolder {
         //public TextView mRecipe;
-        public Button mRecipe;
+        //public Button mRecipe;
+        public TextView mRecipeView;
 
         public DrinkRecipeHolder(View itemView) {
             super(itemView);
-
-            mRecipe = (Button) itemView.findViewById(R.id.recipe_button);
+            mRecipeView = (TextView) itemView;
+            //mRecipe = (Button) itemView.findViewById(R.id.recipe_button);
         }
 
         public void bindDrink(Recipe drink) {
-            mRecipe.setText(drink.getName());
+            mRecipeView.setText(drink.getName());
+            mRecipeView.setTextColor(getResources().getColor(R.color.colorAccent));
         }
     }
 
@@ -101,10 +102,9 @@ public class AddDrinkActivity extends AppCompatActivity {
         public DrinkRecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
             View view = layoutInflater
-                    .inflate(R.layout.select_recipe_item, parent, false);
+                    .inflate(android.R.layout.simple_list_item_1, parent, false);
 
-            Button recipeButton = (Button)view.findViewById(R.id.recipe_button);
-            recipeButton.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView tv = (TextView) v;
@@ -120,8 +120,6 @@ public class AddDrinkActivity extends AppCompatActivity {
 
                     dialog.setArguments(args);
                     dialog.show(manager, "confused");
-
-
                 }
             });
             return new DrinkRecipeHolder(view);

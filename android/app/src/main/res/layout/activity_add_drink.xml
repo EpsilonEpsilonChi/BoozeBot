@@ -4,12 +4,12 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/colorPrimaryLight">
+              android:background="@color/white">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryLight"
-        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@color/white"
         android:textSize="32sp"
         android:text="@string/new_drink"
         android:id="@+id/new_drink_text"/>
