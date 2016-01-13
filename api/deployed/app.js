@@ -118,7 +118,9 @@ app.post('/queue_drink', function(req, res) {
       curTransaction.timestamp = generateTimestamp();
 
       // Add transaction to user's transaction list
-      usersRef.child(userName).child("Transactions").push(curTransaction);
+      var id = usersRef.child(userName).child("Transactions").push(curTransaction).name();
+      // Add transaction to user's pending transaction list
+      usersRef.child(userName).child("pendingTransactions").child(id).set(curTransaction);
       // Add drink transaction to queue
       console.log(curTransaction);
       queueRef.push(curTransaction);
@@ -129,6 +131,7 @@ app.post('/queue_drink', function(req, res) {
     });
   });
 });
+
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 

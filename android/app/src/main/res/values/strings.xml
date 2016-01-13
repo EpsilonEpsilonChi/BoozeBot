@@ -18,4 +18,6 @@
     <string name="no_pw"> Password is required!</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="new_drink">Select Your Drink: </string>
+    <string name="recipes">Recipes</string>
+    <string name="queued_drinks">Queued Drinks</string>
 </resources>
