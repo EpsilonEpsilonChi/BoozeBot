@@ -69,10 +69,17 @@ public class RecipesFragment extends Fragment {
                 if (dataSnapshot.hasChildren()) {
                     Log.d("RecipesFrag", "Has children");
 
+
                     QueuedDrinksFragment queuedDrinksFragment = new QueuedDrinksFragment();
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.add(R.id.queue_fragment_container, queuedDrinksFragment)
                             .commit();
+                } else {
+                    Fragment fragment = getChildFragmentManager().findFragmentById(R.id.queue_fragment_container);
+                    if (fragment != null) {
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.hide(fragment).commit();
+                    }
                 }
             }
 

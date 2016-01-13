@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -60,6 +62,10 @@ public class QueuedDrinksFragment extends Fragment {
                     tasks.add(task);
                 }
 
+                // This is jank as fuck.
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tasks.size() * 50, getResources().getDisplayMetrics());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+                mRecyclerView.setLayoutParams(lp);
                 mTaskAdapter = new TaskAdapter(tasks);
                 mRecyclerView.setAdapter(mTaskAdapter);
             }
