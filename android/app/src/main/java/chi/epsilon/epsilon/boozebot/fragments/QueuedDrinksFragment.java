@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,7 +64,7 @@ public class QueuedDrinksFragment extends Fragment {
                 }
 
                 // This is jank as fuck.
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tasks.size() * 50, getResources().getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tasks.size() * 75, getResources().getDisplayMetrics());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
                 mRecyclerView.setLayoutParams(lp);
                 mTaskAdapter = new TaskAdapter(tasks);
@@ -79,15 +80,21 @@ public class QueuedDrinksFragment extends Fragment {
     }
 
     private class TaskHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
+        public TextView mRecipeName;
+        public TextView mEta;
+        public ImageView mRecipeImage;
 
         public TaskHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView;
+            mRecipeName = (TextView) itemView.findViewById(R.id.recipe_title);
+            mEta = (TextView) itemView.findViewById(R.id.eta);
+            mRecipeImage = (ImageView) itemView.findViewById(R.id.recipe_image);
+            mRecipeImage.setImageDrawable(getResources().getDrawable(R.drawable.martini_glass_icon));
         }
 
         public void bindTask(Task task) {
-            mTextView.setText(task.getRecipeUsed());
+            mRecipeName.setText(task.getRecipeUsed());
+            mEta.setText("ETA");
         }
     }
 
@@ -101,7 +108,7 @@ public class QueuedDrinksFragment extends Fragment {
         @Override
         public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = layoutInflater.inflate(R.layout.queued_drink_item, parent, false);
             return new TaskHolder(view);
         }
 
@@ -116,5 +123,4 @@ public class QueuedDrinksFragment extends Fragment {
             return mTasks.size();
         }
     }
-
 }

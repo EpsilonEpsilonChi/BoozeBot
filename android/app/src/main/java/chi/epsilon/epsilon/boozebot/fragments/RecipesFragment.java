@@ -77,7 +77,7 @@ public class RecipesFragment extends Fragment {
                 } else {
                     Fragment fragment = getChildFragmentManager().findFragmentById(R.id.queue_fragment_container);
                     if (fragment != null) {
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.hide(fragment).commit();
                     }
                 }

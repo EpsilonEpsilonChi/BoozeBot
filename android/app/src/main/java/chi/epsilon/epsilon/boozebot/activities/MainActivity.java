@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chi.epsilon.epsilon.boozebot.R;
-import chi.epsilon.epsilon.boozebot.fragments.QueueFragment;
 import chi.epsilon.epsilon.boozebot.fragments.RecipesFragment;
 import chi.epsilon.epsilon.boozebot.fragments.UserFragment;
 
@@ -35,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.martini_glass_icon));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.recipe_book_icon));
+//       tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.recipe_book_icon));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.person_icon));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mViewPager = (ViewPager) findViewById(R.id.home_fragment_viewpager);
         mFragments = new ArrayList<>();
-        mFragments.add(new QueueFragment());
+//        mFragments.add(new QueueFragment());
         mFragments.add(new RecipesFragment());
         mFragments.add(new UserFragment());
 
