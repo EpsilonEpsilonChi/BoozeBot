@@ -3,13 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
     android:gravity="center_vertical">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_account"
         android:textColor="@color/white"
+        android:paddingBottom="24dp"
         android:gravity="center_horizontal"
         android:textSize="24sp"/>
 
@@ -81,14 +84,12 @@
     <!-- Signup Button -->
     <Button
         android:id="@+id/btn_signup"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
         android:padding="12dp"
-        android:background="@drawable/button_boarder"
+        android:backgroundTint="@color/colorAccent"
         android:textColor="@color/colorText"
         android:text="@string/signup"/>
 
