@@ -65,6 +65,7 @@ public class MainLoginFragment extends Fragment {
                                         // If successful, start main activity
                                         Intent i = new Intent(getActivity(), MainActivity.class);
                                         startActivity(i);
+                                        getActivity().finish();
                                     }
                                 }
 

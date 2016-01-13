@@ -1,5 +1,6 @@
 package chi.epsilon.epsilon.boozebot.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +18,9 @@ import com.firebase.client.FirebaseError;
 
 import java.util.Map;
 
+import chi.epsilon.epsilon.boozebot.BoozeBotApp;
 import chi.epsilon.epsilon.boozebot.R;
+import chi.epsilon.epsilon.boozebot.activities.MainActivity;
 import chi.epsilon.epsilon.boozebot.models.User;
 
 public class CreateAccountFragment extends Fragment {
@@ -80,7 +83,10 @@ public class CreateAccountFragment extends Fragment {
                             rootRef.child("Users").child(un).setValue(newUser);
                             Toast.makeText(getContext(), "Account created!", Toast.LENGTH_SHORT).show();
 
-                            // TODO(mshelley) Go to the main activity
+                            ((BoozeBotApp) getActivity().getApplication()).setCurrentUser(un);
+                            Intent i = new Intent(getActivity(), MainActivity.class);
+                            startActivity(i);
+                            getActivity().finish();
                         }
 
                         @Override
