@@ -64,7 +64,7 @@ public class QueuedDrinksFragment extends Fragment {
                 }
 
                 // This is jank as fuck.
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tasks.size() * 75, getResources().getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tasks.size() * 70, getResources().getDisplayMetrics());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
                 mRecyclerView.setLayoutParams(lp);
                 mTaskAdapter = new TaskAdapter(tasks);
