@@ -114,7 +114,7 @@ app.post('/queue_drink', function(req, res) {
         return;
       }
 
-      curTransaction.ingredientCount = ingredientCounter;
+      curTransaction.ingredientCount = ingredientCounter - 1; // account for naming scheme offset (ingredientCounter = 1 not 0 at init)
       curTransaction.timestamp = generateTimestamp();
 
       // Add transaction to user's transaction list
