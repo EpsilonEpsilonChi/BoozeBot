@@ -3,7 +3,6 @@ Code for our house bartending robot, BoozeBot (work in progress)
 
 ## The Files/Folders
  - **android**: code for Android BoozeBot app
- - **api**: HTTP API for BoozeBot
  - **arduinoLED**: code and libraries for Arduino that controls the PSU, LCD, button, and all LEDs
  - **arduinoPump**: code and libraries for Arduino that controls the pump relays
  - **helpers**: helper functions for pullTransactionLogs.sh
