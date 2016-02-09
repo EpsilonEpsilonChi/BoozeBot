@@ -166,19 +166,19 @@ var firebaseListener = function(data, progress, resolve, reject) {
                             ingredientList[i] = data["ingredient" + i];
                         }
 
-                        console.log(colors.green("  Dispensing ") + colors.green.underline(ingredient["amountUsed"]) + colors.green(" fl oz of bottle ") + colors.green.underline(ingredient["liquorBottleNum"]));
-
-                        // Condense ingredient data for Arduino
-                        var condensedIngredientPacket = {
-                            "msgType": 2,
-                            "liquor": {
-                                "amt": ingredient["amountUsed"],
-                                "bot": ingredient["liquorBottleNum"]
-                            }
-                        };
-                        var ingredientString = JSON.stringify(condensedIngredientPacket);
-
                         async.eachSeries(ingredientList, function(ingredient, loopCallback) {
+                            console.log(colors.green("  Dispensing ") + colors.green.underline(ingredient["amountUsed"]) + colors.green(" fl oz of bottle ") + colors.green.underline(ingredient["liquorBottleNum"]));
+
+                            // Condense ingredient data for Arduino
+                            var condensedIngredientPacket = {
+                                "msgType": 2,
+                                "liquor": {
+                                    "amt": ingredient["amountUsed"],
+                                    "bot": ingredient["liquorBottleNum"]
+                                }
+                            };
+                            var ingredientString = JSON.stringify(condensedIngredientPacket);
+                            
                             // Write to Pump Arduino
                             if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
                             serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
