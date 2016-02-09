@@ -178,7 +178,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
                                 }
                             };
                             var ingredientString = JSON.stringify(condensedIngredientPacket);
-                            
+
                             // Write to Pump Arduino
                             if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
                             serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
@@ -199,7 +199,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
 
                                             if (ingredientResponseObj["response"] == 3) {
                                                 if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
-                                                callback(ingredientWriteErr, "two");
+                                                callback(loopCallback, "");
                                             }
                                         });
                                     });
