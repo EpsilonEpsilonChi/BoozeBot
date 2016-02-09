@@ -199,7 +199,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
 
                                             if (ingredientResponseObj["response"] == 3) {
                                                 if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
-                                                callback(loopCallback, "");
+                                                loopCallback(ingredientWriteErr, "");
                                             }
                                         });
                                     });
