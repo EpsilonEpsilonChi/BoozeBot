@@ -14,7 +14,7 @@ Code for our house bartending robot, BoozeBot (work in progress)
  - **upload.sh**: allows for easy upload of code to LED or Pump Arduino
 
 ## To-Do
-1. Fix power integrity issues
+1. Rewire LEDs so that power integrity issues stop being annoying
 2. Make iOS/Android apps more feature rich
 
 ## Notes
