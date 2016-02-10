@@ -167,44 +167,7 @@ var firebaseListener = function(data, progress, resolve, reject) {
                         }
 
                         async.eachSeries(ingredientList, function(ingredient, loopCallback) {
-                            console.log(colors.green("  Dispensing ") + colors.green.underline(ingredient["amountUsed"]) + colors.green(" fl oz of bottle ") + colors.green.underline(ingredient["liquorBottleNum"]));
-
-                            // Condense ingredient data for Arduino
-                            var condensedIngredientPacket = {
-                                "msgType": 2,
-                                "liquor": {
-                                    "amt": ingredient["amountUsed"],
-                                    "bot": ingredient["liquorBottleNum"]
-                                }
-                            };
-                            var ingredientString = JSON.stringify(condensedIngredientPacket);
-
-                            // Write to Pump Arduino
-                            if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
-                            serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
-                                if (ingredientWriteErr != null) { console.log(colors.red("    Write errors: " + ingredientWriteErr)); }
-
-                                // Wait for response from Pump Arduino
-                                if (verbose) { console.log(colors.magenta("    Waiting for response...")); }
-                                serialPortPump.on('data', function(ingredientResponseData) {
-                                    if (verbose) { console.log(colors.white("    Response packet string: " + ingredientResponseData)); }
-
-                                    // Close and reopen serial port around parsing
-                                    serialPortPump.close(function(ingredientCloseErr) {
-                                        if (ingredientCloseErr != null) { console.log(colors.red("    Port close error: " + ingredientCloseErr)); }
-
-                                        var ingredientResponseObj = JSON.parse(ingredientResponseData);
-                                        serialPortPump.open(function(ingredientOpenErr) {
-                                            if (ingredientOpenErr != null) { console.log(colors.red("    Port reopen error: " + ingredientOpenErr)); }
-
-                                            if (ingredientResponseObj["response"] == 3) {
-                                                if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
-                                                loopCallback(ingredientWriteErr, "");
-                                            }
-                                        });
-                                    });
-                                });
-                            });
+                            dispenseIngredient(loopCallback, ingredient);
                         }, function(err) {
                             console.log(colors.green("BoozeBot finished making drink: ") + colors.green.underline(data["recipeUsed"]));
 
