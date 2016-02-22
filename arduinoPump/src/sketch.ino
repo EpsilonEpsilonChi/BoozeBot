@@ -23,8 +23,9 @@
 #define PUMPOFF 1
 
 // Config variables
-double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
-int messageToPumpDelay   = 400;     // Time between sending LED set message and pumping
+double timeToFillBottleTube = 500;     // Time it takes to fill tube going into bottle from empty
+double timeToPourOneFlOz    = 300;     // Time it takes to pour 1 fl oz (in milliseconds)
+int messageToPumpDelay      = 400;     // Time between sending LED set message and pumping
 
 // Globals
 aJsonStream serial_stream(&Serial);
@@ -74,7 +75,7 @@ void dispenseLiquor(double amount, int bottleNum) {
   delay(messageToPumpDelay);
 
   digitalWrite(liquorPin, PUMPON);
-  delay(timeToPourOneFlOz * amount);
+  delay(timeToFillBottleTube + (timeToPourOneFlOz * amount));
   digitalWrite(liquorPin, PUMPOFF);
 }
 
