@@ -158,6 +158,7 @@ int processIngredient(aJsonObject *command) {
       digitalWrite(liquorPin, PUMPON);
       delay(amount);
       digitalWrite(liquorPin, PUMPOFF);
+    }
   } else {
     return 0;
   }
