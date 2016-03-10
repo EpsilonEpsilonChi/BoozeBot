@@ -70,10 +70,8 @@ SerialPort.list(function(err, ports) {
                     // Condense ingredient data for Arduino
                     var condensedIngredientPacket = {
                         "msgType": 4,
-                        "liquor": {
-                            "ms": 2000,
-                            "bot": 1
-                        }
+                        "ms": 2000,
+                        "bot": 12
                     };
                     var ingredientString = JSON.stringify(condensedIngredientPacket);
 
