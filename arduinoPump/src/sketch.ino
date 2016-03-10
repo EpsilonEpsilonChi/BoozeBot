@@ -123,6 +123,38 @@ int processIngredient(aJsonObject *command) {
       dispenseLiquor(amount, bottleNum);
       return 3;
     }
+  } else if (msgType && (msgType->valueint == 4)) {
+    // Check for existance
+    if (amountIn && bottleNumIn) {
+      // Get amount type and set value accordingly
+      double amount = 0;
+      if (amountIn->type == 2) {
+        amount = amountIn->valueint;
+      } else if (amountIn->type == 3) {
+        amount = amountIn->valuefloat;
+      } else if (amountIn->type == 4) {
+        amount = atof(amountIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      // Get bottleNum type and set value accordingly
+      int bottleNum = 0;
+      if (bottleNumIn->type == 2) {
+        bottleNum = bottleNumIn->valueint;
+      } else if (bottleNumIn->type == 3) {
+        bottleNum = bottleNumIn->valuefloat;
+      } else if (bottleNumIn->type == 4) {
+        bottleNum = atoi(bottleNumIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      int liquorPin = selectPin(bottleNum);
+
+      digitalWrite(liquorPin, PUMPON);
+      delay(amount);
+      digitalWrite(liquorPin, PUMPOFF);
   } else {
     return 0;
   }
