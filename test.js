@@ -11,7 +11,6 @@ var serialBaud              = 9600;
 var timeoutAfterLedOff      = 750;
 var ledArduinoSerialNum     = "75437303830351917221";
 var pumpArduinoSerialNum    = "754373038303515150C1";
-var queueRef                = new Firebase('https://boozebot.firebaseio.com/drinkQueue');
 
 // Serial ports
 var serialPortLed;
@@ -46,24 +45,46 @@ var colorNum = 1;
 //     "response": <0: data error, 1: drink cancelled, 2: start making drink, 3: done pumping ingredient>
 // }
 
+// Find and open serial ports to Arduinos
+var promises = [];
+SerialPort.list(function(err, ports) {
+    for (var i = 0; i < ports.length; ++i) {
+        var port = ports[i];
+        if (port.serialNumber != undefined) {
+            serialNum = port.serialNumber;
+            serialNum = serialNum.replace("Arduino__www.arduino.cc__0043_", "");
 
-serialPortPump.on("open", function() {
-    console.log(colors.blue.bgWhite("Serial port to Pump Arduino open"));
-    
-    // Condense ingredient data for Arduino
-    var condensedIngredientPacket = {
-        "msgType": 4,
-        "liquor": {
-            "ms": 2000,
-            "bot": 1
+            if (serialNum == pumpArduinoSerialNum) {
+                var comName = port.comName;
+                comName = comName.replace("cu", "tty");
+
+                // Open serial port to LED Arduino
+                serialPortPump = new SerialPort.SerialPort(comName, {
+                    baudrate: serialBaud,
+                    parser: SerialPort.parsers.readline("\n")
+                });
+
+                serialPortPump.on("open", function() {
+                    console.log(colors.blue.bgWhite("Serial port to Pump Arduino open"));
+                    
+                    // Condense ingredient data for Arduino
+                    var condensedIngredientPacket = {
+                        "msgType": 4,
+                        "liquor": {
+                            "ms": 2000,
+                            "bot": 1
+                        }
+                    };
+                    var ingredientString = JSON.stringify(condensedIngredientPacket);
+
+                    // Write to Pump Arduino
+                    if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
+                    serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
+                        if (ingredientWriteErr != null) { console.log(colors.red("    Write errors: " + ingredientWriteErr)); }
+                    });
+                });
+            }   
         }
-    };
-    var ingredientString = JSON.stringify(condensedIngredientPacket);
-
-    // Write to Pump Arduino
-    if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
-    serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
-        if (ingredientWriteErr != null) { console.log(colors.red("    Write errors: " + ingredientWriteErr)); }
-    });
+    }
 });
 
