@@ -79,6 +79,27 @@ SerialPort.list(function(err, ports) {
                     if (verbose) { console.log(colors.white("    Ingredient string: " + ingredientString)); }
                     serialPortPump.write(ingredientString, function(ingredientWriteErr, ingredientWriteResults) {
                         if (ingredientWriteErr != null) { console.log(colors.red("    Write errors: " + ingredientWriteErr)); }
+
+                        // Wait for response from Pump Arduino
+                        if (verbose) { console.log(colors.magenta("    Waiting for response...")); }
+                        serialPortPump.on('data', function(ingredientResponseData) {
+                            if (verbose) { console.log(colors.white("    Response packet string: " + ingredientResponseData)); }
+
+                            // Close and reopen serial port around parsing
+                            serialPortPump.close(function(ingredientCloseErr) {
+                                if (ingredientCloseErr != null) { console.log(colors.red("    Port close error: " + ingredientCloseErr)); }
+
+                                var ingredientResponseObj = JSON.parse(ingredientResponseData);
+                                serialPortPump.open(function(ingredientOpenErr) {
+                                    if (ingredientOpenErr != null) { console.log(colors.red("    Port reopen error: " + ingredientOpenErr)); }
+
+                                    if (ingredientResponseObj["response"] == 3) {
+                                        if (verbose) { console.log(colors.green("    Done pumping ingredient")); }
+                                        callback(ingredientWriteErr, "two");
+                                    }
+                                });
+                            });
+                        });
                     });
                 });
             }   
