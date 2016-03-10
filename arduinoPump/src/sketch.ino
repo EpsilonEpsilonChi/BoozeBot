@@ -23,8 +23,8 @@
 #define PUMPOFF 1
 
 // Config variables
-double timeToFillBottleTube = 500;     // Time it takes to fill tube going into bottle from empty
-double timeToPourOneFlOz    = 300;     // Time it takes to pour 1 fl oz (in milliseconds)
+double timeToFillBottleTube = 700;     // Time it takes to fill tube going into bottle from empty
+double timeToPourOneFlOz    = 600;     // Time it takes to pour 1 fl oz (in milliseconds)
 int messageToPumpDelay      = 400;     // Time between sending LED set message and pumping
 
 // Globals
