@@ -124,7 +124,7 @@ int processIngredient(aJsonObject *command) {
       return 3;
     }
   } else if (msgType && (msgType->valueint == 4)) {
-    aJsonObject *amountIn = aJson.getObjectItem(command, "amt");
+    aJsonObject *amountIn = aJson.getObjectItem(command, "ms");
     aJsonObject *bottleNumIn = aJson.getObjectItem(command, "bot"); 
 
     // Check for existance
