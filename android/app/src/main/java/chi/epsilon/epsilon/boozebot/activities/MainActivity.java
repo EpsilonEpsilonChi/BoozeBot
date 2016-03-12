@@ -1,5 +1,6 @@
 package chi.epsilon.epsilon.boozebot.activities;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +24,27 @@ import chi.epsilon.epsilon.boozebot.fragments.RecipesFragment;
 import chi.epsilon.epsilon.boozebot.fragments.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private ViewPager mViewPager;
+    private Firebase mFirebaseRef;
     private List<Fragment> mFragments;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("MainActivity.java", "Calling onCreate in Main!");
+        mFirebaseRef = new Firebase("https://boozebot.firebaseio.com/");
+
+        if (mFirebaseRef.getAuth() == null) {
+            redirectToLogin();
+        }
+        mFirebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(AuthData authData) {
+                if (authData == null) {
+                    redirectToLogin();
+                }
+            }
+        });
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -79,5 +97,11 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main_toolbar, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

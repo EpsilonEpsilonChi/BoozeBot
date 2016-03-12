@@ -20,4 +20,6 @@
     <string name="new_drink">Select Your Drink: </string>
     <string name="recipes">Recipes</string>
     <string name="queued_drinks">Queued Drinks</string>
+    <string name="error_invalid_email">The email address is invalid</string>
+    <string name="error_incorrect_password">The password is incorrect</string>
 </resources>

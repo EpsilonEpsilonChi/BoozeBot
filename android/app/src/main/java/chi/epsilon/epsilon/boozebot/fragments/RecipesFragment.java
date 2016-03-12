@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -30,6 +31,7 @@ import chi.epsilon.epsilon.boozebot.models.Recipe;
 import chi.epsilon.epsilon.boozebot.models.Task;
 
 public class RecipesFragment extends Fragment {
+    private Firebase mFirebaseRef;
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
 
@@ -37,39 +39,35 @@ public class RecipesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = new RecipeAdapter(new ArrayList<Recipe>());
+        mFirebaseRef = new Firebase("https://boozebot.firebaseio.com/");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_recipes, container, false);
-        String username = ((BoozeBotApp) getActivity().getApplication()).getCurrentUser();
-        Log.d("RecipeFragment.java", "onCreate");
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recipe_recycler);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRecyclerView.setAdapter(mAdapter);
 
-        updateUI(username);
+        updateUI();
 
         return v;
     }
 
-    private void updateUI(String username) {
+    private void updateUI() {
         final List<Recipe> recipes = new ArrayList<>();
         final List<Task> tasks = new ArrayList<>();
-        final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
 
         // This feels weird -- we make a request here to check if there are transactions,
         // and then another one inside the fragment to actually get the transactions.
-        rootRef.child("Users").child(username).child("pendingTransactions").addValueEventListener(new ValueEventListener() {
+        mFirebaseRef.child("Users").child(mFirebaseRef.getAuth().getUid()).
+                child("pendingTransactions").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 tasks.clear();
                 // If there are queued drinks
                 if (dataSnapshot.hasChildren()) {
-                    Log.d("RecipesFrag", "Has children");
-
-
                     QueuedDrinksFragment queuedDrinksFragment = new QueuedDrinksFragment();
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                     transaction.add(R.id.queue_fragment_container, queuedDrinksFragment)
@@ -84,11 +82,10 @@ public class RecipesFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
+            public void onCancelled(FirebaseError firebaseError) {}
         });
 
-        rootRef.child("Recipes").addValueEventListener(new ValueEventListener() {
+        mFirebaseRef.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 recipes.clear();
@@ -105,8 +102,7 @@ public class RecipesFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
+            public void onCancelled(FirebaseError firebaseError) {}
         });
         mAdapter = new RecipeAdapter(recipes);
         mRecyclerView.setAdapter(mAdapter);
@@ -157,7 +153,7 @@ public class RecipesFragment extends Fragment {
                     ConfirmDrinkFragment dialog = new ConfirmDrinkFragment();
                     Bundle args = new Bundle();
                     args.putSerializable("drink", recipe);
-                    args.putSerializable("user", ((BoozeBotApp) getActivity().getApplication()).getCurrentUser());
+                    args.putSerializable("user", mFirebaseRef.getAuth().getUid());
                     args.putSerializable("recipe", mNameToRecipe.get(recipe));
 
                     dialog.setArguments(args);

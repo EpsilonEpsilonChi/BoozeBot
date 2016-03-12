@@ -26,6 +26,7 @@ import chi.epsilon.epsilon.boozebot.R;
 import chi.epsilon.epsilon.boozebot.models.Task;
 
 public class QueuedDrinksFragment extends Fragment {
+    private Firebase mFirebaseRef;
     private TaskAdapter mTaskAdapter;
     private RecyclerView mRecyclerView;
 
@@ -33,6 +34,7 @@ public class QueuedDrinksFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTaskAdapter = new TaskAdapter(new ArrayList<Task>());
+        mFirebaseRef = new Firebase("https://boozebot.firebaseio.com/");
     }
 
     @Override
@@ -44,17 +46,14 @@ public class QueuedDrinksFragment extends Fragment {
         mRecyclerView.setAdapter(mTaskAdapter);
 
         updateUI();
-
-        Log.d("QueuedDrinkFrag", "Trying to inflate queued drink fragment!");
         return v;
     }
 
     private void updateUI() {
         final List<Task> tasks = new ArrayList<>();
-        final Firebase rootRef = new Firebase("https://boozebot.firebaseio.com/");
-        String username = ((BoozeBotApp) getActivity().getApplication()).getCurrentUser();
+        String username = mFirebaseRef.getAuth().getUid();
 
-        rootRef.child("Users").child(username).child("pendingTransactions").addValueEventListener(new ValueEventListener() {
+        mFirebaseRef.child("Users").child(username).child("pendingTransactions").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 tasks.clear();
