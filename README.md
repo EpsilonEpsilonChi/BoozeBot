@@ -14,12 +14,14 @@ Code for our house bartending robot, BoozeBot (work in progress)
  - **upload.sh**: allows for easy upload of code to LED or Pump Arduino
 
 ## To-Do
-1. Fix power integrity issues
-2. Write iOS/Android apps
+1. Rewire LEDs so that power integrity issues stop being annoying
+2. Make iOS/Android apps more feature rich
 
-### Notes
-- **IDEA**: make raspberry pi automatically archive a transaction history every day
- 
+## Notes
+
+### BoozeBot Rev. 2 Ideas
+- Mount bottles upside down, use solenoids to release (will work fine if using same type of bottle)
+- Make electronics chamber more waterproof (or mount somewhere other than the bottom)
 
 ### Setting up Raspberry Pi serial ports
 In order to make sure the Arduinos are assigned to their own serial port at boot (so they don't get mixed up), magic is required. 
@@ -34,5 +36,5 @@ In order to make sure the Arduinos are assigned to their own serial port at boot
 
 This will allow upload.sh to upload to each Arduino correctly every time.
 
-## Notes for setting up for iOS modifications
+### Setting up for iOS modifications
 Be sure to add the Firebase Pod: https://www.firebase.com/docs/ios/quickstart.html (see section 2)

@@ -81,25 +81,6 @@ var pickLightingColor = function(bottleNum) {
     return colorRGB;
 }
 
-// Light up bottle
-var lightUpBottle = function(callback, ingredient) { 
-    console.log(colors.cyan("  Lighting up bottle ") + colors.cyan.underline(ingredient["liquorBottleNum"]));
-
-    // Create data packet to send to LED Arduino
-    var lightingPacket = {
-        "msgType": 1,
-        "led": pickLightingColor(ingredient["liquorBottleNum"])
-    };
-    var lightingPacketString = JSON.stringify(lightingPacket);
-
-    // Write to LED Arduino
-    if (verbose) { console.log(colors.white("    Lighting packet string: " + lightingPacketString)); }
-    serialPortLed.write(lightingPacketString, function(lightingWriteErr, lightingWriteResults) {
-        if (lightingWriteErr != null) { console.log(colors.red("    Write errors: " + lightingWriteErr)); }
-        callback(lightingWriteErr, "one");
-    });
-}
-
 // Dispense ingredient 
 var dispenseIngredient = function(callback, ingredient) {
     console.log(colors.green("  Dispensing ") + colors.green.underline(ingredient["amountUsed"]) + colors.green(" fl oz of bottle ") + colors.green.underline(ingredient["liquorBottleNum"]));
@@ -139,29 +120,6 @@ var dispenseIngredient = function(callback, ingredient) {
                 });
             });
         });
-    });
-}
-
-// Turn off corresponding bottle LED
-var turnOffLed = function(callback, ingredient) {
-    if (verbose) { console.log(colors.cyan("  Turning off LED on bottle ") + colors.cyan.underline(ingredient["liquorBottleNum"])); }
-
-    // Create data packet to send to LED Arduino
-    var lightingOff = {
-        "msgType": 1,
-        "led": {"num": parseInt(ingredient["liquorBottleNum"]), "r": 0, "g": 0, "b": 0}
-    };
-    var lightingOffString = JSON.stringify(lightingOff);
-
-    // Write to LED Arduino
-    if (verbose) { console.log(colors.white("    Lighting off string: " + lightingOffString)); }
-    serialPortLed.write(lightingOffString, function(lightingOffErr, lightingOffResults) {
-        if (lightingOffErr != null) { console.log(colors.red("    Write errors: " + lightingOffErr)); }
-
-        // Pause to let serial port to LED Arduino clear out
-        setTimeout(function() {
-            callback(lightingOffErr, "three");
-        }, timeoutAfterLedOff);
     });
 }
 
@@ -208,19 +166,8 @@ var firebaseListener = function(data, progress, resolve, reject) {
                             ingredientList[i] = data["ingredient" + i];
                         }
 
-                        // Pump each liquor in recipe and light corresponding bottle LED
                         async.eachSeries(ingredientList, function(ingredient, loopCallback) {
-                            async.series([
-                                function(innerCallback) {   // Light up corresponding bottle LED
-                                    lightUpBottle(innerCallback, ingredient);
-                                },
-                                function(innerCallback) {   // Dispense ingredient
-                                    dispenseIngredient(innerCallback, ingredient);
-                                },
-                                function(innerCallback) {   // Turn off corresponding bottle LED
-                                    turnOffLed(innerCallback, ingredient);
-                                }
-                            ], loopCallback);
+                            dispenseIngredient(loopCallback, ingredient);
                         }, function(err) {
                             console.log(colors.green("BoozeBot finished making drink: ") + colors.green.underline(data["recipeUsed"]));
 

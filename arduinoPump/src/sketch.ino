@@ -23,8 +23,9 @@
 #define PUMPOFF 1
 
 // Config variables
-double timeToPourOneFlOz = 350;     // Time it takes to pour 1 fl oz (in milliseconds)
-int messageToPumpDelay   = 400;     // Time between sending LED set message and pumping
+double timeToFillBottleTube = 700;     // Time it takes to fill tube going into bottle from empty
+double timeToPourOneFlOz    = 600;     // Time it takes to pour 1 fl oz (in milliseconds)
+int messageToPumpDelay      = 400;     // Time between sending LED set message and pumping
 
 // Globals
 aJsonStream serial_stream(&Serial);
@@ -74,7 +75,7 @@ void dispenseLiquor(double amount, int bottleNum) {
   delay(messageToPumpDelay);
 
   digitalWrite(liquorPin, PUMPON);
-  delay(timeToPourOneFlOz * amount);
+  delay(timeToFillBottleTube + (timeToPourOneFlOz * amount));
   digitalWrite(liquorPin, PUMPOFF);
 }
 
@@ -120,6 +121,43 @@ int processIngredient(aJsonObject *command) {
       }
 
       dispenseLiquor(amount, bottleNum);
+      return 3;
+    }
+  } else if (msgType && (msgType->valueint == 4)) {
+    aJsonObject *amountIn = aJson.getObjectItem(command, "ms");
+    aJsonObject *bottleNumIn = aJson.getObjectItem(command, "bot"); 
+
+    // Check for existance
+    if (amountIn && bottleNumIn) {
+      // Get amount type and set value accordingly
+      double amount = 0;
+      if (amountIn->type == 2) {
+        amount = amountIn->valueint;
+      } else if (amountIn->type == 3) {
+        amount = amountIn->valuefloat;
+      } else if (amountIn->type == 4) {
+        amount = atof(amountIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      // Get bottleNum type and set value accordingly
+      int bottleNum = 0;
+      if (bottleNumIn->type == 2) {
+        bottleNum = bottleNumIn->valueint;
+      } else if (bottleNumIn->type == 3) {
+        bottleNum = bottleNumIn->valuefloat;
+      } else if (bottleNumIn->type == 4) {
+        bottleNum = atoi(bottleNumIn->valuestring);
+      } else {
+        return 0;
+      }
+
+      int liquorPin = selectPin(bottleNum);
+
+      digitalWrite(liquorPin, PUMPON);
+      delay(amount);
+      digitalWrite(liquorPin, PUMPOFF);
       return 3;
     }
   } else {
